@@ -1,0 +1,11 @@
+header {
+  background: #343b40;
+  height: 50px;
+  padding: 0 0 0 25px;
+}
+.logo {
+  color: #90ee90;
+  font: 42px/50px 'Architects Daughter', cursive;
+  text-decoration: none;
+  float: left;
+}

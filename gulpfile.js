@@ -19,19 +19,24 @@ gulp.task('webserver', function() {
         .pipe(webserver({
             livereload: true,
             open: true,
-            host: '0.0.0.0'
+            host: '0.0.0.0',
+            filter: function(fileName) {
+                if (fileName.match(/\.styl$/)) { // exclude all source maps from livereload
+                    return false;
+                } else {
+                    return true;
+                }
+            }
         }));
 });
 
 gulp.task('stylus', function () {
-    gulp.src('./modules/**/*.styl')
+    return gulp.src('./modules/**/*.styl')
         .pipe(stylus())
         .pipe(gulp.dest('./modules/'));
+});
 
-    gulp.src('./stylus/main.styl')
-        .pipe(stylus())
-        .pipe(gulp.dest('./css/'));
-
+gulp.task('styles', ['stylus'], function() {
     gulp.src(['./modules/**/*.css', './vendor/**/*.css'])
         .pipe(concat('main.css'))
         .pipe(gulp.dest('./css/'));
@@ -46,11 +51,11 @@ gulp.task('js', function() {
 gulp.task('default', function () {
     gulp.run(['webserver', 'stylus']);
 
-    gulp.watch("./**/*.styl", function(){
-        gulp.run('stylus');
+    gulp.watch("**/*.styl", function(){
+        gulp.run('styles');
     });
 
-    gulp.watch("./modules/**/*.js", function() {
+    gulp.watch("modules/**/*.js", function() {
         gulp.run('js');
     });
 });
