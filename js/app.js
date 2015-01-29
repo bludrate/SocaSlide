@@ -1,2 +1,1 @@
-angular.module('app', [])
-    .controller('first', function() {});
+angular.module('SocaSlide', ['SSHeader']);

@@ -250,7 +250,6 @@ k.parent().data("$selectController");m&&m.ngModelCtrl&&(f?a.$watch(f,function(a,
 d.$observe("required",function(){e.$validate()}))}}},uc=function(){return{restrict:"A",require:"?ngModel",link:function(a,c,d,e){if(e){var f,g=d.ngPattern||d.pattern;d.$observe("pattern",function(a){P(a)&&0<a.length&&(a=new RegExp("^"+a+"$"));if(a&&!a.test)throw S("ngPattern")("noregexp",g,a,ta(c));f=a||v;e.$validate()});e.$validators.pattern=function(a){return e.$isEmpty(a)||E(f)||f.test(a)}}}}},xc=function(){return{restrict:"A",require:"?ngModel",link:function(a,c,d,e){if(e){var f=-1;d.$observe("maxlength",
 function(a){a=ca(a);f=isNaN(a)?-1:a;e.$validate()});e.$validators.maxlength=function(a,c){return 0>f||e.$isEmpty(a)||c.length<=f}}}}},wc=function(){return{restrict:"A",require:"?ngModel",link:function(a,c,d,e){if(e){var f=0;d.$observe("minlength",function(a){f=ca(a)||0;e.$validate()});e.$validators.minlength=function(a,c){return e.$isEmpty(c)||c.length>=f}}}}};O.angular.bootstrap?console.log("WARNING: Tried to load angular more than once."):(Hd(),Jd(W),D(Y).ready(function(){Dd(Y,oc)}))})(window,document);
 !window.angular.$$csp()&&window.angular.element(document).find("head").prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}</style>');
-//# sourceMappingURL=angular.min.js.map
 
 /*
  AngularJS v1.3.6
@@ -284,7 +283,6 @@ function(a){a=ca(a);f=isNaN(a)?-1:a;e.$validate()});e.$validators.maxlength=func
     W&&N.onwebkitanimationend!==W?(B="-webkit-",K="WebkitAnimation",V="webkitAnimationEnd animationend"):(K="animation",V="animationend");var x={},a=0,c=[],b,d=null,h=0,k=[];return{animate:function(a,b,c,d,f,g){g=g||{};g.from=c;g.to=d;return U("animate",a,b,f,g)},enter:function(a,b,c){c=c||{};return U("enter",a,"ng-enter",b,c)},leave:function(a,b,c){c=c||{};return U("leave",a,"ng-leave",b,c)},move:function(a,b,c){c=c||{};return U("move",a,"ng-move",b,c)},beforeSetClass:function(a,b,c,d,f){f=f||{};b=q(c,
         "-remove")+" "+q(b,"-add");if(f=S("setClass",a,b,f.from))return H(a,d),f;y();d()},beforeAddClass:function(a,b,c,d){d=d||{};if(b=S("addClass",a,q(b,"-add"),d.from))return H(a,c),b;y();c()},beforeRemoveClass:function(a,b,c,d){d=d||{};if(b=S("removeClass",a,q(b,"-remove"),d.from))return H(a,c),b;y();c()},setClass:function(a,b,c,d,f){f=f||{};c=q(c,"-remove");b=q(b,"-add");return T("setClass",a,c+" "+b,d,f.to)},addClass:function(a,b,c,d){d=d||{};return T("addClass",a,q(b,"-add"),c,d.to)},removeClass:function(a,
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      b,c,d){d=d||{};return T("removeClass",a,q(b,"-remove"),c,d.to)}}}])}])})(window,window.angular);
-//# sourceMappingURL=angular-animate.min.js.map
 /*
  AngularJS v1.3.6
  (c) 2010-2014 Google, Inc. http://angularjs.org
@@ -296,11 +294,10 @@ function(a){a=ca(a);f=isNaN(a)?-1:a;e.$validate()});e.$validators.maxlength=func
     f.max&&!b.attr("aria-valuemax")&&b.attr("aria-valuemax",f.max),b.attr("aria-valuenow")||e.$watch(h,function(a){b.attr("aria-valuenow",a)}));break;case "multiline":c("aria-multiline","ariaMultiline",b)&&b.attr("aria-multiline",!0)}m&&b.attr("tabindex",0);d.$validators.required&&c("aria-required","ariaRequired",b)&&e.$watch(function(){return d.$error.required},function(a){b.attr("aria-required",!!a)});c("aria-invalid","ariaInvalid",b)&&e.$watch(function(){return d.$invalid},function(a){b.attr("aria-invalid",
         !!a)})}}}]).directive("ngDisabled",["$aria",function(a){return a.$$watchExpr("ngDisabled","aria-disabled")}]).directive("ngMessages",function(){return{restrict:"A",require:"?ngMessages",link:function(a,c,g,e){c.attr("aria-live")||c.attr("aria-live","assertive")}}}).directive("ngClick",["$aria",function(a){return{restrict:"A",link:function(c,g,e){a.config("tabindex")&&!g.attr("tabindex")&&g.attr("tabindex",0);if(a.config("bindKeypress")&&!g.attr("ng-keypress"))g.on("keypress",function(a){32!==a.keyCode&&
 13!==a.keyCode||c.$eval(e.ngClick)})}}}]).directive("ngDblclick",["$aria",function(a){return function(c,g,e){a.config("tabindex")&&!g.attr("tabindex")&&g.attr("tabindex",0)}}])})(window,window.angular);
-//# sourceMappingURL=angular-aria.min.js.map
-angular.module('app', [])
-    .controller('first', function() {});
-function increment(a) {
-    return a + 1;
-}
+angular.module('SocaSlide', ['SSHeader']);
+angular.module('SSHeader', [])
+    .controller('headerCtrl', headerCtrl);
 
-increment(1);
+function headerCtrl($scope) {
+    $scope.text = "Hello World!!!";
+}

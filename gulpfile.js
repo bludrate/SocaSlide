@@ -15,7 +15,7 @@ var jsFilesorder = [
 ];
 
 gulp.task('webserver', function() {
-    gulp.src('app')
+    gulp.src('./')
         .pipe(webserver({
             livereload: true,
             open: true,
