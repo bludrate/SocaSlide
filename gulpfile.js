@@ -11,6 +11,8 @@ var jsFilesorder = [
     './vendor/angular-aria.min.js',
     './js/**/*.js',
     '!./js/main.js',
+    '!./js/fakeApi.js',
+    './modules/*/*.js',
     './modules/**/*.js'
 ];
 
@@ -21,10 +23,10 @@ gulp.task('webserver', function() {
             open: true,
             host: '0.0.0.0',
             filter: function(fileName) {
-                if (fileName.match(/\.styl$/)) { // exclude all source maps from livereload
-                    return false;
-                } else {
+                if (fileName.match(/main\.(css|js)/)) { // exclude all source maps from livereload
                     return true;
+                } else {
+                    return false;
                 }
             }
         }));
@@ -55,7 +57,7 @@ gulp.task('default', function () {
         gulp.run('styles');
     });
 
-    gulp.watch("modules/**/*.js", function() {
+    gulp.watch(["modules/**/*.js", "js/app.js", 'js/services/*.js'], function() {
         gulp.run('js');
     });
 });

@@ -294,10 +294,86 @@ function(a){a=ca(a);f=isNaN(a)?-1:a;e.$validate()});e.$validators.maxlength=func
     f.max&&!b.attr("aria-valuemax")&&b.attr("aria-valuemax",f.max),b.attr("aria-valuenow")||e.$watch(h,function(a){b.attr("aria-valuenow",a)}));break;case "multiline":c("aria-multiline","ariaMultiline",b)&&b.attr("aria-multiline",!0)}m&&b.attr("tabindex",0);d.$validators.required&&c("aria-required","ariaRequired",b)&&e.$watch(function(){return d.$error.required},function(a){b.attr("aria-required",!!a)});c("aria-invalid","ariaInvalid",b)&&e.$watch(function(){return d.$invalid},function(a){b.attr("aria-invalid",
         !!a)})}}}]).directive("ngDisabled",["$aria",function(a){return a.$$watchExpr("ngDisabled","aria-disabled")}]).directive("ngMessages",function(){return{restrict:"A",require:"?ngMessages",link:function(a,c,g,e){c.attr("aria-live")||c.attr("aria-live","assertive")}}}).directive("ngClick",["$aria",function(a){return{restrict:"A",link:function(c,g,e){a.config("tabindex")&&!g.attr("tabindex")&&g.attr("tabindex",0);if(a.config("bindKeypress")&&!g.attr("ng-keypress"))g.on("keypress",function(a){32!==a.keyCode&&
 13!==a.keyCode||c.$eval(e.ngClick)})}}}]).directive("ngDblclick",["$aria",function(a){return function(c,g,e){a.config("tabindex")&&!g.attr("tabindex")&&g.attr("tabindex",0)}}])})(window,window.angular);
-angular.module('SocaSlide', ['SSHeader']);
-angular.module('SSHeader', [])
-    .controller('headerCtrl', headerCtrl);
+angular.module('ss', ['ss.header', 'ss.photoSelector']);
+angular.module('vkontakteServices', [])
+    .run(function(VKReady) {
+        VK.init(function() {
+            VKReady.deferred.resolve();
+        }, function() {
+            VKReady.deferred.reject();
+        }, '5.28');
+    })
 
-function headerCtrl($scope) {
+    .factory('VKReady', function($q) {
+        return {
+            deferred: $q.defer(),
+            then: function(successCallback, errorCallback) {
+                this.deferred.promise.then(successCallback, errorCallback);
+            }
+        };
+    })
+
+    .factory('VKPhotos', function(VKReady, $q) {
+        function methodWrapper(method) {
+            var deferred = $q.defer();
+
+            VKReady.then(function() {
+                method(deferred);
+            }, function() {
+                deferred.reject('VK not available');
+            });
+
+            return deferred.promise;
+        }
+
+        function getAlbums() {
+            return methodWrapper(function(deferred){
+                VK.api('photos.getAlbums', {
+                    need_system: 1,
+                    need_covers: 1,
+                    photo_sizes: 1
+                }, function(data) {
+                    if (data.response) {
+                        deferred.resolve(data.response);
+                    } else {
+                        deferred.reject('error in getting data');
+                    }
+                });
+            });
+        }
+
+        function getAlbumPhotos(id) {
+            return methodWrapper(function(deferred) {
+                VK.api('photos.getAlbums', {
+                    album_id: id,
+                    photo_sizes: 1
+                }, function(data) {
+                    if (data.response) {
+                        deferred.resolve(data.response);
+                    } else {
+                        deferred.reject('error in getting data');
+                    }
+                });
+            });
+        }
+
+        return {
+            getAlbums: getAlbums,
+            getAlbumPhotos: getAlbumPhotos
+        };
+    });
+angular.module('ss.header', ['ss.photoSelector'])
+    .controller('HeaderController', HeaderController);
+
+function HeaderController($scope, selector) {
+    selector.test();
     $scope.text = "Hello World!!!";
 }
+angular.module('ss.photoSelector', ['vkontakteServices'])
+    .factory('selector', function(VKPhotos) {
+        return {
+            test: function() {
+                VKPhotos.getAlbums();
+            }
+        };
+    });

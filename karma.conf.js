@@ -22,7 +22,7 @@ module.exports = function(config) {
         './modules/**/*.js',
 
         './tests/vendor/**/*.js',
-        './tests/**/*.js'
+        './tests/**/*.spec.js'
     ],
 
 

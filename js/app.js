@@ -1,1 +1,1 @@
-angular.module('SocaSlide', ['SSHeader']);
+angular.module('ss', ['ss.header', 'ss.photoSelector']);
