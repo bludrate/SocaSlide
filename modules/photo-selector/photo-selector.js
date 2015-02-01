@@ -1,4 +1,4 @@
-angular.module('ss.photoSelector', ['vkontakteServices'])
+angular.module('ss.photoSelector', ['vkontakteServices', 'ss.filters'])
     .controller('PhotoSelectorController', PhotoSelectorController);
 
 function PhotoSelectorController($scope, VKPhotos) {

@@ -1,20 +1,31 @@
 angular.module('ss.filters', [])
     .filter('photoSrc', function() {
-        var allSizes = ['s', 'm', 'x', 'o', 'p', 'q', 'y', 'z', 'w'];
-        return function(sizes, size) {
-            if (!sizes || !size) {
+        var types = ['s', 'm', 'x', 'o', 'p', 'q', 'y', 'z', 'w'];
+
+        function searchSize(sizes, type) {
+            for (var i = 0; i < sizes.length; i++) {
+                if (sizes[i].type === type) {
+                    return sizes[i];
+                }
+            }
+        }
+
+        return function(sizes, type) {
+            if (!sizes || !type) {
                 return ;
             }
 
-            var i = allSizes.indexOf(size);
+            var i = types.indexOf(type);
 
             if (i === -1) {
                 return ;
             }
 
+            var size;
             for(; i >= 0; i-- ) {
-                if (sizes[i].type === size) {
-                    return sizes[i].src;
+                size = searchSize(sizes, types[i]);
+                if (size) {
+                    return size.src;
                 }
             }
         };

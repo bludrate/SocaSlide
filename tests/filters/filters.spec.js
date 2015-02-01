@@ -12,6 +12,7 @@ describe('ss.filters', function() {
 
         it('should return nearest available src', function() {
             expect($filter('photoSrc')(sizes, 's')).toBe("http:\/\/cs619818.vk.me\/v619818875\/1c405\/-ewBamQj0AY.jpg");
+            expect($filter('photoSrc')(sizes, 'w')).toBe("http:\/\/cs619818.vk.me\/v619818875\/1c409\/KJSftcl8UbM.jpg");
         });
 
         it('should return undefined on wrong parameters', function() {

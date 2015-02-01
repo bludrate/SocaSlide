@@ -295,6 +295,38 @@ function(a){a=ca(a);f=isNaN(a)?-1:a;e.$validate()});e.$validators.maxlength=func
         !!a)})}}}]).directive("ngDisabled",["$aria",function(a){return a.$$watchExpr("ngDisabled","aria-disabled")}]).directive("ngMessages",function(){return{restrict:"A",require:"?ngMessages",link:function(a,c,g,e){c.attr("aria-live")||c.attr("aria-live","assertive")}}}).directive("ngClick",["$aria",function(a){return{restrict:"A",link:function(c,g,e){a.config("tabindex")&&!g.attr("tabindex")&&g.attr("tabindex",0);if(a.config("bindKeypress")&&!g.attr("ng-keypress"))g.on("keypress",function(a){32!==a.keyCode&&
 13!==a.keyCode||c.$eval(e.ngClick)})}}}]).directive("ngDblclick",["$aria",function(a){return function(c,g,e){a.config("tabindex")&&!g.attr("tabindex")&&g.attr("tabindex",0)}}])})(window,window.angular);
 angular.module('ss', ['ss.header', 'ss.photoSelector']);
+angular.module('ss.filters', [])
+    .filter('photoSrc', function() {
+        var types = ['s', 'm', 'x', 'o', 'p', 'q', 'y', 'z', 'w'];
+
+        function searchSize(sizes, type) {
+            for (var i = 0; i < sizes.length; i++) {
+                if (sizes[i].type === type) {
+                    return sizes[i];
+                }
+            }
+        }
+
+        return function(sizes, type) {
+            if (!sizes || !type) {
+                return ;
+            }
+
+            var i = types.indexOf(type);
+
+            if (i === -1) {
+                return ;
+            }
+
+            var size;
+            for(; i >= 0; i-- ) {
+                size = searchSize(sizes, types[i]);
+                if (size) {
+                    return size.src;
+                }
+            }
+        };
+    });
 angular.module('vkontakteServices', [])
     .run(function(VKReady) {
         VK.init(function() {
@@ -362,13 +394,7 @@ angular.module('vkontakteServices', [])
             getAlbumPhotos: getAlbumPhotos
         };
     });
-angular.module('ss.header', [])
-    .controller('HeaderController', HeaderController);
-
-function HeaderController($scope) {
-    $scope.text = "Hello World!!!";
-}
-angular.module('ss.photoSelector', ['vkontakteServices'])
+angular.module('ss.photoSelector', ['vkontakteServices', 'ss.filters'])
     .controller('PhotoSelectorController', PhotoSelectorController);
 
 function PhotoSelectorController($scope, VKPhotos) {
@@ -376,6 +402,9 @@ function PhotoSelectorController($scope, VKPhotos) {
         $scope.albums = albums;
     });
 }
-/**
- * Created by Oleksii_Pronyakin on 2/1/15.
- */
+angular.module('ss.header', [])
+    .controller('HeaderController', HeaderController);
+
+function HeaderController($scope) {
+    $scope.text = "Hello World!!!";
+}
