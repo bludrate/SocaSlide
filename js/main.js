@@ -334,7 +334,7 @@ angular.module('vkontakteServices', [])
                     photo_sizes: 1
                 }, function(data) {
                     if (data.response) {
-                        deferred.resolve(data.response);
+                        deferred.resolve(data.response.items);
                     } else {
                         deferred.reject('error in getting data');
                     }
@@ -344,12 +344,12 @@ angular.module('vkontakteServices', [])
 
         function getAlbumPhotos(id) {
             return methodWrapper(function(deferred) {
-                VK.api('photos.getAlbums', {
+                VK.api('photos.get', {
                     album_id: id,
                     photo_sizes: 1
                 }, function(data) {
                     if (data.response) {
-                        deferred.resolve(data.response);
+                        deferred.resolve(data.response.items);
                     } else {
                         deferred.reject('error in getting data');
                     }
@@ -362,18 +362,20 @@ angular.module('vkontakteServices', [])
             getAlbumPhotos: getAlbumPhotos
         };
     });
-angular.module('ss.header', ['ss.photoSelector'])
+angular.module('ss.header', [])
     .controller('HeaderController', HeaderController);
 
-function HeaderController($scope, selector) {
-    selector.test();
+function HeaderController($scope) {
     $scope.text = "Hello World!!!";
 }
 angular.module('ss.photoSelector', ['vkontakteServices'])
-    .factory('selector', function(VKPhotos) {
-        return {
-            test: function() {
-                VKPhotos.getAlbums();
-            }
-        };
+    .controller('PhotoSelectorController', PhotoSelectorController);
+
+function PhotoSelectorController($scope, VKPhotos) {
+    VKPhotos.getAlbums().then(function(albums){
+        $scope.albums = albums;
     });
+}
+/**
+ * Created by Oleksii_Pronyakin on 2/1/15.
+ */

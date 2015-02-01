@@ -50,24 +50,6 @@ describe('vkonatke services', function() {
                 expect(window.VK.api).toHaveBeenCalled();
             });
 
-            it('should reject on wrong data', function() {
-                VK.data = {
-                    'photos.get': {},
-                    'photos.getAlbums': {}
-                };
-                var spy = jasmine.createSpy('callback');
-
-                VKPhotos.getAlbums().then(function(){
-
-                }, function(data){
-                    spy(data);
-                });
-
-                rootScope.$apply();
-
-                expect(spy).toHaveBeenCalledWith('error in getting data');
-            });
-
             it('should call VK.api with specific parameters', function() {
                 spyOn(VK, 'api');
 
@@ -80,6 +62,40 @@ describe('vkonatke services', function() {
                     need_covers: 1,
                     photo_sizes: 1
                 }, jasmine.any(Function));
+            });
+
+            it('should respond with array', function() {
+                var data;
+
+                VKPhotos.getAlbums().then(function(albums) {
+                    data = albums;
+                });
+
+                rootScope.$apply();
+
+                expect(data).toEqual(jasmine.any(Array));
+            });
+
+            it('should reject on wrong data received', function() {
+                var data = VK.data;
+                var spy = jasmine.createSpy('callback');
+
+                VK.data = {
+                    'photos.get': {},
+                    'photos.getAlbums': {}
+                };
+
+                VKPhotos.getAlbums().then(function(){
+
+                }, function(response){
+                    spy(response);
+                });
+
+                rootScope.$apply();
+
+                expect(spy).toHaveBeenCalledWith('error in getting data');
+
+                VK.data = data;
             });
         });
 
@@ -106,22 +122,26 @@ describe('vkonatke services', function() {
                 expect(window.VK.api).toHaveBeenCalled();
             });
 
-            it('should reject on wrong data', function() {
+            it('should reject on wrong data received', function() {
+                var data = VK.data;
+                var spy = jasmine.createSpy('callback');
+
                 VK.data = {
                     'photos.get': {},
                     'photos.getAlbums': {}
                 };
-                var spy = jasmine.createSpy('callback');
 
                 VKPhotos.getAlbumPhotos().then(function(){
 
-                }, function(data){
-                    spy(data);
+                }, function(response){
+                    spy(response);
                 });
 
                 rootScope.$apply();
 
                 expect(spy).toHaveBeenCalledWith('error in getting data');
+
+                VK.data = data;
             });
 
             it('should call VK.api with specific parameters', function() {
@@ -131,10 +151,22 @@ describe('vkonatke services', function() {
 
                 rootScope.$apply();
 
-                expect(VK.api).toHaveBeenCalledWith('photos.getAlbums', {
+                expect(VK.api).toHaveBeenCalledWith('photos.get', {
                     album_id: 2,
                     photo_sizes: 1
                 }, jasmine.any(Function));
+            });
+
+            it('should respond with array', function() {
+                var data;
+
+                VKPhotos.getAlbumPhotos(2).then(function(albums) {
+                    data = albums;
+                });
+
+                rootScope.$apply();
+
+                expect(data).toEqual(jasmine.any(Array));
             });
         });
     });

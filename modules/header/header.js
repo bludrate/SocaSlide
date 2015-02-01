@@ -1,7 +1,6 @@
-angular.module('ss.header', ['ss.photoSelector'])
+angular.module('ss.header', [])
     .controller('HeaderController', HeaderController);
 
-function HeaderController($scope, selector) {
-    selector.test();
+function HeaderController($scope) {
     $scope.text = "Hello World!!!";
 }

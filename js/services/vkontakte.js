@@ -37,7 +37,7 @@ angular.module('vkontakteServices', [])
                     photo_sizes: 1
                 }, function(data) {
                     if (data.response) {
-                        deferred.resolve(data.response);
+                        deferred.resolve(data.response.items);
                     } else {
                         deferred.reject('error in getting data');
                     }
@@ -47,12 +47,12 @@ angular.module('vkontakteServices', [])
 
         function getAlbumPhotos(id) {
             return methodWrapper(function(deferred) {
-                VK.api('photos.getAlbums', {
+                VK.api('photos.get', {
                     album_id: id,
                     photo_sizes: 1
                 }, function(data) {
                     if (data.response) {
-                        deferred.resolve(data.response);
+                        deferred.resolve(data.response.items);
                     } else {
                         deferred.reject('error in getting data');
                     }
