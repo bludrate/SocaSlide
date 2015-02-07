@@ -1,0 +1,8 @@
+<div class="timeline" ng-controller="framesController">
+    <ul class="frame-list">
+        <li class="frame-list__item" ng-repeat="frame in frames" title="{{frame.title}}" ng-click="removeFrame(frame)">
+            <img ng-src="{{frame.sizes | photoSrc: 'o' }}"/>
+        </li>
+    </ul>
+    <button class="create-slideshow"><i></i></button>
+</div>

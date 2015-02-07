@@ -10,6 +10,7 @@ var minifyHtml = require('gulp-minify-html');
 var clean = require('gulp-clean');
 
 var jsFilesorder = [
+    './vendor/parse-1.3.4.min.js',
     './vendor/angular.min.js',
     './vendor/angular-animate.min.js',
     './vendor/angular-aria.min.js',

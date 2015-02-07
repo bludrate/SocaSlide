@@ -17,6 +17,9 @@ angular.module('ss.services', [])
 
             add: function() {
                 Array.prototype.push.apply(photos, arguments);
+                for(var i = 0; i < arguments.length; i++) {
+                    arguments[i].selected = true;
+                }
             },
 
             remove: function() {
@@ -26,6 +29,7 @@ angular.module('ss.services', [])
                     if (index !== -1) {
                         photos.splice(index, 1);
                     }
+                    arguments[i].selected = false;
                 }
             }
         };

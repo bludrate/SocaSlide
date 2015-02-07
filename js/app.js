@@ -1,4 +1,4 @@
-angular.module('ss', ['ss.header', 'ss.photoSelector', 'ngRoute', 'templates'])
+angular.module('ss', ['ss.header', 'ss.photoSelector', 'ngRoute', 'templates', 'ss.timeline'])
     .config(function ($routeProvider, $locationProvider) {
         $routeProvider
             .when('/',

@@ -1,4 +1,4 @@
-angular.module('ss.photoSelector', ['vkontakteServices', 'ss.filters', 'ngRoute', 'ss.directives'])
+angular.module('ss.photoSelector', ['vkontakteServices', 'ss.filters', 'ngRoute', 'ss.directives', 'ss.services'])
     .controller('AlbumsController', AlbumsController)
     .controller('PhotosController', PhotosController);
 
@@ -9,9 +9,17 @@ function AlbumsController($scope, VKPhotos) {
     });
 }
 
-function PhotosController($scope, VKPhotos, $route) {
+function PhotosController($scope, VKPhotos, $route, selectedPhotos) {
     VKPhotos.getAlbumPhotos($route.current.params.id).then(function(photos){
         $scope.photos = photos;
     });
     $scope.gridSize = 'o';
+
+    $scope.togglePhoto = function(photo) {
+        if (photo.selected) {
+            selectedPhotos.remove(photo);
+        } else {
+            selectedPhotos.add(photo);
+        }
+    }
 }

@@ -63,5 +63,27 @@ describe("ss.photoSelector", function() {
             expect(scope.gridSize).toBe('o');
         });
 
+        describe('PhotosController.togglePhoto', function() {
+            var selectedPhotos,
+                photo = VK.data['photos.get'].response.items[3];
+
+            beforeEach(inject(function(_selectedPhotos_) {
+                selectedPhotos = _selectedPhotos_;
+                selectedPhotos.set([]);
+            }));
+
+            it('should add photo to selectedPhotos if it is not added', function() {
+                spyOn(selectedPhotos, 'add');
+                scope.togglePhoto(photo);
+                expect(selectedPhotos.add).toHaveBeenCalledWith(photo);
+            });
+
+            it('should remove photo from selectedPhotos if it is already added', function() {
+                selectedPhotos.add(photo);
+                spyOn(selectedPhotos, 'remove');
+                scope.togglePhoto(photo);
+                expect(selectedPhotos.remove).toHaveBeenCalledWith(photo);
+            });
+        });
     });
 });
