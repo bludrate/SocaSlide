@@ -4,9 +4,17 @@
   "dependencies": {},
   "devDependencies": {
     "gulp": "^3.6.0",
+    "gulp-autoprefixer": "2.1.0",
+    "gulp-clean": "^0.3.1",
     "gulp-concat": "^2.4.3",
+    "gulp-minify-html": "0.1.8",
+    "gulp-ng-template": "^0.1.1",
     "gulp-stylus": "^2.0.0",
-    "gulp-webserver": "0.9.0"
+    "gulp-webserver": "0.9.0",
+    "jasmine-core": "^2.2.0",
+    "karma": "^0.12.31",
+    "karma-chrome-launcher": "^0.1.7",
+    "karma-jasmine": "^0.3.5"
   },
   "engines": {
     "node": ">=0.10.0",

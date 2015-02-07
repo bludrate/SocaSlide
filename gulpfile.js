@@ -4,11 +4,16 @@ var gulp = require('gulp');
 var webserver = require('gulp-webserver');
 var stylus = require('gulp-stylus');
 var concat = require('gulp-concat');
+var autoprefixer = require('gulp-autoprefixer');
+var ngTemplate = require('gulp-ng-template');
+var minifyHtml = require('gulp-minify-html');
+var clean = require('gulp-clean');
 
 var jsFilesorder = [
     './vendor/angular.min.js',
     './vendor/angular-animate.min.js',
     './vendor/angular-aria.min.js',
+    './vendor/angular-route.min.js',
     './js/**/*.js',
     '!./js/main.js',
     '!./js/fakeApi.js',
@@ -19,28 +24,51 @@ var jsFilesorder = [
 gulp.task('webserver', function() {
     gulp.src('./')
         .pipe(webserver({
-            livereload: true,
-            open: true,
-            host: '0.0.0.0',
-            filter: function(fileName) {
-                if (fileName.match(/main\.(css|js)/)) { // exclude all source maps from livereload
-                    return true;
-                } else {
-                    return false;
+            livereload: {
+                enable: true,
+                filter: function(fileName) {
+                    return /app\/(css|js)$/.test(fileName) || /(main\.js|main\.css)$/.test(fileName);
                 }
-            }
+            },
+            open: true,
+            host: '0.0.0.0'
         }));
 });
 
-gulp.task('stylus', function () {
-    return gulp.src('./modules/**/*.styl')
+gulp.task('modules_styl', function () {
+    return gulp.src(['./modules/**/*.styl'])
         .pipe(stylus())
         .pipe(gulp.dest('./modules/'));
 });
 
-gulp.task('styles', ['stylus'], function() {
-    gulp.src(['./modules/**/*.css', './vendor/**/*.css'])
+gulp.task('stylus', function () {
+    return gulp.src(['./stylus/main.styl'])
+        .pipe(stylus())
+        .pipe(gulp.dest('./stylus/'));
+});
+
+gulp.task('autoprefixer', function () {
+    return gulp.src('./css/main.css')
+        .pipe(autoprefixer({
+            browsers: ['last 2 versions'],
+            cascade: false
+        }))
+        .pipe(gulp.dest('./css/'));
+});
+
+gulp.task('concat_css', function() {
+    return gulp.src(['./modules/**/*.css', './vendor/**/*.css', './stylus/main.css'])
         .pipe(concat('main.css'))
+        .pipe(gulp.dest('./css/'));
+});
+
+gulp.task('styles', ['stylus', 'modules_styl'], function() {
+    gulp.src(['./modules/**/*.css', './vendor/**/*.css', './stylus/main.css'])
+        .pipe(concat('main.css'))
+        .pipe(autoprefixer({
+            browsers: ['last 2 versions'],
+            cascade: false
+        }))
         .pipe(gulp.dest('./css/'));
 });
 
@@ -50,14 +78,46 @@ gulp.task('js', function() {
         .pipe(gulp.dest('./js/'));
 });
 
+gulp.task('clean', function() {
+    return gulp.src('../public')
+        .pipe(clean({force: true}));
+});
+
+gulp.task('templates', function() {
+    gulp.src(['./**/*.html', '!*.html', '!node_modules/**/*.html'])
+        .pipe(minifyHtml({empty: true, quotes: true}))
+        .pipe(ngTemplate({
+            moduleName: 'templates',
+            standalone: true,
+            filePath: 'templates.js'
+        }))
+        .pipe(gulp.dest('js'));
+});
+
+gulp.task('compile', ['styles', 'templates'], function() {
+    gulp.run('js');
+});
+
+gulp.task('public', ['clean', 'compile'], function() {
+    gulp.src('index.html')
+        .pipe(gulp.dest('../public'));
+
+    gulp.src(['./js/main.js'])
+        .pipe(gulp.dest('../public/js'));
+
+    gulp.src('./fonts/**/*')
+        .pipe(gulp.dest('../public/fonts/'));
+
+    gulp.src('css/main.css')
+        .pipe(gulp.dest('../public/css'));
+});
+
 gulp.task('default', function () {
-    gulp.run(['webserver', 'stylus']);
+    gulp.run(['webserver', 'styles']);
 
-    gulp.watch("**/*.styl", function(){
-        gulp.run('styles');
-    });
+    gulp.watch("**/*.styl", ['styles']);
 
-    gulp.watch(["modules/**/*.js", "js/app.js", 'js/services/*.js'], function() {
-        gulp.run('js');
-    });
+    gulp.watch("modules/**/*.html", ['templates']);
+
+    gulp.watch(["modules/**/*.js", "js/app.js", "js/templates.js"], ['js']);
 });

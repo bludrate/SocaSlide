@@ -18,6 +18,7 @@ module.exports = function(config) {
         './vendor/angular.min.js',
         './vendor/angular-animate.min.js',
         './vendor/angular-aria.min.js',
+        './vendor/angular-route.min.js',
         './js/**/*.js',
         './modules/**/*.js',
 

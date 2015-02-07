@@ -1,7 +1,5 @@
-angular.module('ss.filters', [])
-    .filter('photoSrc', function() {
-        var types = ['s', 'm', 'x', 'o', 'p', 'q', 'y', 'z', 'w'];
-
+angular.module('ss.filters', ['gridSizes'])
+    .filter('photoSrc', function(gridSizes) {
         function searchSize(sizes, type) {
             for (var i = 0; i < sizes.length; i++) {
                 if (sizes[i].type === type) {
@@ -15,7 +13,7 @@ angular.module('ss.filters', [])
                 return ;
             }
 
-            var i = types.indexOf(type);
+            var i = gridSizes.types.indexOf(type);
 
             if (i === -1) {
                 return ;
@@ -23,7 +21,7 @@ angular.module('ss.filters', [])
 
             var size;
             for(; i >= 0; i-- ) {
-                size = searchSize(sizes, types[i]);
+                size = searchSize(sizes, gridSizes.types[i]);
                 if (size) {
                     return size.src;
                 }

@@ -294,11 +294,66 @@ function(a){a=ca(a);f=isNaN(a)?-1:a;e.$validate()});e.$validators.maxlength=func
     f.max&&!b.attr("aria-valuemax")&&b.attr("aria-valuemax",f.max),b.attr("aria-valuenow")||e.$watch(h,function(a){b.attr("aria-valuenow",a)}));break;case "multiline":c("aria-multiline","ariaMultiline",b)&&b.attr("aria-multiline",!0)}m&&b.attr("tabindex",0);d.$validators.required&&c("aria-required","ariaRequired",b)&&e.$watch(function(){return d.$error.required},function(a){b.attr("aria-required",!!a)});c("aria-invalid","ariaInvalid",b)&&e.$watch(function(){return d.$invalid},function(a){b.attr("aria-invalid",
         !!a)})}}}]).directive("ngDisabled",["$aria",function(a){return a.$$watchExpr("ngDisabled","aria-disabled")}]).directive("ngMessages",function(){return{restrict:"A",require:"?ngMessages",link:function(a,c,g,e){c.attr("aria-live")||c.attr("aria-live","assertive")}}}).directive("ngClick",["$aria",function(a){return{restrict:"A",link:function(c,g,e){a.config("tabindex")&&!g.attr("tabindex")&&g.attr("tabindex",0);if(a.config("bindKeypress")&&!g.attr("ng-keypress"))g.on("keypress",function(a){32!==a.keyCode&&
 13!==a.keyCode||c.$eval(e.ngClick)})}}}]).directive("ngDblclick",["$aria",function(a){return function(c,g,e){a.config("tabindex")&&!g.attr("tabindex")&&g.attr("tabindex",0)}}])})(window,window.angular);
-angular.module('ss', ['ss.header', 'ss.photoSelector']);
-angular.module('ss.filters', [])
-    .filter('photoSrc', function() {
-        var types = ['s', 'm', 'x', 'o', 'p', 'q', 'y', 'z', 'w'];
+/*
+ AngularJS v1.3.11
+ (c) 2010-2014 Google, Inc. http://angularjs.org
+ License: MIT
+*/
+(function(p,d,C){'use strict';function v(r,h,g){return{restrict:"ECA",terminal:!0,priority:400,transclude:"element",link:function(a,c,b,f,y){function z(){k&&(g.cancel(k),k=null);l&&(l.$destroy(),l=null);m&&(k=g.leave(m),k.then(function(){k=null}),m=null)}function x(){var b=r.current&&r.current.locals;if(d.isDefined(b&&b.$template)){var b=a.$new(),f=r.current;m=y(b,function(b){g.enter(b,null,m||c).then(function(){!d.isDefined(t)||t&&!a.$eval(t)||h()});z()});l=f.scope=b;l.$emit("$viewContentLoaded");
+l.$eval(w)}else z()}var l,m,k,t=b.autoscroll,w=b.onload||"";a.$on("$routeChangeSuccess",x);x()}}}function A(d,h,g){return{restrict:"ECA",priority:-400,link:function(a,c){var b=g.current,f=b.locals;c.html(f.$template);var y=d(c.contents());b.controller&&(f.$scope=a,f=h(b.controller,f),b.controllerAs&&(a[b.controllerAs]=f),c.data("$ngControllerController",f),c.children().data("$ngControllerController",f));y(a)}}}p=d.module("ngRoute",["ng"]).provider("$route",function(){function r(a,c){return d.extend(Object.create(a),
+c)}function h(a,d){var b=d.caseInsensitiveMatch,f={originalPath:a,regexp:a},g=f.keys=[];a=a.replace(/([().])/g,"\\$1").replace(/(\/)?:(\w+)([\?\*])?/g,function(a,d,b,c){a="?"===c?c:null;c="*"===c?c:null;g.push({name:b,optional:!!a});d=d||"";return""+(a?"":d)+"(?:"+(a?d:"")+(c&&"(.+?)"||"([^/]+)")+(a||"")+")"+(a||"")}).replace(/([\/$\*])/g,"\\$1");f.regexp=new RegExp("^"+a+"$",b?"i":"");return f}var g={};this.when=function(a,c){var b=d.copy(c);d.isUndefined(b.reloadOnSearch)&&(b.reloadOnSearch=!0);
+d.isUndefined(b.caseInsensitiveMatch)&&(b.caseInsensitiveMatch=this.caseInsensitiveMatch);g[a]=d.extend(b,a&&h(a,b));if(a){var f="/"==a[a.length-1]?a.substr(0,a.length-1):a+"/";g[f]=d.extend({redirectTo:a},h(f,b))}return this};this.caseInsensitiveMatch=!1;this.otherwise=function(a){"string"===typeof a&&(a={redirectTo:a});this.when(null,a);return this};this.$get=["$rootScope","$location","$routeParams","$q","$injector","$templateRequest","$sce",function(a,c,b,f,h,p,x){function l(b){var e=s.current;
+(v=(n=k())&&e&&n.$$route===e.$$route&&d.equals(n.pathParams,e.pathParams)&&!n.reloadOnSearch&&!w)||!e&&!n||a.$broadcast("$routeChangeStart",n,e).defaultPrevented&&b&&b.preventDefault()}function m(){var u=s.current,e=n;if(v)u.params=e.params,d.copy(u.params,b),a.$broadcast("$routeUpdate",u);else if(e||u)w=!1,(s.current=e)&&e.redirectTo&&(d.isString(e.redirectTo)?c.path(t(e.redirectTo,e.params)).search(e.params).replace():c.url(e.redirectTo(e.pathParams,c.path(),c.search())).replace()),f.when(e).then(function(){if(e){var a=
+d.extend({},e.resolve),b,c;d.forEach(a,function(b,e){a[e]=d.isString(b)?h.get(b):h.invoke(b,null,null,e)});d.isDefined(b=e.template)?d.isFunction(b)&&(b=b(e.params)):d.isDefined(c=e.templateUrl)&&(d.isFunction(c)&&(c=c(e.params)),c=x.getTrustedResourceUrl(c),d.isDefined(c)&&(e.loadedTemplateUrl=c,b=p(c)));d.isDefined(b)&&(a.$template=b);return f.all(a)}}).then(function(c){e==s.current&&(e&&(e.locals=c,d.copy(e.params,b)),a.$broadcast("$routeChangeSuccess",e,u))},function(b){e==s.current&&a.$broadcast("$routeChangeError",
+e,u,b)})}function k(){var a,b;d.forEach(g,function(f,g){var q;if(q=!b){var h=c.path();q=f.keys;var l={};if(f.regexp)if(h=f.regexp.exec(h)){for(var k=1,m=h.length;k<m;++k){var n=q[k-1],p=h[k];n&&p&&(l[n.name]=p)}q=l}else q=null;else q=null;q=a=q}q&&(b=r(f,{params:d.extend({},c.search(),a),pathParams:a}),b.$$route=f)});return b||g[null]&&r(g[null],{params:{},pathParams:{}})}function t(a,b){var c=[];d.forEach((a||"").split(":"),function(a,d){if(0===d)c.push(a);else{var f=a.match(/(\w+)(?:[?*])?(.*)/),
+g=f[1];c.push(b[g]);c.push(f[2]||"");delete b[g]}});return c.join("")}var w=!1,n,v,s={routes:g,reload:function(){w=!0;a.$evalAsync(function(){l();m()})},updateParams:function(a){if(this.current&&this.current.$$route){var b={},f=this;d.forEach(Object.keys(a),function(c){f.current.pathParams[c]||(b[c]=a[c])});a=d.extend({},this.current.params,a);c.path(t(this.current.$$route.originalPath,a));c.search(d.extend({},c.search(),b))}else throw B("norout");}};a.$on("$locationChangeStart",l);a.$on("$locationChangeSuccess",
+m);return s}]});var B=d.$$minErr("ngRoute");p.provider("$routeParams",function(){this.$get=function(){return{}}});p.directive("ngView",v);p.directive("ngView",A);v.$inject=["$route","$anchorScroll","$animate"];A.$inject=["$compile","$controller","$route"]})(window,window.angular);
 
+angular.module('ss', ['ss.header', 'ss.photoSelector', 'ngRoute', 'templates'])
+    .config(function ($routeProvider, $locationProvider) {
+        $routeProvider
+            .when('/',
+            {
+                templateUrl: "modules/photo-selector/albums.html",
+                controller: "AlbumsController"
+            })
+            .when('/albums/:id',
+            {
+                templateUrl: "modules/photo-selector/photos.html",
+                controller: 'PhotosController'
+            })
+            .otherwise({
+                redirectTo: "/"
+            });
+
+        $locationProvider.html5Mode(true);
+    });
+
+'use strict';
+
+angular.module('templates', []).run(['$templateCache', function($templateCache) {
+
+  $templateCache.put('modules/header/header.html', '<header class="header" layout="row" ng-controller="HeaderController"><a href="/" class="logo">SocaSlide</a></header>');
+
+  $templateCache.put('modules/photo-selector/albums.html', '<grid-size size="gridSize"></grid-size><ul class="album-list album-list_size_{{gridSize}}"><li class="album-list__item" ng-repeat="album in albums" title="{{album.title}}"><a href="/albums/{{album.id}}"><img ng-src="{{album.sizes | photoSrc: gridSize }}"> <span class="album-list__item-title">{{album.title}}</span></a></li></ul>');
+
+  $templateCache.put('modules/photo-selector/photos.html', '<grid-size size="gridSize"></grid-size><ul class="photo-list photo-list_size_{{gridSize}}"><li class="photo-list__item" ng-repeat="photo in photos" title="{{photo.title}}"><img ng-src="{{photo.sizes | photoSrc: gridSize }}"></li></ul>');
+
+  $templateCache.put('modules/directives/grid-size/grid-size.html', '<select ng-model="gridSize"><option value="o">{{names.o}}</option><option value="p">{{names.p}}</option><option value="q">{{names.q}}</option></select>');
+
+}]);
+angular.module('gridSizes', [])
+    .value('gridSizes', {
+        types: ['s', 'm', 'x', 'o', 'p', 'q', 'r', 'y', 'z', 'w'],
+        names: {
+            's': 'S',
+            'o': 'M',
+            'p': 'L',
+            'q': 'XL'
+        }
+    });
+angular.module('ss.filters', ['gridSizes'])
+    .filter('photoSrc', function(gridSizes) {
         function searchSize(sizes, type) {
             for (var i = 0; i < sizes.length; i++) {
                 if (sizes[i].type === type) {
@@ -312,7 +367,7 @@ angular.module('ss.filters', [])
                 return ;
             }
 
-            var i = types.indexOf(type);
+            var i = gridSizes.types.indexOf(type);
 
             if (i === -1) {
                 return ;
@@ -320,9 +375,64 @@ angular.module('ss.filters', [])
 
             var size;
             for(; i >= 0; i-- ) {
-                size = searchSize(sizes, types[i]);
+                size = searchSize(sizes, gridSizes.types[i]);
                 if (size) {
                     return size.src;
+                }
+            }
+        };
+    });
+angular.module('ss.header', [])
+    .controller('HeaderController', HeaderController);
+
+function HeaderController($scope) {
+    $scope.text = "Hello World!!!";
+}
+angular.module('ss.photoSelector', ['vkontakteServices', 'ss.filters', 'ngRoute', 'ss.directives'])
+    .controller('AlbumsController', AlbumsController)
+    .controller('PhotosController', PhotosController);
+
+function AlbumsController($scope, VKPhotos) {
+    $scope.gridSize = 'p';
+    VKPhotos.getAlbums().then(function(albums){
+        $scope.albums = albums;
+    });
+}
+
+function PhotosController($scope, VKPhotos, $route) {
+    VKPhotos.getAlbumPhotos($route.current.params.id).then(function(photos){
+        $scope.photos = photos;
+    });
+    $scope.gridSize = 'o';
+}
+angular.module('ss.services', [])
+    .factory('selectedPhotos', function() {
+        var photos = [];
+
+        return {
+            get: function(index) {
+                if (index) {
+                    return photos[index];
+                } else {
+                    return photos;
+                }
+            },
+
+            set: function(newCollection) {
+                photos = newCollection;
+            },
+
+            add: function() {
+                Array.prototype.push.apply(photos, arguments);
+            },
+
+            remove: function() {
+                var index;
+                for (var i = 0; i < arguments.length; i++) {
+                    index = photos.indexOf(arguments[i]);
+                    if (index !== -1) {
+                        photos.splice(index, 1);
+                    }
                 }
             }
         };
@@ -394,17 +504,18 @@ angular.module('vkontakteServices', [])
             getAlbumPhotos: getAlbumPhotos
         };
     });
-angular.module('ss.photoSelector', ['vkontakteServices', 'ss.filters'])
-    .controller('PhotoSelectorController', PhotoSelectorController);
-
-function PhotoSelectorController($scope, VKPhotos) {
-    VKPhotos.getAlbums().then(function(albums){
-        $scope.albums = albums;
+angular.module('ss.directives', ['gridSizes', 'templates'])
+    .directive('gridSize', function() {
+        return {
+            restrict: 'E',
+            replace: true,
+            scope: {
+                gridSize: '=size',
+                sizes: '@'
+            },
+            templateUrl: "modules/directives/grid-size/grid-size.html",
+            controller: function($scope, gridSizes) {
+                $scope.names = gridSizes.names;
+            }
+        }
     });
-}
-angular.module('ss.header', [])
-    .controller('HeaderController', HeaderController);
-
-function HeaderController($scope) {
-    $scope.text = "Hello World!!!";
-}
