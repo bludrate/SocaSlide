@@ -15,6 +15,7 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
+        './vendor/parse-1.3.4.min.js',
         './vendor/angular.min.js',
         './vendor/angular-animate.min.js',
         './vendor/angular-aria.min.js',
