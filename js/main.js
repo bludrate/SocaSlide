@@ -269,7 +269,7 @@ e,u,b)})}function k(){var a,b;d.forEach(g,function(f,g){var q;if(q=!b){var h=c.p
 g=f[1];c.push(b[g]);c.push(f[2]||"");delete b[g]}});return c.join("")}var w=!1,n,v,s={routes:g,reload:function(){w=!0;a.$evalAsync(function(){l();m()})},updateParams:function(a){if(this.current&&this.current.$$route){var b={},f=this;d.forEach(Object.keys(a),function(c){f.current.pathParams[c]||(b[c]=a[c])});a=d.extend({},this.current.params,a);c.path(t(this.current.$$route.originalPath,a));c.search(d.extend({},c.search(),b))}else throw B("norout");}};a.$on("$locationChangeStart",l);a.$on("$locationChangeSuccess",
 m);return s}]});var B=d.$$minErr("ngRoute");p.provider("$routeParams",function(){this.$get=function(){return{}}});p.directive("ngView",v);p.directive("ngView",A);v.$inject=["$route","$anchorScroll","$animate"];A.$inject=["$compile","$controller","$route"]})(window,window.angular);
 
-angular.module('ss', ['ss.header', 'ss.photoSelector', 'ngRoute', 'templates', 'ss.timeline'])
+angular.module('ss', ['ss.header', 'ss.photoSelector', 'ngRoute', 'templates', 'ss.timeline', 'ss.player'])
     .config(function ($routeProvider, $locationProvider) {
         $routeProvider
             .when('/',
@@ -281,6 +281,10 @@ angular.module('ss', ['ss.header', 'ss.photoSelector', 'ngRoute', 'templates', '
             {
                 templateUrl: "modules/photo-selector/photos.html",
                 controller: 'PhotosController'
+            })
+            .when('/slideshow/:id', {
+                templateUrl: 'modules/player/player.html',
+                controller: 'PlayerController'
             })
             .otherwise({
                 redirectTo: "/"
@@ -295,11 +299,13 @@ angular.module('templates', []).run(['$templateCache', function($templateCache) 
 
   $templateCache.put('modules/header/header.html', '<header class="header" layout="row" ng-controller="HeaderController"><a href="/" class="logo">SocaSlide</a></header>');
 
-  $templateCache.put('modules/timeline/timeline.html', '<div class="timeline" ng-controller="framesController"><ul class="frame-list"><li class="frame-list__item" ng-repeat="frame in frames" title="{{frame.title}}" ng-click="removeFrame(frame)"><img ng-src="{{frame.sizes | photoSrc: \'o\' }}"></li></ul><button class="create-slideshow" ng-click="saveSlideshow"></button></div>');
+  $templateCache.put('modules/photo-selector/albums.html', '<grid-size size="gridSize"></grid-size><ul class="album-list album-list_size_{{gridSize}}"><li class="album-list__item" ng-repeat="album in albums track by album.id" title="{{album.title}}"><a href="/albums/{{album.id}}"><img ng-src="{{album.sizes | photoSrc: gridSize }}"> <span class="album-list__item-title">{{album.title}}</span></a></li></ul>');
 
-  $templateCache.put('modules/photo-selector/albums.html', '<grid-size size="gridSize"></grid-size><ul class="album-list album-list_size_{{gridSize}}"><li class="album-list__item" ng-repeat="album in albums" title="{{album.title}}"><a href="/albums/{{album.id}}"><img ng-src="{{album.sizes | photoSrc: gridSize }}"> <span class="album-list__item-title">{{album.title}}</span></a></li></ul>');
+  $templateCache.put('modules/photo-selector/photos.html', '<grid-size size="gridSize"></grid-size><ul class="photo-list photo-list_size_{{gridSize}}"><li class="photo-list__item" ng-class="{selected: photo.selected}" ng-repeat="photo in photos track by photo.id" title="{{photo.title}}" ng-click="togglePhoto(photo)"><img ng-src="{{photo.sizes | photoSrc: gridSize }}"></li></ul>');
 
-  $templateCache.put('modules/photo-selector/photos.html', '<grid-size size="gridSize"></grid-size><ul class="photo-list photo-list_size_{{gridSize}}"><li class="photo-list__item" ng-class="{selected: photo.selected}" ng-repeat="photo in photos" title="{{photo.title}}" ng-click="togglePhoto(photo)"><img ng-src="{{photo.sizes | photoSrc: gridSize }}"></li></ul>');
+  $templateCache.put('modules/player/player.html', '<player-canvas></player-canvas>');
+
+  $templateCache.put('modules/timeline/timeline.html', '<div class="timeline" ng-controller="framesController"><ul class="frame-list"><li class="frame-list__item" ng-repeat="frame in frames track by frame.id" title="{{frame.title}}" ng-click="removeFrame(frame)"><img ng-src="{{frame.sizes | photoSrc: \'o\' }}"></li></ul><button class="create-slideshow" ng-click="saveSlideshow()"></button></div>');
 
   $templateCache.put('modules/directives/grid-size/grid-size.html', '<select ng-model="gridSize"><option value="o">{{names.o}}</option><option value="p">{{names.p}}</option><option value="q">{{names.q}}</option></select>');
 
@@ -375,6 +381,12 @@ function PhotosController($scope, VKPhotos, $route, selectedPhotos) {
         }
     }
 }
+angular.module('ss.player', ['parseServices'])
+    .controller('PlayerController', function($scope, slideshowService, $route) {
+        slideshowService.getSlideshow($route.current.params.id).then(function(data) {
+            console.log(data.get('frames'));
+        });
+    });
 angular.module('parseServices', [])
     .constant('config', {
         appId: "d95PTnwnQvQCj49xf9AUMgXpbSEIl78rVDUg55X0",
@@ -391,7 +403,7 @@ angular.module('parseServices', [])
         }
 
         function getSlideshow(id) {
-            var query = new (Parse.Query(Slideshow));
+            var query = new Parse.Query(Slideshow);
             return query.get(id);
         }
 
@@ -511,7 +523,7 @@ angular.module('vkontakteServices', [])
         };
     });
 angular.module('ss.timeline', ['ss.services', 'parseServices'])
-    .controller('framesController', function($scope, selectedPhotos, slideshowService) {
+    .controller('framesController', function($scope, $location, $rootScope, selectedPhotos, slideshowService) {
         $scope.frames = selectedPhotos.get();
 
         $scope.removeFrame = function(frame) {
@@ -521,6 +533,11 @@ angular.module('ss.timeline', ['ss.services', 'parseServices'])
         $scope.saveSlideshow = function() {
             slideshowService.saveNewSlideshow({
                 frames: $scope.frames
+            }).then(function(slideshow) {
+                $rootScope.$apply(function() {
+                    var path = '/slideshow/' + slideshow.id;
+                    $location.path(path);
+                });
             });
         };
     });
@@ -537,5 +554,16 @@ angular.module('ss.directives', ['gridSizes', 'templates'])
             controller: function($scope, gridSizes) {
                 $scope.names = gridSizes.names;
             }
+        }
+    });
+
+angular.module('ss.player')
+    .directive('player-canvas', function() {
+        return {};
+    });
+angular.module('ss.player')
+    .directive('playerControls', function() {
+        return  {
+
         }
     });

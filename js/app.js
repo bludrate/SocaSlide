@@ -1,4 +1,4 @@
-angular.module('ss', ['ss.header', 'ss.photoSelector', 'ngRoute', 'templates', 'ss.timeline'])
+angular.module('ss', ['ss.header', 'ss.photoSelector', 'ngRoute', 'templates', 'ss.timeline', 'ss.player'])
     .config(function ($routeProvider, $locationProvider) {
         $routeProvider
             .when('/',
@@ -10,6 +10,10 @@ angular.module('ss', ['ss.header', 'ss.photoSelector', 'ngRoute', 'templates', '
             {
                 templateUrl: "modules/photo-selector/photos.html",
                 controller: 'PhotosController'
+            })
+            .when('/slideshow/:id', {
+                templateUrl: 'modules/player/player.html',
+                controller: 'PlayerController'
             })
             .otherwise({
                 redirectTo: "/"

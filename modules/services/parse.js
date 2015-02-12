@@ -14,7 +14,7 @@ angular.module('parseServices', [])
         }
 
         function getSlideshow(id) {
-            var query = new (Parse.Query(Slideshow));
+            var query = new Parse.Query(Slideshow);
             return query.get(id);
         }
 
