@@ -17,10 +17,9 @@ module.exports = function(config) {
     files: [
         './vendor/parse-1.3.4.min.js',
         './vendor/angular.min.js',
-        './vendor/angular-animate.min.js',
-        './vendor/angular-aria.min.js',
         './vendor/angular-route.min.js',
         './js/**/*.js',
+        './modules/*/*.js',
         './modules/**/*.js',
 
         './tests/vendor/**/*.js',

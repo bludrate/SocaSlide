@@ -32,7 +32,8 @@ gulp.task('webserver', function() {
                 }
             },
             open: true,
-            host: '0.0.0.0'
+            host: '0.0.0.0',
+            fallback: 'index.html'
         }));
 });
 

@@ -18,21 +18,17 @@ describe('parseServices', function() {
             };
 
         beforeEach(function() {
-            function Fake() {}
+            function FakeExtend() {}
 
-            Fake.prototype.set = function() {};
-            Fake.prototype.save = function() {};
+            FakeExtend.prototype.set = function() {};
+            FakeExtend.prototype.save = function() {};
 
             spyOn(Parse.Object, 'extend').and.callFake(function(){
-                return Fake;
+                return FakeExtend;
             });
 
-            function Fake() {}
-
-            Fake.prototype.get = getSpy;
-
             spyOn(Parse, 'Query').and.callFake(function() {
-                return Fake;
+                this.get = getSpy;
             });
         });
 
