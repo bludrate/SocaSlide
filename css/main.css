@@ -261,6 +261,54 @@ header {
   }
 }
 
+.player:-webkit-full-screen {
+  width: 100%;
+  background: #000;
+  text-align: center;
+}
+
+.player:-moz-full-screen {
+  width: 100%;
+  background: #000;
+  text-align: center;
+}
+
+.player:-ms-fullscreen {
+  width: 100%;
+  background: #000;
+  text-align: center;
+}
+
+.player:fullscreen {
+  width: 100%;
+  background: #000;
+  text-align: center;
+}
+
+.player:-webkit-full-screen canvas {
+  width: 100%;
+  max-height: 100%;
+  vertical-align: top;
+}
+
+.player:-moz-full-screen canvas {
+  width: 100%;
+  max-height: 100%;
+  vertical-align: top;
+}
+
+.player:-ms-fullscreen canvas {
+  width: 100%;
+  max-height: 100%;
+  vertical-align: top;
+}
+
+.player:fullscreen canvas {
+  width: 100%;
+  max-height: 100%;
+  vertical-align: top;
+}
+
 @font-face {
   font-family: 'icon-font';
   src: url("../fonts/Material-Design-Iconic-Font.eot?v=1.0.1");

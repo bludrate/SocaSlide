@@ -7,7 +7,7 @@ angular.module('ss.player')
                 images: '=',
                 slideTime: '@'
             },
-            templateUrl: 'modules/player/directives/player-canvas.html',
+            templateUrl: 'modules/player/directives/player-canvas/player-canvas.html',
             controller: PlayerCanvasController,
 
             link: function(scope, element) {
@@ -65,15 +65,15 @@ function PlayerCanvasController($scope, defaultPlayType) {
     $scope.$watch('images', init);
 
     function init() {
-        console.log($scope.images)
         self.pausedAt = 0;
         self.played = false;
         self.slideTime = $scope.slideTime || 3000;
 
         defaultPlayType.init(self.slideTime);
 
-        if ($scope.images && $scope.images.length)
+        if ($scope.images && $scope.images.length) {
             self.play();
+        }
     }
 
     function render(currentSlideTime) {
@@ -151,5 +151,7 @@ function PlayerCanvasController($scope, defaultPlayType) {
         play: play,
         pause: pause,
         stop: stop
-    })
+    });
+
+
 }

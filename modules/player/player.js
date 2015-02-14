@@ -17,4 +17,8 @@ angular.module('ss.player', ['parseServices', 'templates', 'ss.filters'])
                 });
             }, 1000);
         });
+
+        $scope.fullScreen = function(event) {
+            event.currentTarget.webkitRequestFullScreen();
+        }
     });

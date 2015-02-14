@@ -303,13 +303,13 @@ angular.module('templates', []).run(['$templateCache', function($templateCache) 
 
   $templateCache.put('modules/photo-selector/photos.html', '<grid-size size="gridSize"></grid-size><ul class="photo-list photo-list_size_{{gridSize}}"><li class="photo-list__item" ng-class="{selected: photo.selected}" ng-repeat="photo in photos track by photo.id" title="{{photo.title}}" ng-click="togglePhoto(photo)"><img ng-src="{{photo.sizes | photoSrc: gridSize }}"></li></ul>');
 
-  $templateCache.put('modules/player/player.html', '<player-canvas images="images"></player-canvas>');
+  $templateCache.put('modules/player/player.html', '<div class="player" ng-click="fullScreen($event)"><player-canvas images="images"></player-canvas></div>');
 
   $templateCache.put('modules/timeline/timeline.html', '<div class="timeline" ng-controller="framesController"><ul class="frame-list"><li class="frame-list__item" ng-repeat="frame in frames track by frame.id" title="{{frame.title}}" ng-click="removeFrame(frame)"><img ng-src="{{frame.sizes | photoSrc: \'o\' }}"></li></ul><button class="create-slideshow" ng-click="saveSlideshow()"></button></div>');
 
   $templateCache.put('modules/directives/grid-size/grid-size.html', '<select ng-model="gridSize"><option value="o">{{names.o}}</option><option value="p">{{names.p}}</option><option value="q">{{names.q}}</option></select>');
 
-  $templateCache.put('modules/player/directives/player-canvas.html', '<canvas width="{{cWidth}}" height="{{cHeight}}"></canvas>');
+  $templateCache.put('modules/player/directives/player-canvas/player-canvas.html', '<canvas width="{{cWidth}}" height="{{cHeight}}"></canvas>');
 
 }]);
 angular.module('gridSizes', [])
@@ -402,6 +402,10 @@ angular.module('ss.player', ['parseServices', 'templates', 'ss.filters'])
                 });
             }, 1000);
         });
+
+        $scope.fullScreen = function(event) {
+            event.currentTarget.webkitRequestFullScreen();
+        }
     });
 angular.module('parseServices', [])
     .constant('config', {
@@ -574,6 +578,12 @@ angular.module('ss.directives', ['gridSizes', 'templates'])
     });
 
 angular.module('ss.player')
+    .directive('playerControls', function() {
+        return  {
+
+        }
+    });
+angular.module('ss.player')
     .directive('playerCanvas', function() {
         return {
             restrict: 'E',
@@ -582,7 +592,7 @@ angular.module('ss.player')
                 images: '=',
                 slideTime: '@'
             },
-            templateUrl: 'modules/player/directives/player-canvas.html',
+            templateUrl: 'modules/player/directives/player-canvas/player-canvas.html',
             controller: PlayerCanvasController,
 
             link: function(scope, element) {
@@ -640,15 +650,15 @@ function PlayerCanvasController($scope, defaultPlayType) {
     $scope.$watch('images', init);
 
     function init() {
-        console.log($scope.images)
         self.pausedAt = 0;
         self.played = false;
         self.slideTime = $scope.slideTime || 3000;
 
         defaultPlayType.init(self.slideTime);
 
-        if ($scope.images && $scope.images.length)
+        if ($scope.images && $scope.images.length) {
             self.play();
+        }
     }
 
     function render(currentSlideTime) {
@@ -726,11 +736,7 @@ function PlayerCanvasController($scope, defaultPlayType) {
         play: play,
         pause: pause,
         stop: stop
-    })
-}
-angular.module('ss.player')
-    .directive('playerControls', function() {
-        return  {
-
-        }
     });
+
+
+}
