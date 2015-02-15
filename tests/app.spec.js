@@ -6,8 +6,11 @@ describe('testing routes', function() {
         expect($route.routes['/albums/:id']).toBeDefined();
         expect($route.routes['/slideshow/:id']).toBeDefined();
 
-        expect($route.routes['/'].controller).toBe('AlbumsController');
-        expect($route.routes['/'].templateUrl).toBe('modules/photo-selector/albums.html');
+        expect($route.routes['/sound'].controller).toBe('SoundController');
+        expect($route.routes['/sound'].templateUrl).toBe('modules/sound-selector/sound-selector.html');
+
+        expect($route.routes['/albums'].controller).toBe('AlbumsController');
+        expect($route.routes['/albums'].templateUrl).toBe('modules/photo-selector/albums.html');
 
         expect($route.routes['/albums/:id'].controller).toBe('PhotosController');
         expect($route.routes['/albums/:id'].templateUrl).toBe('modules/photo-selector/photos.html');
@@ -16,5 +19,13 @@ describe('testing routes', function() {
         expect($route.routes['/slideshow/:id'].templateUrl).toBe('modules/player/player.html');
 
         expect($route.routes[null].redirectTo).toBe('/');
+    }));
+
+    it('should set routes names', inject(function($route){
+        expect($route.routes['/'].name).toBe('home');
+        expect($route.routes['/albums'].name).toBe('albums');
+        expect($route.routes['/albums/:id'].name).toBe('album');
+        expect($route.routes['/slideshow/:id'].name).toBe('slideshow');
+        expect($route.routes['/sound'].name).toBe('sound');
     }));
 });

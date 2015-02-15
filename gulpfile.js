@@ -12,9 +12,8 @@ var clean = require('gulp-clean');
 var jsFilesorder = [
     './vendor/parse-1.3.4.min.js',
     './vendor/angular.min.js',
-    './vendor/angular-animate.min.js',
-    './vendor/angular-aria.min.js',
     './vendor/angular-route.min.js',
+    './vendor/angular-route-segment.min.js',
     './js/**/*.js',
     '!./js/main.js',
     '!./js/fakeApi.js',
@@ -89,7 +88,7 @@ gulp.task('templates', function() {
     gulp.src(['./**/*.html', '!*.html', '!node_modules/**/*.html'])
         .pipe(minifyHtml({empty: true, quotes: true}))
         .pipe(ngTemplate({
-            moduleName: 'templates',
+            moduleName: 'ss.templates',
             standalone: true,
             filePath: 'templates.js'
         }))

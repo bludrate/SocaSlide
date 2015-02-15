@@ -18,6 +18,7 @@ module.exports = function(config) {
         './vendor/parse-1.3.4.min.js',
         './vendor/angular.min.js',
         './vendor/angular-route.min.js',
+        './vendor/angular-route-segment.min.js',
         './js/**/*.js',
         './modules/*/*.js',
         './modules/**/*.js',

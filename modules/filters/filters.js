@@ -1,4 +1,4 @@
-angular.module('ss.filters', ['gridSizes'])
+angular.module('ss.filters', ['ss.gridSizes'])
     .filter('photoSrc', function(gridSizes) {
         function searchSize(sizes, type) {
             for (var i = 0; i < sizes.length; i++) {

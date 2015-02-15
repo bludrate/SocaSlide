@@ -1,4 +1,4 @@
-angular.module('ss.player', ['parseServices', 'templates', 'ss.filters'])
+angular.module('ss.player', ['parseServices', 'ss.templates', 'ss.filters'])
     .controller('PlayerController', function($scope, slideshowService, $route, $filter) {
         slideshowService.getSlideshow($route.current.params.id).then(function(data) {
             var frames = data.get('frames'),

@@ -1,7 +1,7 @@
 <grid-size size="gridSize"></grid-size>
 <ul class="album-list album-list_size_{{gridSize}}">
     <li class="album-list__item" ng-repeat="album in albums track by album.id" title="{{album.title}}">
-        <a href="/albums/{{album.id}}">
+        <a href="/create/albums/{{album.id}}">
             <img ng-src="{{album.sizes | photoSrc: gridSize }}"/>
             <span class="album-list__item-title">{{album.title}}</span>
         </a>

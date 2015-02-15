@@ -1,4 +1,4 @@
-angular.module('ss.directives', ['gridSizes', 'templates'])
+angular.module('ss.directives', ['ss.gridSizes', 'ss.templates'])
     .directive('gridSize', function() {
         return {
             restrict: 'E',

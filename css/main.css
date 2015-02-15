@@ -8,6 +8,18 @@ header {
   font: 42px/50px 'Architects Daughter', cursive;
   text-decoration: none;
   float: left;
+  margin-right: 50px;
+}
+.step {
+  display: inline-block;
+  color: #fff;
+  font-size: 20px;
+  line-height: 50px;
+  margin: 0 20px 0 0;
+  text-decoration: none;
+}
+.step.active {
+  color: #346bff;
 }
 
 .timeline {

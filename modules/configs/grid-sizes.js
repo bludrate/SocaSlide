@@ -1,4 +1,4 @@
-angular.module('gridSizes', [])
+angular.module('ss.gridSizes', [])
     .value('gridSizes', {
         types: ['s', 'm', 'x', 'o', 'p', 'q', 'r', 'y', 'z', 'w'],
         names: {

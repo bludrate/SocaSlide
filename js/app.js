@@ -1,23 +1,42 @@
-angular.module('ss', ['ss.header', 'ss.photoSelector', 'ngRoute', 'templates', 'ss.timeline', 'ss.player'])
-    .config(function ($routeProvider, $locationProvider) {
-        $routeProvider
-            .when('/',
-            {
-                templateUrl: "modules/photo-selector/albums.html",
-                controller: "AlbumsController"
+angular.module('ss', ['ngRoute', 'route-segment', 'view-segment', 'ss.header', 'ss.photoSelector', 'ss.templates', 'ss.timeline', 'ss.player'])
+    .config(function ($routeProvider, $routeSegmentProvider, $locationProvider) {
+        $routeSegmentProvider
+            .when('/', 'home')
+            .when('/create', 'create')
+            .when('/create/albums', 'create.albums')
+            .when('/create/albums/:id', 'create.album')
+            .when('/slideshow/:id', 'slideshow')
+
+            .segment('home', {
+                default: true,
+                templateUrl: 'pages/home-page/home-page.html'
             })
-            .when('/albums/:id',
-            {
-                templateUrl: "modules/photo-selector/photos.html",
-                controller: 'PhotosController'
+
+            .segment('create', {
+                templateUrl: 'pages/create-page/create-page.html'
             })
-            .when('/slideshow/:id', {
+            .within()
+
+                .segment('albums', {
+                    default: true,
+                    templateUrl: 'modules/photo-selector/albums.html',
+                    controller: 'AlbumsController'
+                })
+
+                .segment('album', {
+                    templateUrl: 'modules/photo-selector/photos.html',
+                    controller: 'PhotosController',
+                    dependencies: ['id']
+                })
+
+            .up()
+            .segment('slideshow', {
                 templateUrl: 'modules/player/player.html',
-                controller: 'PlayerController'
-            })
-            .otherwise({
-                redirectTo: "/"
+                controller: 'PlayerController',
+                dependencies: ['id']
             });
+
+        $routeProvider.otherwise({redirectTo: '/'});
 
         $locationProvider.html5Mode(true);
     });
