@@ -276,7 +276,7 @@ m);return s}]});var B=d.$$minErr("ngRoute");p.provider("$routeParams",function()
  * @license MIT License http://opensource.org/licenses/MIT
  */
 "use strict";!function(a){var b=a.module("route-segment",[]);b.provider("$routeSegment",["$routeProvider",function(b){function c(a){return a.replace(/([\:\-\_]+(.))/g,function(a,b,c,d){return d?c.toUpperCase():c})}function d(a,b){if(!a)throw new Error("Invalid pointer segment");var e;return{segment:function(b,d){return a[c(b)]={params:d},e=b,this},within:function(b){var g;if(b=b||e,g=a[c(b)])void 0==g.children&&(g.children={});else{if(f.strictMode)throw new Error("Cannot get into unknown `"+b+"` segment");g=a[c(b)]={params:{},children:{}}}return d(g.children,this)},up:function(){return b},root:function(){return h}}}var e=this,f=e.options={autoLoadTemplates:!0,strictMode:!1},g=this.segments={},h=d(g,null),i={};e.when=function(a,c){return b.when(a,{segment:c}),i[c]=a,this},a.extend(e,h),this.$get=["$rootScope","$q","$http","$templateCache","$route","$routeParams","$injector",function(b,d,e,h,j,k,l){function m(b){var c=!1;return b.params.dependencies&&a.forEach(b.params.dependencies,function(b){a.equals(r.$routeParams[b],k[b])||(c=!0)}),c}function n(a,b){return r.chain[a]&&r.chain[a].clearWatcher&&r.chain[a].clearWatcher(),b?(s[a]=b.name,b.params.untilResolved?o(a,b.name,b.params.untilResolved).then(function(c){return void 0!=c.success&&p(a),o(a,b.name,b.params)}):o(a,b.name,b.params)):(s[a]=null,void p(a))}function o(c,g,i){var j=a.extend({},i.resolve);return a.forEach(j,function(b,c){j[c]=a.isString(b)?l.get(b):l.invoke(b)}),i.template&&(j.$template=i.template,a.isFunction(j.$template)&&(j.$template=l.invoke(j.$template))),f.autoLoadTemplates&&i.templateUrl&&(j.$template=i.templateUrl,a.isFunction(j.$template)&&(j.$template=l.invoke(j.$template)),j.$template=e.get(j.$template,{cache:h}).then(function(a){return a.data})),d.all(j).then(function(e){if(s[c]!=g)return d.reject();if(r.chain[c]={name:g,params:i,locals:e,reload:function(){var a=q(c,r.name.split("."));n(c,a).then(function(a){void 0!=a.success&&p(c)})}},i.watcher){var f=function(){if(!a.isFunction(i.watcher)&&!a.isArray(i.watcher))throw new Error("Watcher is not a function in segment `"+g+"`");return l.invoke(i.watcher,{},{segment:r.chain[c]})},h=f();r.chain[c].clearWatcher=b.$watch(f,function(a){a!=h&&(h=a,r.chain[c].reload())})}return{success:c}},function(b){if(i.resolveFailed){var e={error:function(){return d.when(b)}};return o(c,g,a.extend({resolve:e},i.resolveFailed))}throw new Error("Resolving failed with a reason `"+b+"`, but no `resolveFailed` provided for segment `"+g+"`")})}function p(c){r.$routeParams=a.copy(k),r.name="";for(var d=0;d<r.chain.length;d++)r.chain[d]&&(r.name+=r.chain[d].name+".");r.name=r.name.substr(0,r.name.length-1),b.$broadcast("routeSegmentChange",{index:c,segment:r.chain[c]||null})}function q(a,b){if(!b)return null;if(a>=b.length)return null;for(var d,e=g,f=0;a>=f;f++)d=b[f],void 0!=e[c(d)]&&(e=e[c(d)]),a>f&&(e=e.children);return{name:d,params:e.params,children:e.children}}var r={name:"",$routeParams:a.copy(k),chain:[],startsWith:function(a){var b=new RegExp("^"+a);return b.test(r.name)},contains:function(a){for(var b=0;b<this.chain.length;b++)if(this.chain[b]&&this.chain[b].name==a)return!0;return!1},getSegmentUrl:function(b,c){var d,e,f;if(!i[b])throw new Error("Can not get URL for segment with name `"+b+"`");c=a.extend({},k,c||{}),d=i[b];for(e in c){var g=new RegExp(":"+e+"[*?]?","g");d=d.replace(g,c[e])}if(d=d.replace(/\/\:.*?\?/g,""),f=d.match(/\/\:([^\/]*)/))throw new Error("Route param `"+f[1]+"` is not specified for route `"+i[b]+"`");return d}},s={};return b.$on("$routeChangeSuccess",function(a,b){var c=b.$route||b.$$route;if(c&&c.segment){for(var e=c.segment,f=e.split("."),g=[],h=-1,i=0;i<f.length;i++){var j=q(i,f);(s[i]!=j.name||g.length>0||m(j))&&(r.chain[i]&&r.chain[i].name==j.name&&0==g.length&&!m(j)?s[i]=j.name:(g.push({index:i,newSegment:j}),h=i))}var k=d.when();if(g.length>0)for(var i=0;i<g.length;i++)!function(a){k=k.then(function(){return n(g[a].index,g[a].newSegment)}).then(function(b){if(void 0!=b.success){p(b.success);for(var c=g[a].index+1;c<r.chain.length;c++)r.chain[c]&&(r.chain[c]=null,n(c,null))}})}(i);k.then(function(){if(r.chain.length>f.length){var a=r.chain.length,b=r.chain.length-f.length;r.chain.splice(-b,b);for(var c=f.length;a>c;c++)n(c,null),h=r.chain.length-1}}).then(function(){var a=d.when();if(h==r.chain.length-1)for(var b=q(h,r.name.split("."));b;){var c=b.children,e=h+1;b=null;for(var f in c)!function(c,d,e){d[c].params["default"]&&(a=a.then(function(){return n(e,{name:c,params:d[c].params}).then(function(a){a.success&&p(a.success)})}),b=d[c],h=e)}(f,c,e)}return a})}}),r}]}]),b.filter("routeSegmentUrl",["$routeSegment",function(a){var b=function(b,c){return a.getSegmentUrl(b,c)};return b.$stateful=!0,b}]),b.filter("routeSegmentEqualsTo",["$routeSegment",function(a){var b=function(b){return a.name==b};return b.$stateful=!0,b}]),b.filter("routeSegmentStartsWith",["$routeSegment",function(a){var b=function(b){return a.startsWith(b)};return b.$stateful=!0,b}]),b.filter("routeSegmentContains",["$routeSegment",function(a){var b=function(b){return a.contains(b)};return b.$stateful=!0,b}]),b.filter("routeSegmentParam",["$routeSegment",function(a){var b=function(b){return a.$routeParams[b]};return b.$stateful=!0,b}])}(angular),function(a){a.module("view-segment",["route-segment"]).directive("appViewSegment",["$route","$compile","$controller","$routeParams","$routeSegment","$q","$injector","$timeout",function(b,c,d,e,f,g,h,i){return{restrict:"ECA",priority:500,compile:function(b,e){var g=b.html(),j=!0,k=a.element(document.createComment(" view-segment "));return b.prepend(k),function(l){function m(){p&&(r.leave(p),p=null),o&&(o.$destroy(),o=null)}function n(e){if(q=e,j&&(j=!1,b.replaceWith(k)),!e)return m(),p=b.clone(),p.html(g),r.enter(p,null,k),void c(p,!1,499)(l);var f=a.extend({},e.locals),h=f&&f.$template;m(),p=b.clone(),p.html(h?h:g),r.enter(p,null,k);var i,n=c(p,!1,499);o=l.$new(),e.params.controller&&(f.$scope=o,i=d(e.params.controller,f),e.params.controllerAs&&(o[e.params.controllerAs]=i),p.data("$ngControllerController",i),p.children().data("$ngControllerController",i)),n(o),o.$emit("$viewContentLoaded"),o.$eval(t)}var o,p,q,r,s,t=e.onload||"",u=parseInt(e.appViewSegment);try{var v=h.get("$animator");r=v(l,e)}catch(w){}try{r=h.get("$animate")}catch(w){}f.chain[u]&&(s=i(function(){n(f.chain[u])},0)),l.$on("routeSegmentChange",function(a,b){s&&i.cancel(s),b.index==u&&q!=b.segment&&n(b.segment)})}}}}])}(angular);
-angular.module('ss', ['ngRoute', 'route-segment', 'view-segment', 'ss.header', 'ss.photoSelector', 'ss.templates', 'ss.timeline', 'ss.player'])
+angular.module('ss', ['ngRoute', 'ss.audioSelector', 'route-segment', 'view-segment', 'ss.header', 'ss.photoSelector', 'ss.templates', 'ss.timeline', 'ss.player'])
     .config(function ($routeProvider, $routeSegmentProvider, $locationProvider) {
         $routeSegmentProvider
             .when('/', 'home')
@@ -323,19 +323,19 @@ angular.module('ss', ['ngRoute', 'route-segment', 'view-segment', 'ss.header', '
 
 angular.module('ss.templates', []).run(['$templateCache', function($templateCache) {
 
-  $templateCache.put('modules/header/header.html', '<header class="header"><a href="/" active-link="home" class="logo">SocaSlide</a></header>');
+  $templateCache.put('modules/audio-selector/audio-selector.html', '<section class="audio-selector" ng-controller="AudiosController"><header class="audio-selector__header"><h2 class="audio-selector__title">Choice audio</h2><input type="text" ng-model="search" class="audio-filter"></header><ul class="audio-list"><li class="audio-list__item" ng-repeat="audio in audios | filter:search track by audio.id" title="{{audio.artist + \'-\' + audio.title}}" ng-click="toggleAudio(audio)">{{audio.artist + \'-\' + audio.title}}</li></ul></section>');
 
   $templateCache.put('modules/photo-selector/albums.html', '<grid-size size="gridSize"></grid-size><ul class="album-list album-list_size_{{gridSize}}"><li class="album-list__item" ng-repeat="album in albums track by album.id" title="{{album.title}}"><a href="/create/albums/{{album.id}}"><img ng-src="{{album.sizes | photoSrc: gridSize }}"> <span class="album-list__item-title">{{album.title}}</span></a></li></ul>');
 
   $templateCache.put('modules/photo-selector/photos.html', '<grid-size size="gridSize"></grid-size><ul class="photo-list photo-list_size_{{gridSize}}"><li class="photo-list__item" ng-class="{selected: photo.selected}" ng-repeat="photo in photos track by photo.id" title="{{photo.title}}" ng-click="togglePhoto(photo)"><img ng-src="{{photo.sizes | photoSrc: gridSize }}"></li></ul>');
 
-  $templateCache.put('modules/player/player.html', '<div class="player" ng-click="fullScreen($event)"><player-canvas images="images"></player-canvas></div>');
+  $templateCache.put('modules/header/header.html', '<header class="header"><a href="/" active-link="home" class="logo">SocaSlide</a></header>');
 
-  $templateCache.put('modules/sound-selector/sound-selector.html', '');
+  $templateCache.put('modules/player/player.html', '<div class="player" ng-click="fullScreen($event)"><player-canvas images="images"></player-canvas></div>');
 
   $templateCache.put('modules/timeline/timeline.html', '<div class="timeline" ng-controller="framesController"><ul class="frame-list"><li class="frame-list__item" ng-repeat="frame in frames track by frame.id" title="{{frame.title}}" ng-click="removeFrame(frame)"><img ng-src="{{frame.sizes | photoSrc: \'o\' }}"></li></ul><button class="create-slideshow" ng-click="saveSlideshow()"></button></div>');
 
-  $templateCache.put('pages/create-page/create-page.html', '<section app-view-segment="1"></section><ng-include src="\'modules/timeline/timeline.html\'"></ng-include>');
+  $templateCache.put('pages/create-page/create-page.html', '<section class="create-section"><ng-include src="\'modules/audio-selector/audio-selector.html\'"></ng-include><section app-view-segment="1"></section><ng-include src="\'modules/timeline/timeline.html\'"></ng-include></section>');
 
   $templateCache.put('pages/home-page/home-page.html', '<a href="/create">Create slideshow</a>');
 
@@ -354,6 +354,22 @@ angular.module('ss.gridSizes', [])
             'q': 'XL'
         }
     });
+angular.module('ss.audioSelector', ['vkontakteServices', 'ss.services'])
+    .controller('AudiosController', AudiosController);
+
+function AudiosController($scope, VKAudios, selectedAudios) {
+    VKAudios.getAudios().then(function(audios){
+        $scope.audios = audios;
+    });
+
+    $scope.toggleAudio = function(audio) {
+        if (audio.selected) {
+            selectedAudios.remove(audio);
+        } else {
+            selectedAudios.add(audio);
+        }
+    }
+}
 angular.module('ss.filters', ['ss.gridSizes'])
     .filter('photoSrc', function(gridSizes) {
         function searchSize(sizes, type) {
@@ -385,7 +401,7 @@ angular.module('ss.filters', ['ss.gridSizes'])
         };
     });
 angular.module('ss.header', []);
-angular.module('ss.photoSelector', ['vkontakteServices', 'ss.filters', 'ss.directives', 'ss.services'])
+angular.module('ss.photoSelector', ['vkontakteServices', 'ss.directives', 'ss.services', 'ngRoute'])
     .controller('AlbumsController', AlbumsController)
     .controller('PhotosController', PhotosController);
 
@@ -396,8 +412,8 @@ function AlbumsController($scope, VKPhotos) {
     });
 }
 
-function PhotosController($scope, VKPhotos, selectedPhotos) {
-    VKPhotos.getAlbumPhotos(-6/*$route.current.params.id*/).then(function(photos){
+function PhotosController($scope, VKPhotos, selectedPhotos, $routeParams) {
+    VKPhotos.getAlbumPhotos($routeParams.id).then(function(photos){
         $scope.photos = photos;
     });
     $scope.gridSize = 'o';
@@ -410,6 +426,30 @@ function PhotosController($scope, VKPhotos, selectedPhotos) {
         }
     }
 }
+angular.module('ss.player', ['parseServices', 'ss.templates', 'ss.filters'])
+    .controller('PlayerController', function($scope, slideshowService, $route, $filter) {
+        slideshowService.getSlideshow($route.current.params.id).then(function(data) {
+            var frames = data.get('frames'),
+                images = [],
+                image;
+
+            for (var i = 0; i < frames.length; i++) {
+                image = new Image();
+                images.push(image);
+                image.src = $filter('photoSrc')(frames[i].sizes, 'w');
+            }
+
+            setTimeout(function() {
+                $scope.$apply(function(){
+                    $scope.images = images;
+                });
+            }, 1000);
+        });
+
+        $scope.fullScreen = function(event) {
+            event.currentTarget.webkitRequestFullScreen();
+        }
+    });
 angular.module('parseServices', [])
     .constant('config', {
         appId: "d95PTnwnQvQCj49xf9AUMgXpbSEIl78rVDUg55X0",
@@ -477,6 +517,42 @@ angular.module('ss.services', [])
                 }
             }
         };
+    })
+
+    .factory('selectedAudios', function() {
+        var audios = [];
+
+        return {
+            get: function(index) {
+                if (index) {
+                    return audios[index];
+                } else {
+                    return audios;
+                }
+            },
+
+            set: function(newCollection) {
+                audios = newCollection;
+            },
+
+            add: function() {
+                Array.prototype.push.apply(audios, arguments);
+                for(var i = 0; i < arguments.length; i++) {
+                    arguments[i].selected = true;
+                }
+            },
+
+            remove: function() {
+                var index;
+                for (var i = 0; i < arguments.length; i++) {
+                    index = audios.indexOf(arguments[i]);
+                    if (index !== -1) {
+                        audios.splice(index, 1);
+                    }
+                    arguments[i].selected = false;
+                }
+            }
+        };
     });
 angular.module('vkontakteServices', [])
     .run(function(VKReady) {
@@ -485,6 +561,20 @@ angular.module('vkontakteServices', [])
         }, function() {
             VKReady.deferred.reject();
         }, '5.28');
+    })
+
+    .factory('methodWrapper', function(VKReady, $q) {
+        return function (method) {
+            var deferred = $q.defer();
+
+            VKReady.then(function() {
+                method(deferred);
+            }, function() {
+                deferred.reject('VK not available');
+            });
+
+            return deferred.promise;
+        };
     })
 
     .factory('VKReady', function($q) {
@@ -496,19 +586,7 @@ angular.module('vkontakteServices', [])
         };
     })
 
-    .factory('VKPhotos', function(VKReady, $q) {
-        function methodWrapper(method) {
-            var deferred = $q.defer();
-
-            VKReady.then(function() {
-                method(deferred);
-            }, function() {
-                deferred.reject('VK not available');
-            });
-
-            return deferred.promise;
-        }
-
+    .factory('VKPhotos', function(methodWrapper) {
         function getAlbums() {
             return methodWrapper(function(deferred){
                 VK.api('photos.getAlbums', {
@@ -544,30 +622,24 @@ angular.module('vkontakteServices', [])
             getAlbums: getAlbums,
             getAlbumPhotos: getAlbumPhotos
         };
-    });
-angular.module('ss.player', ['parseServices', 'ss.templates', 'ss.filters'])
-    .controller('PlayerController', function($scope, slideshowService, $route, $filter) {
-        slideshowService.getSlideshow($route.current.params.id).then(function(data) {
-            var frames = data.get('frames'),
-                images = [],
-                image;
+    })
 
-            for (var i = 0; i < frames.length; i++) {
-                image = new Image();
-                images.push(image);
-                image.src = $filter('photoSrc')(frames[i].sizes, 'w');
-            }
-
-            setTimeout(function() {
-                $scope.$apply(function(){
-                    $scope.images = images;
+    .factory('VKAudios', function(methodWrapper) {
+        function getAudios() {
+            return methodWrapper(function(deferred){
+                VK.api('audio.get', {}, function(data) {
+                    if (data.response) {
+                        deferred.resolve(data.response.items);
+                    } else {
+                        deferred.reject('error in getting data');
+                    }
                 });
-            }, 1000);
-        });
-
-        $scope.fullScreen = function(event) {
-            event.currentTarget.webkitRequestFullScreen();
+            });
         }
+
+        return {
+            getAudios: getAudios
+        };
     });
 angular.module('ss.timeline', ['ss.services', 'parseServices'])
     .controller('framesController', function($scope, $location, $rootScope, selectedPhotos, slideshowService) {
@@ -588,7 +660,6 @@ angular.module('ss.timeline', ['ss.services', 'parseServices'])
             });
         };
     });
-
 angular.module('ss.directives', ['ss.gridSizes', 'ss.templates'])
     .directive('gridSize', function() {
         return {

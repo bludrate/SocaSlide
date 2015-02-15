@@ -33,4 +33,40 @@ angular.module('ss.services', [])
                 }
             }
         };
+    })
+
+    .factory('selectedAudios', function() {
+        var audios = [];
+
+        return {
+            get: function(index) {
+                if (index) {
+                    return audios[index];
+                } else {
+                    return audios;
+                }
+            },
+
+            set: function(newCollection) {
+                audios = newCollection;
+            },
+
+            add: function() {
+                Array.prototype.push.apply(audios, arguments);
+                for(var i = 0; i < arguments.length; i++) {
+                    arguments[i].selected = true;
+                }
+            },
+
+            remove: function() {
+                var index;
+                for (var i = 0; i < arguments.length; i++) {
+                    index = audios.indexOf(arguments[i]);
+                    if (index !== -1) {
+                        audios.splice(index, 1);
+                    }
+                    arguments[i].selected = false;
+                }
+            }
+        };
     });

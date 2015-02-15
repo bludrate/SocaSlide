@@ -1,0 +1,11 @@
+<section class="audio-selector" ng-controller="AudiosController">
+    <header class="audio-selector__header">
+        <h2 class="audio-selector__title">Choice audio</h2>
+        <input type="text" ng-model="search" class="audio-filter"/>
+    </header>
+    <ul class="audio-list">
+        <li class="audio-list__item" ng-repeat="audio in audios | filter:search track by audio.id" title="{{audio.artist + '-' + audio.title}}" ng-click="toggleAudio(audio)">
+            {{audio.artist + '-' + audio.title}}
+        </li>
+    </ul>
+</section>

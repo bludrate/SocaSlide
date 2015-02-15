@@ -30,16 +30,10 @@ describe("ss.photoSelector", function() {
     });
 
     describe('PhotosController', function() {
-        var scope, ctrl, VKPhotos, route;
+        var scope, ctrl, VKPhotos;
 
-        beforeEach(inject(function($controller, $rootScope, $route) {
-            $route.current = {
-                params: {
-                    id: -6
-                }
-            };
-            route = $route;
-
+        beforeEach(inject(function($controller, $rootScope, $routeParams) {
+            $routeParams.id = 6;
             scope = $rootScope.$new();
 
             VKPhotos = {
@@ -55,7 +49,7 @@ describe("ss.photoSelector", function() {
         }));
 
         it('should get photos by album id and set it to scope.photos', function() {
-            expect(VKPhotos.getAlbumPhotos).toHaveBeenCalledWith(route.current.params.id);
+            expect(VKPhotos.getAlbumPhotos).toHaveBeenCalledWith(6);
             expect(scope.photos).not.toBeUndefined();
         });
 

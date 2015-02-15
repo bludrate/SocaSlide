@@ -170,4 +170,80 @@ describe('vkonatke services', function() {
             });
         });
     });
+
+    describe('VKAudios', function() {
+        var VKAudios, VKReady, rootScope;
+        beforeEach(inject(function(_VKAudios_, _VKReady_, $rootScope) {
+            rootScope = $rootScope;
+            VKAudios = _VKAudios_;
+            VKReady = _VKReady_;
+        }));
+
+        describe('getAudios', function(){
+            it('should wait for VKready', function() {
+                spyOn(VKReady, 'then');
+
+                VKAudios.getAudios();
+
+                expect(VKReady.then).toHaveBeenCalled();
+            });
+
+            it('should return promise', function() {
+                expect('then' in VKAudios.getAudios()).toBe(true);
+            });
+
+            it('should call VK.api', function() {
+                spyOn(window.VK, 'api');
+
+                VKAudios.getAudios();
+
+                rootScope.$apply();
+
+                expect(window.VK.api).toHaveBeenCalled();
+            });
+
+            it('should call VK.api with specific parameters', function() {
+                spyOn(VK, 'api');
+
+                VKAudios.getAudios();
+
+                rootScope.$apply();
+
+                expect(VK.api).toHaveBeenCalledWith('audio.get', {}, jasmine.any(Function));
+            });
+
+            it('should respond with array', function() {
+                var data;
+
+                VKAudios.getAudios().then(function(audios) {
+                    data = audios;
+                });
+
+                rootScope.$apply();
+
+                expect(data).toEqual(jasmine.any(Array));
+            });
+
+            it('should reject on wrong data received', function() {
+                var data = VK.data;
+                var spy = jasmine.createSpy('callback');
+
+                VK.data = {
+                    'audio.get': {}
+                };
+
+                VKAudios.getAudios().then(function(){
+
+                }, function(response){
+                    spy(response);
+                });
+
+                rootScope.$apply();
+
+                expect(spy).toHaveBeenCalledWith('error in getting data');
+
+                VK.data = data;
+            });
+        });
+    });
 });

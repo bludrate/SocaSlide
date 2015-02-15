@@ -1,4 +1,4 @@
-angular.module('ss', ['ngRoute', 'route-segment', 'view-segment', 'ss.header', 'ss.photoSelector', 'ss.templates', 'ss.timeline', 'ss.player'])
+angular.module('ss', ['ngRoute', 'ss.audioSelector', 'route-segment', 'view-segment', 'ss.header', 'ss.photoSelector', 'ss.templates', 'ss.timeline', 'ss.player'])
     .config(function ($routeProvider, $routeSegmentProvider, $locationProvider) {
         $routeSegmentProvider
             .when('/', 'home')

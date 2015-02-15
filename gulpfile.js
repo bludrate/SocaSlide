@@ -42,6 +42,12 @@ gulp.task('modules_styl', function () {
         .pipe(gulp.dest('./modules/'));
 });
 
+gulp.task('page_styl', function () {
+    return gulp.src(['./pages/**/*.styl'])
+        .pipe(stylus())
+        .pipe(gulp.dest('./pages/'));
+});
+
 gulp.task('stylus', function () {
     return gulp.src(['./stylus/main.styl'])
         .pipe(stylus())
@@ -58,13 +64,13 @@ gulp.task('autoprefixer', function () {
 });
 
 gulp.task('concat_css', function() {
-    return gulp.src(['./modules/**/*.css', './vendor/**/*.css', './stylus/main.css'])
+    return gulp.src(['./modules/**/*.css', './vendor/**/*.css', './pages/**/*.css', './stylus/main.css'])
         .pipe(concat('main.css'))
         .pipe(gulp.dest('./css/'));
 });
 
-gulp.task('styles', ['stylus', 'modules_styl'], function() {
-    gulp.src(['./modules/**/*.css', './vendor/**/*.css', './stylus/main.css'])
+gulp.task('styles', ['stylus', 'modules_styl', 'page_styl'], function() {
+    gulp.src(['./modules/**/*.css', './vendor/**/*.css', './pages/**/*.css', './stylus/main.css'])
         .pipe(concat('main.css'))
         .pipe(autoprefixer({
             browsers: ['last 2 versions'],

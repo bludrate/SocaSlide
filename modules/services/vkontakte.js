@@ -7,17 +7,8 @@ angular.module('vkontakteServices', [])
         }, '5.28');
     })
 
-    .factory('VKReady', function($q) {
-        return {
-            deferred: $q.defer(),
-            then: function(successCallback, errorCallback) {
-                this.deferred.promise.then(successCallback, errorCallback);
-            }
-        };
-    })
-
-    .factory('VKPhotos', function(VKReady, $q) {
-        function methodWrapper(method) {
+    .factory('methodWrapper', function(VKReady, $q) {
+        return function (method) {
             var deferred = $q.defer();
 
             VKReady.then(function() {
@@ -27,8 +18,19 @@ angular.module('vkontakteServices', [])
             });
 
             return deferred.promise;
-        }
+        };
+    })
 
+    .factory('VKReady', function($q) {
+        return {
+            deferred: $q.defer(),
+            then: function(successCallback, errorCallback) {
+                this.deferred.promise.then(successCallback, errorCallback);
+            }
+        };
+    })
+
+    .factory('VKPhotos', function(methodWrapper) {
         function getAlbums() {
             return methodWrapper(function(deferred){
                 VK.api('photos.getAlbums', {
@@ -63,5 +65,23 @@ angular.module('vkontakteServices', [])
         return {
             getAlbums: getAlbums,
             getAlbumPhotos: getAlbumPhotos
+        };
+    })
+
+    .factory('VKAudios', function(methodWrapper) {
+        function getAudios() {
+            return methodWrapper(function(deferred){
+                VK.api('audio.get', {}, function(data) {
+                    if (data.response) {
+                        deferred.resolve(data.response.items);
+                    } else {
+                        deferred.reject('error in getting data');
+                    }
+                });
+            });
+        }
+
+        return {
+            getAudios: getAudios
         };
     });
