@@ -5,7 +5,8 @@
     </header>
     <ul class="audio-list">
         <li class="audio-list__item" ng-repeat="audio in audios | filter:search track by audio.id" title="{{audio.artist + '-' + audio.title}}" ng-click="toggleAudio(audio)">
-            {{audio.artist + '-' + audio.title}}
+            <span class="audio-list__duration">{{audio.duration | timeFormatter}}</span>
+            <span class="audio-list__name">{{audio.artist + ' - ' + audio.title}}</span>
         </li>
     </ul>
 </section>

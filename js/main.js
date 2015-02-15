@@ -323,17 +323,17 @@ angular.module('ss', ['ngRoute', 'ss.audioSelector', 'route-segment', 'view-segm
 
 angular.module('ss.templates', []).run(['$templateCache', function($templateCache) {
 
-  $templateCache.put('modules/audio-selector/audio-selector.html', '<section class="audio-selector" ng-controller="AudiosController"><header class="audio-selector__header"><h2 class="audio-selector__title">Choice audio</h2><input type="text" ng-model="search" class="audio-filter"></header><ul class="audio-list"><li class="audio-list__item" ng-repeat="audio in audios | filter:search track by audio.id" title="{{audio.artist + \'-\' + audio.title}}" ng-click="toggleAudio(audio)">{{audio.artist + \'-\' + audio.title}}</li></ul></section>');
+  $templateCache.put('modules/audio-selector/audio-selector.html', '<section class="audio-selector" ng-controller="AudiosController"><header class="audio-selector__header"><h2 class="audio-selector__title">Choice audio</h2><input type="text" ng-model="search" class="audio-filter"></header><ul class="audio-list"><li class="audio-list__item" ng-repeat="audio in audios | filter:search track by audio.id" title="{{audio.artist + \'-\' + audio.title}}" ng-click="toggleAudio(audio)"><span class="audio-list__duration">{{audio.duration | timeFormatter}}</span> <span class="audio-list__name">{{audio.artist + \' - \' + audio.title}}</span></li></ul></section>');
+
+  $templateCache.put('modules/header/header.html', '<header class="header"><a href="/" active-link="home" class="logo">SocaSlide</a></header>');
 
   $templateCache.put('modules/photo-selector/albums.html', '<grid-size size="gridSize"></grid-size><ul class="album-list album-list_size_{{gridSize}}"><li class="album-list__item" ng-repeat="album in albums track by album.id" title="{{album.title}}"><a href="/create/albums/{{album.id}}"><img ng-src="{{album.sizes | photoSrc: gridSize }}"> <span class="album-list__item-title">{{album.title}}</span></a></li></ul>');
 
   $templateCache.put('modules/photo-selector/photos.html', '<grid-size size="gridSize"></grid-size><ul class="photo-list photo-list_size_{{gridSize}}"><li class="photo-list__item" ng-class="{selected: photo.selected}" ng-repeat="photo in photos track by photo.id" title="{{photo.title}}" ng-click="togglePhoto(photo)"><img ng-src="{{photo.sizes | photoSrc: gridSize }}"></li></ul>');
 
-  $templateCache.put('modules/header/header.html', '<header class="header"><a href="/" active-link="home" class="logo">SocaSlide</a></header>');
+  $templateCache.put('modules/player/player.html', '<div class="player" ng-click="fullScreen($event)"><player-canvas images="images"></player-canvas><player-audio audios="audios"></player-audio></div>');
 
-  $templateCache.put('modules/player/player.html', '<div class="player" ng-click="fullScreen($event)"><player-canvas images="images"></player-canvas></div>');
-
-  $templateCache.put('modules/timeline/timeline.html', '<div class="timeline" ng-controller="framesController"><ul class="frame-list"><li class="frame-list__item" ng-repeat="frame in frames track by frame.id" title="{{frame.title}}" ng-click="removeFrame(frame)"><img ng-src="{{frame.sizes | photoSrc: \'o\' }}"></li></ul><button class="create-slideshow" ng-click="saveSlideshow()"></button></div>');
+  $templateCache.put('modules/timeline/timeline.html', '<div class="timeline" ng-controller="framesController"><ul class="frame-list"><li class="frame-list__item" ng-repeat="frame in frames track by frame.id" title="{{frame.title}}" ng-click="removeFrame(frame)"><img ng-src="{{frame.sizes | photoSrc: \'o\' }}"></li></ul><ul class="timeline-audios"><li class="timeline-audios__item" ng-repeat="audio in audios track by audio.id" title="{{audio.artist + \' - \' + audio.title}}"><span class="timeline-audios__duration">{{audio.duration | timeFormatter}}</span> <span class="timeline-audios__audio-name">{{audio.artist + \' - \' + audio.title}}</span></li></ul><button class="create-slideshow" ng-click="saveSlideshow()"></button></div>');
 
   $templateCache.put('pages/create-page/create-page.html', '<section class="create-section"><ng-include src="\'modules/audio-selector/audio-selector.html\'"></ng-include><section app-view-segment="1"></section><ng-include src="\'modules/timeline/timeline.html\'"></ng-include></section>');
 
@@ -344,17 +344,7 @@ angular.module('ss.templates', []).run(['$templateCache', function($templateCach
   $templateCache.put('modules/player/directives/player-canvas/player-canvas.html', '<canvas width="{{cWidth}}" height="{{cHeight}}"></canvas>');
 
 }]);
-angular.module('ss.gridSizes', [])
-    .value('gridSizes', {
-        types: ['s', 'm', 'x', 'o', 'p', 'q', 'r', 'y', 'z', 'w'],
-        names: {
-            's': 'S',
-            'o': 'M',
-            'p': 'L',
-            'q': 'XL'
-        }
-    });
-angular.module('ss.audioSelector', ['vkontakteServices', 'ss.services'])
+angular.module('ss.audioSelector', ['vkontakteServices', 'ss.services', 'ss.filters'])
     .controller('AudiosController', AudiosController);
 
 function AudiosController($scope, VKAudios, selectedAudios) {
@@ -370,6 +360,16 @@ function AudiosController($scope, VKAudios, selectedAudios) {
         }
     }
 }
+angular.module('ss.gridSizes', [])
+    .value('gridSizes', {
+        types: ['s', 'm', 'x', 'o', 'p', 'q', 'r', 'y', 'z', 'w'],
+        names: {
+            's': 'S',
+            'o': 'M',
+            'p': 'L',
+            'q': 'XL'
+        }
+    });
 angular.module('ss.filters', ['ss.gridSizes'])
     .filter('photoSrc', function(gridSizes) {
         function searchSize(sizes, type) {
@@ -399,6 +399,18 @@ angular.module('ss.filters', ['ss.gridSizes'])
                 }
             }
         };
+    })
+    .filter('timeFormatter', function() {
+        function addZero(number) {
+            number = number.toString();
+            return number.length > 1 ? number : '0' + number;
+        }
+        return function(time) {
+            var minutes = parseInt(time / 60, 10);
+            var seconds = addZero(time % 60);
+
+            return minutes + ':' + seconds;
+        }
     });
 angular.module('ss.header', []);
 angular.module('ss.photoSelector', ['vkontakteServices', 'ss.directives', 'ss.services', 'ngRoute'])
@@ -430,8 +442,11 @@ angular.module('ss.player', ['parseServices', 'ss.templates', 'ss.filters'])
     .controller('PlayerController', function($scope, slideshowService, $route, $filter) {
         slideshowService.getSlideshow($route.current.params.id).then(function(data) {
             var frames = data.get('frames'),
+                audioList = data.get('audios'),
                 images = [],
-                image;
+                image,
+                audios = [],
+                audio;
 
             for (var i = 0; i < frames.length; i++) {
                 image = new Image();
@@ -439,9 +454,15 @@ angular.module('ss.player', ['parseServices', 'ss.templates', 'ss.filters'])
                 image.src = $filter('photoSrc')(frames[i].sizes, 'w');
             }
 
+            for (var j = 0; j < audioList.length; j++) {
+                audio = new Audio();
+                audio.src = audioList[j].url;
+                audios.push(audio);
+            }
             setTimeout(function() {
                 $scope.$apply(function(){
                     $scope.images = images;
+                    $scope.audios = audios;
                 });
             }, 1000);
         });
@@ -641,17 +662,23 @@ angular.module('vkontakteServices', [])
             getAudios: getAudios
         };
     });
-angular.module('ss.timeline', ['ss.services', 'parseServices'])
-    .controller('framesController', function($scope, $location, $rootScope, selectedPhotos, slideshowService) {
+angular.module('ss.timeline', ['ss.services', 'parseServices', 'ss.filters'])
+    .controller('framesController', function($scope, $location, $rootScope, selectedPhotos, slideshowService, selectedAudios) {
         $scope.frames = selectedPhotos.get();
+        $scope.audios = selectedAudios.get();
 
         $scope.removeFrame = function(frame) {
             selectedPhotos.remove(frame);
         };
 
+        $scope.removeAudio = function(audio) {
+            selectedAudios.remove(audio);
+        };
+
         $scope.saveSlideshow = function() {
             slideshowService.saveNewSlideshow({
-                frames: $scope.frames
+                frames: $scope.frames,
+                audios: $scope.audios
             }).then(function(slideshow) {
                 $rootScope.$apply(function() {
                     var path = '/slideshow/' + slideshow.id;
@@ -683,6 +710,26 @@ angular.module('ss.player')
         }
     });
 angular.module('ss.player')
+    .directive('playerAudio', function() {
+        return {
+            restrict: 'E',
+            scope: {
+                audios: '='
+            },
+            controller: PlayerAudioController
+        };
+    });
+
+function PlayerAudioController($scope) {
+    $scope.$watch('audios', init);
+
+    function init() {
+        if ($scope.audios && $scope.audios.length) {
+            $scope.audios[0].play();
+        }
+    }
+}
+angular.module('ss.player')
     .directive('playerCanvas', function() {
         return {
             restrict: 'E',
@@ -699,7 +746,7 @@ angular.module('ss.player')
             }
         };
     })
-    .factory('defaultPlayType', function() {
+    .factory('defaultAnimationType', function() {
         return {
             func: function(currentSlide, currentSlideTime, slideTime, images, cWidth, cHeight) {
                 var result = {};
@@ -741,7 +788,7 @@ angular.module('ss.player')
         };
     });
 
-function PlayerCanvasController($scope, defaultPlayType) {
+function PlayerCanvasController($scope, defaultAnimationType) {
     var self = this;
     $scope.cWidth = 1280;
     $scope.cHeight = 720;
@@ -751,9 +798,9 @@ function PlayerCanvasController($scope, defaultPlayType) {
     function init() {
         self.pausedAt = 0;
         self.played = false;
-        self.slideTime = $scope.slideTime || 3000;
+        self.slideTime = $scope.slideTime || 5000;
 
-        defaultPlayType.init(self.slideTime);
+        defaultAnimationType.init(self.slideTime);
 
         if ($scope.images && $scope.images.length) {
             self.play();
@@ -763,7 +810,7 @@ function PlayerCanvasController($scope, defaultPlayType) {
     function render(currentSlideTime) {
         $scope.canvasContext.clearRect(0, 0, $scope.cWidth, $scope.cHeight);
 
-        var animationObject = defaultPlayType.func(
+        var animationObject = defaultAnimationType.func(
             self.currentSlide,
             currentSlideTime,
             self.slideTime,

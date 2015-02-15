@@ -4,7 +4,7 @@
     left: 0;
     right: 0;
     background: rgba(0,0,0,0.5);
-    height: 110px;
+    height: 150px;
     padding: 0 100px 0 0;
 }
 
@@ -76,5 +76,29 @@
     }
     100% {
         transform: scale(1);
+    }
+}
+
+.timeline-audios {
+    overflow: auto;
+    white-space: nowrap;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    &__item {
+        display: inline-block;
+        vertical-align: top;
+        position: relative;
+        padding: 5px 40px 5px 5px;
+    }
+    &__name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    &__duration {
+        position: absolute;
+        right: 5px;
+        top: 5px;
     }
 }

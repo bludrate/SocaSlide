@@ -25,4 +25,11 @@ describe('ss.filters', function() {
             expect($filter('photoSrc')([{"src":"http:\/\/cs619818.vk.me\/v619818875\/1c405\/-ewBamQj0AY.jpg","width":75,"height":42,"type":"m"}], 's')).toBeUndefined();
         })
     });
+
+    describe('timeFormatter filter', function() {
+        it('should return formatte time', function() {
+            expect($filter('timeFormatter')(356)).toBe('5:56');
+            expect($filter('timeFormatter')(305)).toBe('5:05');
+        })
+    });
 });

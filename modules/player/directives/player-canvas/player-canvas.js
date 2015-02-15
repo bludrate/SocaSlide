@@ -15,7 +15,7 @@ angular.module('ss.player')
             }
         };
     })
-    .factory('defaultPlayType', function() {
+    .factory('defaultAnimationType', function() {
         return {
             func: function(currentSlide, currentSlideTime, slideTime, images, cWidth, cHeight) {
                 var result = {};
@@ -57,7 +57,7 @@ angular.module('ss.player')
         };
     });
 
-function PlayerCanvasController($scope, defaultPlayType) {
+function PlayerCanvasController($scope, defaultAnimationType) {
     var self = this;
     $scope.cWidth = 1280;
     $scope.cHeight = 720;
@@ -67,9 +67,9 @@ function PlayerCanvasController($scope, defaultPlayType) {
     function init() {
         self.pausedAt = 0;
         self.played = false;
-        self.slideTime = $scope.slideTime || 3000;
+        self.slideTime = $scope.slideTime || 5000;
 
-        defaultPlayType.init(self.slideTime);
+        defaultAnimationType.init(self.slideTime);
 
         if ($scope.images && $scope.images.length) {
             self.play();
@@ -79,7 +79,7 @@ function PlayerCanvasController($scope, defaultPlayType) {
     function render(currentSlideTime) {
         $scope.canvasContext.clearRect(0, 0, $scope.cWidth, $scope.cHeight);
 
-        var animationObject = defaultPlayType.func(
+        var animationObject = defaultAnimationType.func(
             self.currentSlide,
             currentSlideTime,
             self.slideTime,

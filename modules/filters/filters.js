@@ -27,4 +27,16 @@ angular.module('ss.filters', ['ss.gridSizes'])
                 }
             }
         };
+    })
+    .filter('timeFormatter', function() {
+        function addZero(number) {
+            number = number.toString();
+            return number.length > 1 ? number : '0' + number;
+        }
+        return function(time) {
+            var minutes = parseInt(time / 60, 10);
+            var seconds = addZero(time % 60);
+
+            return minutes + ':' + seconds;
+        }
     });
