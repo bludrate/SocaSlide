@@ -1,11 +1,11 @@
-<div class="timeline" ng-controller="framesController">
+<div class="timeline" ng-controller="FramesController">
     <ul class="frame-list">
         <li class="frame-list__item" ng-repeat="frame in frames track by frame.id" title="{{frame.title}}" ng-click="removeFrame(frame)">
             <img ng-src="{{frame.sizes | photoSrc: 'o' }}"/>
         </li>
     </ul>
     <ul class="timeline-audios">
-        <li class="timeline-audios__item" ng-repeat="audio in audios track by audio.id" title="{{audio.artist + ' - ' + audio.title}}">
+        <li class="timeline-audios__item" active-link="home" ng-repeat="audio in audios track by audio.id" title="{{audio.artist + ' - ' + audio.title}}">
             <span class="timeline-audios__duration">{{audio.duration | timeFormatter}}</span>
             <span class="timeline-audios__audio-name">{{audio.artist + ' - ' + audio.title}}</span>
         </li>

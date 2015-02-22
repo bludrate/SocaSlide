@@ -1,5 +1,5 @@
 angular.module('ss.player', ['parseServices', 'ss.templates', 'ss.filters'])
-    .controller('PlayerController', function($scope, slideshowService, $route, $filter) {
+    .controller('PlayerController', function($scope, slideshowService, $route, $filter, canvasPlayService, audioPlayService) {
         slideshowService.getSlideshow($route.current.params.id).then(function(data) {
             var frames = data.get('frames'),
                 audioList = data.get('audios'),
@@ -19,15 +19,8 @@ angular.module('ss.player', ['parseServices', 'ss.templates', 'ss.filters'])
                 audio.src = audioList[j].url;
                 audios.push(audio);
             }
-            setTimeout(function() {
-                $scope.$apply(function(){
-                    $scope.images = images;
-                    $scope.audios = audios;
-                });
-            }, 1000);
-        });
 
-        $scope.fullScreen = function(event) {
-            event.currentTarget.webkitRequestFullScreen();
-        }
+            canvasPlayService.setImages(images);
+            audioPlayService.initialize(audios);
+        });
     });

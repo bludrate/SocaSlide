@@ -75,6 +75,30 @@
   color: #346bff;
 }
 
+.player:-webkit-full-screen {
+  width: 100%;
+  background: #000;
+  text-align: center;
+}
+
+.player:-moz-full-screen {
+  width: 100%;
+  background: #000;
+  text-align: center;
+}
+
+.player:-ms-fullscreen {
+  width: 100%;
+  background: #000;
+  text-align: center;
+}
+
+.player:fullscreen {
+  width: 100%;
+  background: #000;
+  text-align: center;
+}
+
 .timeline {
   position: absolute;
   bottom: 0;
@@ -346,30 +370,6 @@
     -webkit-transform: scale(1);
     transform: scale(1);
   }
-}
-
-.player:-webkit-full-screen {
-  width: 100%;
-  background: #000;
-  text-align: center;
-}
-
-.player:-moz-full-screen {
-  width: 100%;
-  background: #000;
-  text-align: center;
-}
-
-.player:-ms-fullscreen {
-  width: 100%;
-  background: #000;
-  text-align: center;
-}
-
-.player:fullscreen {
-  width: 100%;
-  background: #000;
-  text-align: center;
 }
 
 .player:-webkit-full-screen canvas {

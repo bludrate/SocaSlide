@@ -1,7 +1,7 @@
 describe("timeline", function() {
     beforeEach(module('ss.timeline'));
 
-    describe('framesController',function() {
+    describe('FramesController',function() {
         var ctrl, scope,
              selectedPhotos, selectedAudios;
 
@@ -11,7 +11,7 @@ describe("timeline", function() {
 
             scope = $rootScope.$new();
 
-            ctrl = $controller('framesController', {
+            ctrl = $controller('FramesController', {
                 $scope: scope
             });
         }));

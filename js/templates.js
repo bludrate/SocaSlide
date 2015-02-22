@@ -10,9 +10,9 @@ angular.module('ss.templates', []).run(['$templateCache', function($templateCach
 
   $templateCache.put('modules/photo-selector/photos.html', '<grid-size size="gridSize"></grid-size><ul class="photo-list photo-list_size_{{gridSize}}"><li class="photo-list__item" ng-class="{selected: photo.selected}" ng-repeat="photo in photos track by photo.id" title="{{photo.title}}" ng-click="togglePhoto(photo)"><img ng-src="{{photo.sizes | photoSrc: gridSize }}"></li></ul>');
 
-  $templateCache.put('modules/player/player.html', '<div class="player" ng-click="fullScreen($event)"><player-canvas images="images"></player-canvas><player-audio audios="audios"></player-audio></div>');
+  $templateCache.put('modules/player/player.html', '<div class="player"><player-canvas></player-canvas><player-controls></player-controls></div>');
 
-  $templateCache.put('modules/timeline/timeline.html', '<div class="timeline" ng-controller="framesController"><ul class="frame-list"><li class="frame-list__item" ng-repeat="frame in frames track by frame.id" title="{{frame.title}}" ng-click="removeFrame(frame)"><img ng-src="{{frame.sizes | photoSrc: \'o\' }}"></li></ul><ul class="timeline-audios"><li class="timeline-audios__item" ng-repeat="audio in audios track by audio.id" title="{{audio.artist + \' - \' + audio.title}}"><span class="timeline-audios__duration">{{audio.duration | timeFormatter}}</span> <span class="timeline-audios__audio-name">{{audio.artist + \' - \' + audio.title}}</span></li></ul><button class="create-slideshow" ng-click="saveSlideshow()"></button></div>');
+  $templateCache.put('modules/timeline/timeline.html', '<div class="timeline" ng-controller="FramesController"><ul class="frame-list"><li class="frame-list__item" ng-repeat="frame in frames track by frame.id" title="{{frame.title}}" ng-click="removeFrame(frame)"><img ng-src="{{frame.sizes | photoSrc: \'o\' }}"></li></ul><ul class="timeline-audios"><li class="timeline-audios__item" active-link="home" ng-repeat="audio in audios track by audio.id" title="{{audio.artist + \' - \' + audio.title}}"><span class="timeline-audios__duration">{{audio.duration | timeFormatter}}</span> <span class="timeline-audios__audio-name">{{audio.artist + \' - \' + audio.title}}</span></li></ul><button class="create-slideshow" ng-click="saveSlideshow()"></button></div>');
 
   $templateCache.put('pages/create-page/create-page.html', '<section class="create-section"><ng-include src="\'modules/audio-selector/audio-selector.html\'"></ng-include><section app-view-segment="1"></section><ng-include src="\'modules/timeline/timeline.html\'"></ng-include></section>');
 
@@ -20,6 +20,6 @@ angular.module('ss.templates', []).run(['$templateCache', function($templateCach
 
   $templateCache.put('modules/directives/grid-size/grid-size.html', '<select ng-model="gridSize"><option value="o">{{names.o}}</option><option value="p">{{names.p}}</option><option value="q">{{names.q}}</option></select>');
 
-  $templateCache.put('modules/player/directives/player-canvas/player-canvas.html', '<canvas width="{{cWidth}}" height="{{cHeight}}"></canvas>');
+  $templateCache.put('modules/player/directives/player-controls/player-controls.html', '<button ng-click="play()">play</button> <button ng-click="pause()">pause</button> <button ng-click="stop()">stop</button>');
 
 }]);
