@@ -1,5 +1,3 @@
-<select ng-model="gridSize">
-    <option value="o">{{names.o}}</option>
-    <option value="p">{{names.p}}</option>
-    <option value="q">{{names.q}}</option>
-</select>
+<div class="grid-size-block">
+    <button ng-repeat="size in sizes" class="grid-size grid-size_{{size}}" ng-class="{active: size === gridSize}" ng-click="$parent.changeSize(size)">{{$parent.names[size]}}</button>
+</div>

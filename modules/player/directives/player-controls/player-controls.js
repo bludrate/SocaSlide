@@ -27,8 +27,22 @@ function PlayerControlsController($scope, audioPlayService, canvasPlayService) {
         $scope.played = false;
     }
 
+    function setVolume() {
+        if ($scope.volume < 0 ) {
+            $scope.volume = 0;
+        }
+
+        if ($scope.volume > 100) {
+            $scope.volume = 100;
+        }
+
+        audioPlayService.setVolume($scope.volume / 100);
+    }
+
+    $scope.volume = audioPlayService.volume * 100;
     $scope.played = false;
     $scope.pause = pause;
     $scope.stop = stop;
     $scope.play = play;
+    $scope.setVolume = setVolume;
 }

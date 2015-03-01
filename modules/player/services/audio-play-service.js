@@ -1,12 +1,14 @@
 angular.module('ss.player')
     .factory('audioPlayService', function() {
-        var audios,
-            currentAudio = 0;
+        var audios = [],
+            currentAudio = 0,
+            instance;
 
         function initialize(_audios_) {
             audios = _audios_;
 
             for (var i = 0; i < audios.length; i++) {
+                audios[i].volume = instance.volume;
                 audios[i].addEventListener('ended', audioEnded);
             }
         }
@@ -38,10 +40,22 @@ angular.module('ss.player')
             audios[currentAudio].play();
         }
 
-        return {
+        function setVolume(volume) {
+            instance.volume = volume;
+
+            for (var i = 0; i < audios.length; i++) {
+                audios[i].volume = instance.volume;
+            }
+        }
+
+        instance = {
+            volume: 0.5,
             initialize: initialize,
             play: play,
             pause: pause,
-            stop: stop
+            stop: stop,
+            setVolume: setVolume
         };
+
+        return instance;
     });

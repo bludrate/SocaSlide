@@ -32,12 +32,14 @@ angular.module('vkontakteServices', [])
 
     .factory('VKPhotos', function(methodWrapper) {
         function getAlbums() {
+            var parameters = {
+                need_system: 1,
+                need_covers: 1,
+                photo_sizes: 1
+            };
+
             return methodWrapper(function(deferred){
-                VK.api('photos.getAlbums', {
-                    need_system: 1,
-                    need_covers: 1,
-                    photo_sizes: 1
-                }, function(data) {
+                VK.api('photos.getAlbums', parameters, function(data) {
                     if (data.response) {
                         deferred.resolve(data.response.items);
                     } else {
@@ -62,9 +64,42 @@ angular.module('vkontakteServices', [])
             });
         }
 
+        function getAlbum(id) {
+            var parameters = {},
+                system;
+
+            if (id < 0) {
+                system = true;
+                parameters.need_system = 1;
+            } else {
+                system = false;
+                parameters.album_ids = id;
+            }
+
+            return methodWrapper(function(deferred){
+                VK.api('photos.getAlbums', parameters, function(data) {
+                    if (data.response) {
+                        if (system) {
+                            data.response.items.some(function(album) {
+                                if (album.id == id) {
+                                    deferred.resolve(album);
+                                    return true;
+                                }
+                            });
+                        } else {
+                            deferred.resolve(data.response.items[0]);
+                        }
+                    } else {
+                        deferred.reject('error in getting data');
+                    }
+                });
+            });
+        }
+
         return {
             getAlbums: getAlbums,
-            getAlbumPhotos: getAlbumPhotos
+            getAlbumPhotos: getAlbumPhotos,
+            getAlbum: getAlbum
         };
     })
 

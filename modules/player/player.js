@@ -23,4 +23,9 @@ angular.module('ss.player', ['parseServices', 'ss.templates', 'ss.filters'])
             canvasPlayService.setImages(images);
             audioPlayService.initialize(audios);
         });
+
+        $scope.$on('$locationChangeStart', function() {
+            canvasPlayService.stop();
+            audioPlayService.stop();
+        });
     });

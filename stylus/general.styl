@@ -1,0 +1,57 @@
+body {
+    margin: 0;
+    color: $primaryTextColor;
+    font: 14px/18px Tahoma, arial, sans-serif;
+    user-select: none;
+}
+
+body, html {
+    height: 100%;
+}
+
+.main {
+    position: absolute;
+    top: $headerHeight;
+    bottom: 0;
+    width: 100%;
+}
+
+.wrapper {
+    padding: 0 20px;
+}
+
+.tac {
+    text-align: center
+}
+
+.section {
+    overflow: hidden;
+    height: 100%;
+    position: relative;
+
+    &__content {
+        position: absolute;
+        width: 100%;
+        top: 58px;
+        bottom: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+    &__header {
+        overflow: hidden;
+        padding: 10px 5px 5px 30px;
+        line-height: 40px;
+        border-bottom: 1px solid $dividerColor;
+        margin-bottom: 2px;
+    }
+
+    &__title {
+        font-weight: normal;
+        font-size: 22px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        line-height: 40px;
+        margin: 0;
+    }
+}

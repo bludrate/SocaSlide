@@ -1,9 +1,16 @@
-<grid-size size="gridSize"></grid-size>
-<ul class="album-list album-list_size_{{gridSize}}">
-    <li class="album-list__item" ng-repeat="album in albums track by album.id" title="{{album.title}}">
-        <a href="/create/albums/{{album.id}}">
+<header class="section__header">
+    <grid-size size="gridSize"></grid-size>
+    <h2 class="section__title">Альбомы</h2>
+</header>
+<div class="section__content">
+    <ul class="album-list album-list_size_{{gridSize}}">
+        <li class="album-list__item" data-ng-repeat="album in albums track by album.id">
             <img ng-src="{{album.sizes | photoSrc: gridSize }}"/>
             <span class="album-list__item-title">{{album.title}}</span>
-        </a>
-    </li>
-</ul>
+            <div class="album-list__buttons">
+                <a href="/create/albums/{{album.id}}" class="album-list__button album-list__button_open" href="/create/albums/{{album.id}}" title="Открыть"></a>
+                <button class="album-list__button album-list__button_add" ng-click="add(album)" title="Добавить весь альбом"></button>
+            </div>
+        </li>
+    </ul>
+</div>

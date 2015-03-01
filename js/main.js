@@ -323,25 +323,25 @@ angular.module('ss', ['ngRoute', 'ss.audioSelector', 'route-segment', 'view-segm
 
 angular.module('ss.templates', []).run(['$templateCache', function($templateCache) {
 
-  $templateCache.put('modules/audio-selector/audio-selector.html', '<section class="audio-selector" ng-controller="AudiosController"><header class="audio-selector__header"><h2 class="audio-selector__title">Choice audio</h2><input type="text" ng-model="search" class="audio-filter"></header><ul class="audio-list"><li class="audio-list__item" ng-repeat="audio in audios | filter:search track by audio.id" title="{{audio.artist + \'-\' + audio.title}}" ng-click="toggleAudio(audio)"><span class="audio-list__duration">{{audio.duration | timeFormatter}}</span> <span class="audio-list__name">{{audio.artist + \' - \' + audio.title}}</span></li></ul></section>');
+  $templateCache.put('modules/audio-selector/audio-selector.html', '<section class="audio-selector section" ng-controller="AudiosController"><header class="section__header"><input type="text" ng-model="search" class="audio-selector__filter"><h2 class="section__title">Choice audio</h2></header><ul class="audio-list"><li class="audio-list__item" ng-repeat="audio in audios | filter:search track by audio.id" title="{{audio.artist + \'-\' + audio.title}}" ng-click="toggleAudio(audio)"><span class="audio-list__duration">{{audio.duration | timeFormatter}}</span> <span class="audio-list__name">{{audio.artist + \' - \' + audio.title}}</span></li></ul></section>');
 
   $templateCache.put('modules/header/header.html', '<header class="header"><a href="/" active-link="home" class="logo">SocaSlide</a></header>');
 
-  $templateCache.put('modules/photo-selector/albums.html', '<grid-size size="gridSize"></grid-size><ul class="album-list album-list_size_{{gridSize}}"><li class="album-list__item" ng-repeat="album in albums track by album.id" title="{{album.title}}"><a href="/create/albums/{{album.id}}"><img ng-src="{{album.sizes | photoSrc: gridSize }}"> <span class="album-list__item-title">{{album.title}}</span></a></li></ul>');
+  $templateCache.put('modules/photo-selector/albums.html', '<header class="section__header"><grid-size size="gridSize"></grid-size><h2 class="section__title">Альбомы</h2></header><div class="section__content"><ul class="album-list album-list_size_{{gridSize}}"><li class="album-list__item" data-ng-repeat="album in albums track by album.id"><img ng-src="{{album.sizes | photoSrc: gridSize }}"> <span class="album-list__item-title">{{album.title}}</span><div class="album-list__buttons"><a href="/create/albums/{{album.id}}" class="album-list__button album-list__button_open" title="Открыть"></a> <button class="album-list__button album-list__button_add" ng-click="add(album)" title="Добавить весь альбом"></button></div></li></ul></div>');
 
-  $templateCache.put('modules/photo-selector/photos.html', '<grid-size size="gridSize"></grid-size><ul class="photo-list photo-list_size_{{gridSize}}"><li class="photo-list__item" ng-class="{selected: photo.selected}" ng-repeat="photo in photos track by photo.id" title="{{photo.title}}" ng-click="togglePhoto(photo)"><img ng-src="{{photo.sizes | photoSrc: gridSize }}"></li></ul>');
+  $templateCache.put('modules/photo-selector/photos.html', '<header class="section__header"><grid-size size="gridSize"></grid-size><h2 class="section__title">{{album.title}}</h2></header><div class="section__content"><ul class="photo-list photo-list_size_{{gridSize}}"><li class="photo-list__item" ng-class="{selected: photo.selected}" ng-repeat="photo in photos track by photo.id" title="{{photo.title}}" ng-click="togglePhoto(photo)"><img ng-src="{{photo.sizes | photoSrc: gridSize }}"></li></ul></div>');
 
   $templateCache.put('modules/player/player.html', '<div class="player"><player-canvas></player-canvas><player-controls></player-controls></div>');
 
   $templateCache.put('modules/timeline/timeline.html', '<div class="timeline" ng-controller="FramesController"><ul class="frame-list"><li class="frame-list__item" ng-repeat="frame in frames track by frame.id" title="{{frame.title}}" ng-click="removeFrame(frame)"><img ng-src="{{frame.sizes | photoSrc: \'o\' }}"></li></ul><ul class="timeline-audios"><li class="timeline-audios__item" active-link="home" ng-repeat="audio in audios track by audio.id" title="{{audio.artist + \' - \' + audio.title}}"><span class="timeline-audios__duration">{{audio.duration | timeFormatter}}</span> <span class="timeline-audios__audio-name">{{audio.artist + \' - \' + audio.title}}</span></li></ul><button class="create-slideshow" ng-click="saveSlideshow()"></button></div>');
 
-  $templateCache.put('pages/create-page/create-page.html', '<section class="create-section"><ng-include src="\'modules/audio-selector/audio-selector.html\'"></ng-include><section app-view-segment="1"></section><ng-include src="\'modules/timeline/timeline.html\'"></ng-include></section>');
+  $templateCache.put('pages/create-page/create-page.html', '<section class="create-section"><ng-include src="\'modules/audio-selector/audio-selector.html\'"></ng-include><section class="section" app-view-segment="1"></section><ng-include src="\'modules/timeline/timeline.html\'"></ng-include></section>');
 
-  $templateCache.put('pages/home-page/home-page.html', '<a href="/create">Create slideshow</a>');
+  $templateCache.put('pages/home-page/home-page.html', '<div class="wrapper"><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi at aut blanditiis corporis culpa cum deserunt dolor ducimus eaque eos esse et, eveniet explicabo facere iusto maiores numquam possimus provident qui quidem quo repellat repudiandae sapiente sequi similique, sint soluta sunt tempore ut vel. Alias aliquam cumque delectus deleniti dolores error excepturi, ipsa iure laboriosam, molestias quae repellat sapiente sit ut veritatis. A aliquam aliquid amet assumenda blanditiis consectetur dignissimos doloremque eaque esse eum eveniet ex fugit illum impedit laudantium necessitatibus nobis perspiciatis quibusdam recusandae repellendus sequi similique, sint sit tempora tempore, vero voluptates! Ab amet blanditiis enim eveniet facere fugiat placeat qui sapiente tenetur? Ab aperiam, beatae blanditiis consequatur dolore ducimus ea, et eum itaque laudantium nesciunt optio, perferendis quam reiciendis repudiandae vitae voluptatem. Accusantium aliquid amet iure, quaerat quam quia sint soluta vero. A accusamus amet eligendi est facilis hic itaque magni odit quaerat, sequi soluta voluptas voluptatibus. Accusantium assumenda dolorem harum laboriosam necessitatibus qui voluptates. Aut doloremque doloribus eligendi eos esse et eveniet explicabo facilis fuga illum in minima nam natus necessitatibus nobis nulla omnis perspiciatis porro, quaerat, quam quia quod repellendus similique soluta sunt velit voluptatem. Ab et saepe sapiente? Doloremque dolores nulla omnis optio quam sunt ullam. Accusantium aliquam atque cupiditate deleniti dignissimos dolorem earum eligendi excepturi explicabo iure nam, nulla numquam quasi rerum sint tempore voluptatibus? Aspernatur quam rerum suscipit temporibus? Enim obcaecati officiis quos ratione repellat reprehenderit, sapiente unde. Dolore eius hic maiores odit pariatur repudiandae ullam vel! Alias consequuntur, earum fuga harum, ipsa magnam odio, perferendis perspiciatis quibusdam sed soluta voluptates! Ab atque inventore maiores rerum. Maiores minima qui ut. Ab animi aspernatur dolore et id incidunt iusto, labore libero mollitia nemo neque nobis non nulla, obcaecati quaerat recusandae sed sit tempore totam ullam ut vero voluptates. Minima pariatur quia voluptatem voluptatum!</p><div class="tac"><a href="/create" class="button">Create slideshow</a></div></div>');
 
-  $templateCache.put('modules/directives/grid-size/grid-size.html', '<select ng-model="gridSize"><option value="o">{{names.o}}</option><option value="p">{{names.p}}</option><option value="q">{{names.q}}</option></select>');
+  $templateCache.put('modules/directives/grid-size/grid-size.html', '<div class="grid-size-block"><button ng-repeat="size in sizes" class="grid-size grid-size_{{size}}" ng-class="{active: size === gridSize}" ng-click="$parent.changeSize(size)">{{$parent.names[size]}}</button></div>');
 
-  $templateCache.put('modules/player/directives/player-controls/player-controls.html', '<button ng-click="play()">play</button> <button ng-click="pause()">pause</button> <button ng-click="stop()">stop</button>');
+  $templateCache.put('modules/player/directives/player-controls/player-controls.html', '<button ng-click="play()">play</button> <button ng-click="pause()">pause</button> <button ng-click="stop()">stop</button> <input type="text" ng-model="volume" ng-blur="setVolume(volume / 100)">');
 
 }]);
 angular.module('ss.audioSelector', ['vkontakteServices', 'ss.services', 'ss.filters'])
@@ -370,6 +370,17 @@ angular.module('ss.gridSizes', [])
             'q': 'XL'
         }
     });
+angular.module('ss')
+    .directive('addSpace', function() {
+        return {
+            restrict: 'A',
+            link: function (scope, element) {
+                element.after('&nbsp;');
+            }
+        }
+    });
+
+/*bad bad angular (( need space for justify list*/
 angular.module('ss.filters', ['ss.gridSizes'])
     .filter('photoSrc', function(gridSizes) {
         function searchSize(sizes, type) {
@@ -415,28 +426,61 @@ angular.module('ss.filters', ['ss.gridSizes'])
 angular.module('ss.header', []);
 angular.module('ss.photoSelector', ['vkontakteServices', 'ss.directives', 'ss.services', 'ngRoute'])
     .controller('AlbumsController', AlbumsController)
-    .controller('PhotosController', PhotosController);
+    .controller('PhotosController', PhotosController)
+    .factory('albumData', function(VKPhotos) {
+        var systemAlbums = [-6, -7, -15];
 
-function AlbumsController($scope, VKPhotos) {
+        function getData(id) {
+            if (systemAlbums.indexOf(id)) {
+                VKPhotos.getAlbums();
+            } else {
+                VKPhotos
+            }
+        }
+
+        return {};
+    });
+
+function AlbumsController($scope, VKPhotos, selectedPhotos) {
+    function add(album) {
+        VKPhotos.getAlbumPhotos(album.id).then(function(photos) {
+            selectedPhotos.addAll(photos);
+        });
+    }
+
+    $scope.albums = [];
+    $scope.sizes = ['o','p','q'];
     $scope.gridSize = 'p';
-    VKPhotos.getAlbums().then(function(albums){
+
+    $scope.add = add;
+
+    VKPhotos.getAlbums().then(function(albums) {
         $scope.albums = albums;
     });
 }
 
 function PhotosController($scope, VKPhotos, selectedPhotos, $routeParams) {
-    VKPhotos.getAlbumPhotos($routeParams.id).then(function(photos){
-        $scope.photos = photos;
-    });
-    $scope.gridSize = 'o';
-
-    $scope.togglePhoto = function(photo) {
+    function togglePhoto(photo) {
         if (photo.selected) {
             selectedPhotos.remove(photo);
         } else {
             selectedPhotos.add(photo);
         }
     }
+
+    $scope.gridSize = 'o';
+    $scope.photos = [];
+
+    $scope.togglePhoto = togglePhoto;
+
+    VKPhotos.getAlbumPhotos($routeParams.id).then(function(photos) {
+        selectedPhotos.checkAll(photos);
+        $scope.photos = photos;
+    });
+
+    VKPhotos.getAlbum($routeParams.id).then(function(album) {
+        $scope.album = album;
+    });
 }
 angular.module('ss.player', ['parseServices', 'ss.templates', 'ss.filters'])
     .controller('PlayerController', function($scope, slideshowService, $route, $filter, canvasPlayService, audioPlayService) {
@@ -462,6 +506,11 @@ angular.module('ss.player', ['parseServices', 'ss.templates', 'ss.filters'])
 
             canvasPlayService.setImages(images);
             audioPlayService.initialize(audios);
+        });
+
+        $scope.$on('$locationChangeStart', function() {
+            canvasPlayService.stop();
+            audioPlayService.stop();
         });
     });
 angular.module('parseServices', [])
@@ -513,22 +562,64 @@ angular.module('ss.services', [])
                 photos = newCollection;
             },
 
-            add: function() {
-                Array.prototype.push.apply(photos, arguments);
-                for(var i = 0; i < arguments.length; i++) {
-                    arguments[i].selected = true;
+            add: function(photo) {
+                var existIndex = this.exist(photo);
+                if (existIndex === -1) {
+                    photos.push(photo);
+                } else {
+                    if (photos[existIndex] !== photo) {
+                        photos[existIndex] = photo;
+                    }
+                }
+
+                photo.selected = true;
+            },
+
+            addAll: function(photoArray) {
+                for(var i = 0; i < photoArray.length; i++) {
+                    this.add(photoArray[i]);
                 }
             },
 
-            remove: function() {
-                var index;
-                for (var i = 0; i < arguments.length; i++) {
-                    index = photos.indexOf(arguments[i]);
-                    if (index !== -1) {
-                        photos.splice(index, 1);
-                    }
-                    arguments[i].selected = false;
+            remove: function(photo) {
+                var index = this.exist(photo);
+                if (index !== -1) {
+                    photos.splice(index, 1);
                 }
+                photo.selected = false;
+            },
+
+            removeAll: function(photoArray) {
+                for (var i = 0; i < photoArray.length; i++) {
+                    this.remove(photoArray[i])
+                }
+            },
+
+            check: function(photo) {
+                var index = this.exist(photo);
+                if (index !== -1) {
+                    if (photos[index] !== photo) {
+                        photos[index] = photo;
+                    }
+
+                    photo.selected = true;
+                }
+            },
+
+            checkAll: function(photoArray) {
+                for (var i = 0; i < photoArray.length; i++) {
+                    this.check(photoArray[i])
+                }
+            },
+
+            exist: function(_photo_) {
+                for (var i = 0; i < photos.length; i++) {
+                    if (_photo_.id === photos[i].id) {
+                        return i;
+                    }
+                }
+
+                return -1;
             }
         };
     })
@@ -549,22 +640,38 @@ angular.module('ss.services', [])
                 audios = newCollection;
             },
 
-            add: function() {
-                Array.prototype.push.apply(audios, arguments);
-                for(var i = 0; i < arguments.length; i++) {
-                    arguments[i].selected = true;
+            add: function(audio) {
+                var existIndex = this.exist(audio);
+
+                if (existIndex === -1) {
+                    audios.push(audio);
+                } else {
+                    if (audios[existIndex] !== audio) {
+                        audios[existIndex] = audio;
+                    }
+
                 }
+
+                audio.selected = true;
             },
 
-            remove: function() {
-                var index;
-                for (var i = 0; i < arguments.length; i++) {
-                    index = audios.indexOf(arguments[i]);
-                    if (index !== -1) {
-                        audios.splice(index, 1);
-                    }
-                    arguments[i].selected = false;
+            remove: function(audio) {
+                var index = this.exist(audio);
+                if (index !== -1) {
+                    audios.splice(index, 1);
                 }
+
+                audio.selected = false;
+            },
+
+            exist: function(_audio_) {
+                for (var i = 0; i < audios.length; i++) {
+                    if (_audio_.id === audios[i].id) {
+                        return i;
+                    }
+                }
+
+                return -1;
             }
         };
     });
@@ -602,12 +709,14 @@ angular.module('vkontakteServices', [])
 
     .factory('VKPhotos', function(methodWrapper) {
         function getAlbums() {
+            var parameters = {
+                need_system: 1,
+                need_covers: 1,
+                photo_sizes: 1
+            };
+
             return methodWrapper(function(deferred){
-                VK.api('photos.getAlbums', {
-                    need_system: 1,
-                    need_covers: 1,
-                    photo_sizes: 1
-                }, function(data) {
+                VK.api('photos.getAlbums', parameters, function(data) {
                     if (data.response) {
                         deferred.resolve(data.response.items);
                     } else {
@@ -632,9 +741,42 @@ angular.module('vkontakteServices', [])
             });
         }
 
+        function getAlbum(id) {
+            var parameters = {},
+                system;
+
+            if (id < 0) {
+                system = true;
+                parameters.need_system = 1;
+            } else {
+                system = false;
+                parameters.album_ids = id;
+            }
+
+            return methodWrapper(function(deferred){
+                VK.api('photos.getAlbums', parameters, function(data) {
+                    if (data.response) {
+                        if (system) {
+                            data.response.items.some(function(album) {
+                                if (album.id == id) {
+                                    deferred.resolve(album);
+                                    return true;
+                                }
+                            });
+                        } else {
+                            deferred.resolve(data.response.items[0]);
+                        }
+                    } else {
+                        deferred.reject('error in getting data');
+                    }
+                });
+            });
+        }
+
         return {
             getAlbums: getAlbums,
-            getAlbumPhotos: getAlbumPhotos
+            getAlbumPhotos: getAlbumPhotos,
+            getAlbum: getAlbum
         };
     })
 
@@ -686,25 +828,33 @@ angular.module('ss.directives', ['ss.gridSizes', 'ss.templates'])
             restrict: 'E',
             replace: true,
             scope: {
-                gridSize: '=size',
-                sizes: '@'
+                gridSize: '=size'
             },
             templateUrl: "modules/directives/grid-size/grid-size.html",
             controller: function($scope, gridSizes) {
+                function changeSize(size) {
+                    $scope.gridSize = size;
+                }
+
+                $scope.sizes = ['o', 'p', 'q'];
                 $scope.names = gridSizes.names;
+
+                $scope.changeSize = changeSize;
             }
         }
     });
 
 angular.module('ss.player')
     .factory('audioPlayService', function() {
-        var audios,
-            currentAudio = 0;
+        var audios = [],
+            currentAudio = 0,
+            instance;
 
         function initialize(_audios_) {
             audios = _audios_;
 
             for (var i = 0; i < audios.length; i++) {
+                audios[i].volume = instance.volume;
                 audios[i].addEventListener('ended', audioEnded);
             }
         }
@@ -736,12 +886,24 @@ angular.module('ss.player')
             audios[currentAudio].play();
         }
 
-        return {
+        function setVolume(volume) {
+            instance.volume = volume;
+
+            for (var i = 0; i < audios.length; i++) {
+                audios[i].volume = instance.volume;
+            }
+        }
+
+        instance = {
+            volume: 0.5,
             initialize: initialize,
             play: play,
             pause: pause,
-            stop: stop
+            stop: stop,
+            setVolume: setVolume
         };
+
+        return instance;
     });
 angular.module('ss.player')
     .factory('defaultAnimationType', function() {
@@ -948,8 +1110,22 @@ function PlayerControlsController($scope, audioPlayService, canvasPlayService) {
         $scope.played = false;
     }
 
+    function setVolume() {
+        if ($scope.volume < 0 ) {
+            $scope.volume = 0;
+        }
+
+        if ($scope.volume > 100) {
+            $scope.volume = 100;
+        }
+
+        audioPlayService.setVolume($scope.volume / 100);
+    }
+
+    $scope.volume = audioPlayService.volume * 100;
     $scope.played = false;
     $scope.pause = pause;
     $scope.stop = stop;
     $scope.play = play;
+    $scope.setVolume = setVolume;
 }

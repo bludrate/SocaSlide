@@ -1,0 +1,24 @@
+@import 'variables';
+
+.button {
+    display: inline-block;
+    vertical-align: top;
+    height: 40px;
+    line-height: 40px;
+    text-decoration: none;
+    background: $primaryColor;
+    padding: 0 20px;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: background 0.1s ease, box-shadow 0.05s ease;
+
+    &:hover {
+        background: $darkPrimaryColor;
+    }
+
+    &:active {
+        box-shadow: 0 2px 3px #000 inset;
+    }
+}

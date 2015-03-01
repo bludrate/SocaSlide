@@ -1,17 +1,118 @@
+@import '../../../stylus/variables';
+
 .album-list {
-    margin: 0
-    padding: 0
-    list-style: none
-    font-size: 11px
+    margin: 0 -25px 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 11px;
 
     &_size_p {
-        font-size: 13px
+        font-size: 13px;
     }
 
     &_size_q {
-        font-size: 16px
+        font-size: 16px;
     }
-    
+
+    &__buttons {
+        position: absolute;
+        top: 0;
+        margin-top: -34px;
+        width: 100%;
+        left: 0;
+        text-align: center;
+        transition: top 0.1s;
+    }
+
+    &__item:hover &__buttons {
+        top: 50%;
+    }
+
+    &__button {
+        display: inline-block;
+        vertical-align: top;
+        width: 34px;
+        height: 34px;
+        transition: top 0.1s, background 0.1s;
+        border: none;
+        padding: 0;
+        margin: 0 8px;
+        background: $darkPrimaryColor;
+        border-radius: 2px;
+        cursor: pointer;
+        outline: none;
+        color: white;
+        text-decoration: none;
+
+        &:hover {
+            background: $primaryColor;
+        }
+
+        &:active {
+            box-shadow: 0 2px 3px #000 inset;
+        }
+
+        &:before {
+            display: block;
+            line-height: 34px;
+            font-family: 'icon-font';
+        }
+
+        &_add:before {
+            font-size: 34px;
+            content: "\f0fb";
+        }
+        &_open:before {
+            font-size: 28px;
+            content: "\f03f";
+        }
+    }
+
+    &_size_p &__buttons {
+        margin-top: -45px;
+    }
+
+    &_size_p &__button {
+        width: 45px;
+        height: 45px;
+        margin: 0 10px;
+
+        &:before {
+            line-height: 45px;
+        }
+
+        &_add:before {
+            font-size: 45px;
+        }
+
+        &_open:before {
+            font-size: 37px;
+        }
+    }
+
+    &_size_q &__buttons {
+        margin-top: -55px;
+    }
+
+    &_size_q &__button {
+        width: 55px;
+        height: 55px;
+        margin: 0 13px;
+        border-radius: 5px;
+
+        &:before {
+            line-height: 55px;
+        }
+
+        &_add:before {
+            font-size: 55px;
+        }
+
+        &_open:before {
+            font-size: 45px;
+        }
+    }
+
     &__item {
         float: left;
         width: 130px;
@@ -20,12 +121,17 @@
         margin: 5px;
         position: relative;
         animation: create 0.1s;
+        background: black;
+        text-align: left;
 
         &-title {
             position: absolute;
             bottom: 0;
             left: 0;
-            background: rgba(0,0,0,0.7)
+            background: rgba(0,0,0,0.7);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis
             color: white;
             padding: 3px 4px;
             width: 100%;
@@ -41,6 +147,12 @@
             min-width: 100%;
             vertical-align: top;
             min-height: 100%;
+            opacity: 1;
+            transition: opacity 0.1s;
+        }
+
+        &:hover img{
+            opacity: 0.7;
         }
     }
 
@@ -55,13 +167,13 @@
     &_size_p &__item{
         width: 200px;
         height: 130px;
-        margin: 7px;
+        margin: 7px 16px;
     }
 
     &_size_q &__item{
         width: 320px;
         height: 210px;
-        margin: 10px;
+        margin: 10px 15px;
     }
 }
 

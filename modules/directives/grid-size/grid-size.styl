@@ -1,0 +1,33 @@
+@import '../../../stylus/variables';
+
+.grid-size-block {
+    float: right;
+    padding-left: 20px;
+}
+
+.grid-size {
+    display: inline-block;
+    border: none;
+    color: white;
+    background: $lightPrimaryColor;
+    transition: background 0.1s ease, box-shadow 0.05s ease;
+    font-size: 14px;
+    text-align: center;
+    width: 30px;
+    height: 25px;
+    line-height: 25px;
+    outline: none;
+    margin: 0 2px;
+    padding: 0;
+    cursor: pointer;
+    border-radius: 2px;
+
+    &:active {
+        box-shadow: 0 1px 2px #000 inset;
+    }
+
+    &.active,
+    &:hover{
+        background: $primaryColor;
+    }
+}

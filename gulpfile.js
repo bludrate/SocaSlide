@@ -124,7 +124,7 @@ gulp.task('default', function () {
 
     gulp.watch("**/*.styl", ['styles']);
 
-    gulp.watch("modules/**/*.html", ['templates']);
+    gulp.watch("**/*.html", ['templates']);
 
     gulp.watch(["modules/**/*.js", "js/app.js", "js/templates.js"], ['js']);
 });

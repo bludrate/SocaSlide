@@ -1,23 +1,14 @@
 .header {
-  background: #343b40;
+  background: #795548;
   height: 50px;
   padding: 0 0 0 25px;
+  margin-bottom: 10px;
 }
 .logo {
-  color: #90ee90;
-  font: 42px/50px 'Architects Daughter', cursive;
+  color: #fff;
+  font: 34px/50px 'Lobster', cursive;
   text-decoration: none;
+  letter-spacing: 2px;
   float: left;
   margin-right: 50px;
-}
-.step {
-  display: inline-block;
-  color: #fff;
-  font-size: 20px;
-  line-height: 50px;
-  margin: 0 20px 0 0;
-  text-decoration: none;
-}
-.step.active {
-  color: #346bff;
 }
