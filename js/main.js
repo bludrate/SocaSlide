@@ -269,6 +269,24 @@ e,u,b)})}function k(){var a,b;d.forEach(g,function(f,g){var q;if(q=!b){var h=c.p
 g=f[1];c.push(b[g]);c.push(f[2]||"");delete b[g]}});return c.join("")}var w=!1,n,v,s={routes:g,reload:function(){w=!0;a.$evalAsync(function(){l();m()})},updateParams:function(a){if(this.current&&this.current.$$route){var b={},f=this;d.forEach(Object.keys(a),function(c){f.current.pathParams[c]||(b[c]=a[c])});a=d.extend({},this.current.params,a);c.path(t(this.current.$$route.originalPath,a));c.search(d.extend({},c.search(),b))}else throw B("norout");}};a.$on("$locationChangeStart",l);a.$on("$locationChangeSuccess",
 m);return s}]});var B=d.$$minErr("ngRoute");p.provider("$routeParams",function(){this.$get=function(){return{}}});p.directive("ngView",v);p.directive("ngView",A);v.$inject=["$route","$anchorScroll","$animate"];A.$inject=["$compile","$controller","$route"]})(window,window.angular);
 
+angular.module('mouseWheel', [])
+    .directive('mouseWheel', ['$parse', function($parse){
+      return {
+        restrict: 'A',
+        link: function(scope, element, attr) {
+          var expr = $parse(attr.mouseWheel);
+
+          element.bind('wheel', function(event){
+            scope.$apply(function() {
+              expr(scope, {
+                $event: event
+              });
+            });
+          });
+        }
+      };
+    }]);
+
 /**
  * angular-route-segment 1.3.3
  * https://angular-route-segment.com
@@ -276,8 +294,8 @@ m);return s}]});var B=d.$$minErr("ngRoute");p.provider("$routeParams",function()
  * @license MIT License http://opensource.org/licenses/MIT
  */
 "use strict";!function(a){var b=a.module("route-segment",[]);b.provider("$routeSegment",["$routeProvider",function(b){function c(a){return a.replace(/([\:\-\_]+(.))/g,function(a,b,c,d){return d?c.toUpperCase():c})}function d(a,b){if(!a)throw new Error("Invalid pointer segment");var e;return{segment:function(b,d){return a[c(b)]={params:d},e=b,this},within:function(b){var g;if(b=b||e,g=a[c(b)])void 0==g.children&&(g.children={});else{if(f.strictMode)throw new Error("Cannot get into unknown `"+b+"` segment");g=a[c(b)]={params:{},children:{}}}return d(g.children,this)},up:function(){return b},root:function(){return h}}}var e=this,f=e.options={autoLoadTemplates:!0,strictMode:!1},g=this.segments={},h=d(g,null),i={};e.when=function(a,c){return b.when(a,{segment:c}),i[c]=a,this},a.extend(e,h),this.$get=["$rootScope","$q","$http","$templateCache","$route","$routeParams","$injector",function(b,d,e,h,j,k,l){function m(b){var c=!1;return b.params.dependencies&&a.forEach(b.params.dependencies,function(b){a.equals(r.$routeParams[b],k[b])||(c=!0)}),c}function n(a,b){return r.chain[a]&&r.chain[a].clearWatcher&&r.chain[a].clearWatcher(),b?(s[a]=b.name,b.params.untilResolved?o(a,b.name,b.params.untilResolved).then(function(c){return void 0!=c.success&&p(a),o(a,b.name,b.params)}):o(a,b.name,b.params)):(s[a]=null,void p(a))}function o(c,g,i){var j=a.extend({},i.resolve);return a.forEach(j,function(b,c){j[c]=a.isString(b)?l.get(b):l.invoke(b)}),i.template&&(j.$template=i.template,a.isFunction(j.$template)&&(j.$template=l.invoke(j.$template))),f.autoLoadTemplates&&i.templateUrl&&(j.$template=i.templateUrl,a.isFunction(j.$template)&&(j.$template=l.invoke(j.$template)),j.$template=e.get(j.$template,{cache:h}).then(function(a){return a.data})),d.all(j).then(function(e){if(s[c]!=g)return d.reject();if(r.chain[c]={name:g,params:i,locals:e,reload:function(){var a=q(c,r.name.split("."));n(c,a).then(function(a){void 0!=a.success&&p(c)})}},i.watcher){var f=function(){if(!a.isFunction(i.watcher)&&!a.isArray(i.watcher))throw new Error("Watcher is not a function in segment `"+g+"`");return l.invoke(i.watcher,{},{segment:r.chain[c]})},h=f();r.chain[c].clearWatcher=b.$watch(f,function(a){a!=h&&(h=a,r.chain[c].reload())})}return{success:c}},function(b){if(i.resolveFailed){var e={error:function(){return d.when(b)}};return o(c,g,a.extend({resolve:e},i.resolveFailed))}throw new Error("Resolving failed with a reason `"+b+"`, but no `resolveFailed` provided for segment `"+g+"`")})}function p(c){r.$routeParams=a.copy(k),r.name="";for(var d=0;d<r.chain.length;d++)r.chain[d]&&(r.name+=r.chain[d].name+".");r.name=r.name.substr(0,r.name.length-1),b.$broadcast("routeSegmentChange",{index:c,segment:r.chain[c]||null})}function q(a,b){if(!b)return null;if(a>=b.length)return null;for(var d,e=g,f=0;a>=f;f++)d=b[f],void 0!=e[c(d)]&&(e=e[c(d)]),a>f&&(e=e.children);return{name:d,params:e.params,children:e.children}}var r={name:"",$routeParams:a.copy(k),chain:[],startsWith:function(a){var b=new RegExp("^"+a);return b.test(r.name)},contains:function(a){for(var b=0;b<this.chain.length;b++)if(this.chain[b]&&this.chain[b].name==a)return!0;return!1},getSegmentUrl:function(b,c){var d,e,f;if(!i[b])throw new Error("Can not get URL for segment with name `"+b+"`");c=a.extend({},k,c||{}),d=i[b];for(e in c){var g=new RegExp(":"+e+"[*?]?","g");d=d.replace(g,c[e])}if(d=d.replace(/\/\:.*?\?/g,""),f=d.match(/\/\:([^\/]*)/))throw new Error("Route param `"+f[1]+"` is not specified for route `"+i[b]+"`");return d}},s={};return b.$on("$routeChangeSuccess",function(a,b){var c=b.$route||b.$$route;if(c&&c.segment){for(var e=c.segment,f=e.split("."),g=[],h=-1,i=0;i<f.length;i++){var j=q(i,f);(s[i]!=j.name||g.length>0||m(j))&&(r.chain[i]&&r.chain[i].name==j.name&&0==g.length&&!m(j)?s[i]=j.name:(g.push({index:i,newSegment:j}),h=i))}var k=d.when();if(g.length>0)for(var i=0;i<g.length;i++)!function(a){k=k.then(function(){return n(g[a].index,g[a].newSegment)}).then(function(b){if(void 0!=b.success){p(b.success);for(var c=g[a].index+1;c<r.chain.length;c++)r.chain[c]&&(r.chain[c]=null,n(c,null))}})}(i);k.then(function(){if(r.chain.length>f.length){var a=r.chain.length,b=r.chain.length-f.length;r.chain.splice(-b,b);for(var c=f.length;a>c;c++)n(c,null),h=r.chain.length-1}}).then(function(){var a=d.when();if(h==r.chain.length-1)for(var b=q(h,r.name.split("."));b;){var c=b.children,e=h+1;b=null;for(var f in c)!function(c,d,e){d[c].params["default"]&&(a=a.then(function(){return n(e,{name:c,params:d[c].params}).then(function(a){a.success&&p(a.success)})}),b=d[c],h=e)}(f,c,e)}return a})}}),r}]}]),b.filter("routeSegmentUrl",["$routeSegment",function(a){var b=function(b,c){return a.getSegmentUrl(b,c)};return b.$stateful=!0,b}]),b.filter("routeSegmentEqualsTo",["$routeSegment",function(a){var b=function(b){return a.name==b};return b.$stateful=!0,b}]),b.filter("routeSegmentStartsWith",["$routeSegment",function(a){var b=function(b){return a.startsWith(b)};return b.$stateful=!0,b}]),b.filter("routeSegmentContains",["$routeSegment",function(a){var b=function(b){return a.contains(b)};return b.$stateful=!0,b}]),b.filter("routeSegmentParam",["$routeSegment",function(a){var b=function(b){return a.$routeParams[b]};return b.$stateful=!0,b}])}(angular),function(a){a.module("view-segment",["route-segment"]).directive("appViewSegment",["$route","$compile","$controller","$routeParams","$routeSegment","$q","$injector","$timeout",function(b,c,d,e,f,g,h,i){return{restrict:"ECA",priority:500,compile:function(b,e){var g=b.html(),j=!0,k=a.element(document.createComment(" view-segment "));return b.prepend(k),function(l){function m(){p&&(r.leave(p),p=null),o&&(o.$destroy(),o=null)}function n(e){if(q=e,j&&(j=!1,b.replaceWith(k)),!e)return m(),p=b.clone(),p.html(g),r.enter(p,null,k),void c(p,!1,499)(l);var f=a.extend({},e.locals),h=f&&f.$template;m(),p=b.clone(),p.html(h?h:g),r.enter(p,null,k);var i,n=c(p,!1,499);o=l.$new(),e.params.controller&&(f.$scope=o,i=d(e.params.controller,f),e.params.controllerAs&&(o[e.params.controllerAs]=i),p.data("$ngControllerController",i),p.children().data("$ngControllerController",i)),n(o),o.$emit("$viewContentLoaded"),o.$eval(t)}var o,p,q,r,s,t=e.onload||"",u=parseInt(e.appViewSegment);try{var v=h.get("$animator");r=v(l,e)}catch(w){}try{r=h.get("$animate")}catch(w){}f.chain[u]&&(s=i(function(){n(f.chain[u])},0)),l.$on("routeSegmentChange",function(a,b){s&&i.cancel(s),b.index==u&&q!=b.segment&&n(b.segment)})}}}}])}(angular);
-angular.module('ss', ['ngRoute', 'ss.audioSelector', 'route-segment', 'view-segment', 'ss.header', 'ss.photoSelector', 'ss.templates', 'ss.timeline', 'ss.player'])
-    .config(function ($routeProvider, $routeSegmentProvider, $locationProvider) {
+angular.module('ss', ['ngRoute', 'ss.audioSelector', 'route-segment', 'view-segment', 'ss.header', 'ss.photoSelector', 'ss.templates', 'ss.panel', 'ss.player', 'ss.tooltip'])
+    .config(function ($routeProvider, $routeSegmentProvider) {
         $routeSegmentProvider
             .when('/', 'home')
             .when('/create', 'create')
@@ -315,31 +333,39 @@ angular.module('ss', ['ngRoute', 'ss.audioSelector', 'route-segment', 'view-segm
             });
 
         $routeProvider.otherwise({redirectTo: '/'});
-
-        $locationProvider.html5Mode(true);
     });
 
 'use strict';
 
 angular.module('ss.templates', []).run(['$templateCache', function($templateCache) {
 
-  $templateCache.put('modules/audio-selector/audio-selector.html', '<section class="audio-selector section" ng-controller="AudiosController"><header class="section__header"><input type="text" ng-model="search" class="audio-selector__filter"><h2 class="section__title">Choice audio</h2></header><ul class="audio-list"><li class="audio-list__item" ng-repeat="audio in audios | filter:search track by audio.id" title="{{audio.artist + \'-\' + audio.title}}" ng-click="toggleAudio(audio)"><span class="audio-list__duration">{{audio.duration | timeFormatter}}</span> <span class="audio-list__name">{{audio.artist + \' - \' + audio.title}}</span></li></ul></section>');
+  $templateCache.put('modules/audio-selector/audio-selector.html', '<section class="audio-selector section" ng-controller="AudiosController"><header class="section__header"><input type="text" ng-model="search" class="audio-selector__filter" placeholder="Поиск"><h2 class="section__title">Выберите музыку</h2></header><ul class="audio-list"><li class="audio-list__item" ng-repeat="audio in audios | filter:search track by audio.id" ng-class="{selected: audio.selected}" ng-click="toggleAudio($event, audio)"><button class="audio-list__play" play-audio="{{audio.url}}"></button> <span class="audio-list__duration">{{audio.duration | timeFormatter}}</span> <span class="audio-list__name">{{audio.artist + \' - \' + audio.title}}</span> <button class="audio-list__toggle"></button></li></ul></section>');
 
-  $templateCache.put('modules/header/header.html', '<header class="header"><a href="/" active-link="home" class="logo">SocaSlide</a></header>');
+  $templateCache.put('modules/header/header.html', '<header class="header"><a href="/#/" active-link="home" class="logo">SocaSlide</a><breadcrumbs></breadcrumbs></header>');
 
-  $templateCache.put('modules/photo-selector/albums.html', '<header class="section__header"><grid-size size="gridSize"></grid-size><h2 class="section__title">Альбомы</h2></header><div class="section__content"><ul class="album-list album-list_size_{{gridSize}}"><li class="album-list__item" data-ng-repeat="album in albums track by album.id"><img ng-src="{{album.sizes | photoSrc: gridSize }}"> <span class="album-list__item-title">{{album.title}}</span><div class="album-list__buttons"><a href="/create/albums/{{album.id}}" class="album-list__button album-list__button_open" title="Открыть"></a> <button class="album-list__button album-list__button_add" ng-click="add(album)" title="Добавить весь альбом"></button></div></li></ul></div>');
+  $templateCache.put('modules/panel/panel.html', '<div class="panel"><frame-list></frame-list><audio-list></audio-list><button class="create-slideshow" ng-click="saveSlideshow()"></button></div>');
+
+  $templateCache.put('modules/photo-selector/albums.html', '<header class="section__header"><grid-size size="gridSize"></grid-size><h2 class="section__title">Альбомы</h2></header><div class="section__content"><ul class="album-list album-list_size_{{gridSize}}"><li class="album-list__item" data-ng-repeat="album in albums track by album.id"><img ng-src="{{album.sizes | photoSrc: gridSize }}"> <span class="album-list__item-title">{{album.title}}</span><div class="album-list__buttons"><a href="#/create/albums/{{album.id}}" class="album-list__button album-list__button_open" title="Открыть"></a> <button class="album-list__button album-list__button_add" ng-click="add(album)" title="Добавить весь альбом"></button></div></li></ul></div>');
 
   $templateCache.put('modules/photo-selector/photos.html', '<header class="section__header"><grid-size size="gridSize"></grid-size><h2 class="section__title">{{album.title}}</h2></header><div class="section__content"><ul class="photo-list photo-list_size_{{gridSize}}"><li class="photo-list__item" ng-class="{selected: photo.selected}" ng-repeat="photo in photos track by photo.id" title="{{photo.title}}" ng-click="togglePhoto(photo)"><img ng-src="{{photo.sizes | photoSrc: gridSize }}"></li></ul></div>');
 
   $templateCache.put('modules/player/player.html', '<div class="player"><player-canvas></player-canvas><player-controls></player-controls></div>');
 
-  $templateCache.put('modules/timeline/timeline.html', '<div class="timeline" ng-controller="FramesController"><ul class="frame-list"><li class="frame-list__item" ng-repeat="frame in frames track by frame.id" title="{{frame.title}}" ng-click="removeFrame(frame)"><img ng-src="{{frame.sizes | photoSrc: \'o\' }}"></li></ul><ul class="timeline-audios"><li class="timeline-audios__item" active-link="home" ng-repeat="audio in audios track by audio.id" title="{{audio.artist + \' - \' + audio.title}}"><span class="timeline-audios__duration">{{audio.duration | timeFormatter}}</span> <span class="timeline-audios__audio-name">{{audio.artist + \' - \' + audio.title}}</span></li></ul><button class="create-slideshow" ng-click="saveSlideshow()"></button></div>');
+  $templateCache.put('modules/tooltip/tooltip.html', '<span class="tooltip" ng-show="tooltipService.showed">{{tooltipService.data.message}}</span>');
 
-  $templateCache.put('pages/create-page/create-page.html', '<section class="create-section"><ng-include src="\'modules/audio-selector/audio-selector.html\'"></ng-include><section class="section" app-view-segment="1"></section><ng-include src="\'modules/timeline/timeline.html\'"></ng-include></section>');
+  $templateCache.put('pages/create-page/create-page.html', '<section class="create-section"><ng-include src="\'modules/audio-selector/audio-selector.html\'"></ng-include><section class="section" app-view-segment="1"></section><panel></panel></section>');
 
-  $templateCache.put('pages/home-page/home-page.html', '<div class="wrapper"><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi at aut blanditiis corporis culpa cum deserunt dolor ducimus eaque eos esse et, eveniet explicabo facere iusto maiores numquam possimus provident qui quidem quo repellat repudiandae sapiente sequi similique, sint soluta sunt tempore ut vel. Alias aliquam cumque delectus deleniti dolores error excepturi, ipsa iure laboriosam, molestias quae repellat sapiente sit ut veritatis. A aliquam aliquid amet assumenda blanditiis consectetur dignissimos doloremque eaque esse eum eveniet ex fugit illum impedit laudantium necessitatibus nobis perspiciatis quibusdam recusandae repellendus sequi similique, sint sit tempora tempore, vero voluptates! Ab amet blanditiis enim eveniet facere fugiat placeat qui sapiente tenetur? Ab aperiam, beatae blanditiis consequatur dolore ducimus ea, et eum itaque laudantium nesciunt optio, perferendis quam reiciendis repudiandae vitae voluptatem. Accusantium aliquid amet iure, quaerat quam quia sint soluta vero. A accusamus amet eligendi est facilis hic itaque magni odit quaerat, sequi soluta voluptas voluptatibus. Accusantium assumenda dolorem harum laboriosam necessitatibus qui voluptates. Aut doloremque doloribus eligendi eos esse et eveniet explicabo facilis fuga illum in minima nam natus necessitatibus nobis nulla omnis perspiciatis porro, quaerat, quam quia quod repellendus similique soluta sunt velit voluptatem. Ab et saepe sapiente? Doloremque dolores nulla omnis optio quam sunt ullam. Accusantium aliquam atque cupiditate deleniti dignissimos dolorem earum eligendi excepturi explicabo iure nam, nulla numquam quasi rerum sint tempore voluptatibus? Aspernatur quam rerum suscipit temporibus? Enim obcaecati officiis quos ratione repellat reprehenderit, sapiente unde. Dolore eius hic maiores odit pariatur repudiandae ullam vel! Alias consequuntur, earum fuga harum, ipsa magnam odio, perferendis perspiciatis quibusdam sed soluta voluptates! Ab atque inventore maiores rerum. Maiores minima qui ut. Ab animi aspernatur dolore et id incidunt iusto, labore libero mollitia nemo neque nobis non nulla, obcaecati quaerat recusandae sed sit tempore totam ullam ut vero voluptates. Minima pariatur quia voluptatem voluptatum!</p><div class="tac"><a href="/create" class="button">Create slideshow</a></div></div>');
+  $templateCache.put('pages/home-page/home-page.html', '<div class="wrapper"><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi at aut blanditiis corporis culpa cum deserunt dolor ducimus eaque eos esse et, eveniet explicabo facere iusto maiores numquam possimus provident qui quidem quo repellat repudiandae sapiente sequi similique, sint soluta sunt tempore ut vel. Alias aliquam cumque delectus deleniti dolores error excepturi, ipsa iure laboriosam, molestias quae repellat sapiente sit ut veritatis. A aliquam aliquid amet assumenda blanditiis consectetur dignissimos doloremque eaque esse eum eveniet ex fugit illum impedit laudantium necessitatibus nobis perspiciatis quibusdam recusandae repellendus sequi similique, sint sit tempora tempore, vero voluptates! Ab amet blanditiis enim eveniet facere fugiat placeat qui sapiente tenetur? Ab aperiam, beatae blanditiis consequatur dolore ducimus ea, et eum itaque laudantium nesciunt optio, perferendis quam reiciendis repudiandae vitae voluptatem. Accusantium aliquid amet iure, quaerat quam quia sint soluta vero. A accusamus amet eligendi est facilis hic itaque magni odit quaerat, sequi soluta voluptas voluptatibus. Accusantium assumenda dolorem harum laboriosam necessitatibus qui voluptates. Aut doloremque doloribus eligendi eos esse et eveniet explicabo facilis fuga illum in minima nam natus necessitatibus nobis nulla omnis perspiciatis porro, quaerat, quam quia quod repellendus similique soluta sunt velit voluptatem. Ab et saepe sapiente? Doloremque dolores nulla omnis optio quam sunt ullam. Accusantium aliquam atque cupiditate deleniti dignissimos dolorem earum eligendi excepturi explicabo iure nam, nulla numquam quasi rerum sint tempore voluptatibus? Aspernatur quam rerum suscipit temporibus? Enim obcaecati officiis quos ratione repellat reprehenderit, sapiente unde. Dolore eius hic maiores odit pariatur repudiandae ullam vel! Alias consequuntur, earum fuga harum, ipsa magnam odio, perferendis perspiciatis quibusdam sed soluta voluptates! Ab atque inventore maiores rerum. Maiores minima qui ut. Ab animi aspernatur dolore et id incidunt iusto, labore libero mollitia nemo neque nobis non nulla, obcaecati quaerat recusandae sed sit tempore totam ullam ut vero voluptates. Minima pariatur quia voluptatem voluptatum!</p><div class="tac"><a href="#/create" class="button">Create slideshow</a></div></div>');
+
+  $templateCache.put('modules/directives/breadcrumbs/breadcrumbs.html', '<ul ng-if="breadcrumbs" class="breadcrumbs"><li ng-repeat="breadcrumb in breadcrumbs" class="breadcrumbs__item"><ng-switch on="!!breadcrumb.link"><a ng-href="#{{breadcrumb.link}}" ng-switch-when="true" class="breadcrumbs__link">{{breadcrumb.name}}</a> <span ng-switch-default="" class="breadcrumbs__active">{{breadcrumb.name}}</span></ng-switch></li></ul>');
 
   $templateCache.put('modules/directives/grid-size/grid-size.html', '<div class="grid-size-block"><button ng-repeat="size in sizes" class="grid-size grid-size_{{size}}" ng-class="{active: size === gridSize}" ng-click="$parent.changeSize(size)">{{$parent.names[size]}}</button></div>');
+
+  $templateCache.put('modules/panel/directives/audio-list/audio-list.html', '<ul class="panel-audios"><li class="panel-audios__item" ng-repeat="audio in audios track by audio.id" title="{{audio.artist + \' - \' + audio.title}}"><span class="panel-audios__duration">{{audio.duration | timeFormatter}}</span> <span class="panel-audios__audio-name">{{audio.artist + \' - \' + audio.title}}</span></li></ul>');
+
+  $templateCache.put('modules/panel/directives/frame-list/frame-list.html', '<div class="frame-list__holder"><ul class="frame-list" mouse-wheel="scroll($event)"><li class="frame-list__item" ng-repeat="frame in frames track by frame.id" title="{{frame.title}}" ng-click="removeFrame(frame)"><img ng-src="{{frame.sizes | photoSrc: \'o\' }}"></li></ul></div>');
+
+  $templateCache.put('modules/panel/directives/timeline/timeline.html', '');
 
   $templateCache.put('modules/player/directives/player-controls/player-controls.html', '<button ng-click="play()">play</button> <button ng-click="pause()">pause</button> <button ng-click="stop()">stop</button> <input type="text" ng-model="volume" ng-blur="setVolume(volume / 100)">');
 
@@ -352,7 +378,11 @@ function AudiosController($scope, VKAudios, selectedAudios) {
         $scope.audios = audios;
     });
 
-    $scope.toggleAudio = function(audio) {
+    $scope.toggleAudio = function(event, audio) {
+        if (event.playAudio) {
+            return false;
+        }
+
         if (audio.selected) {
             selectedAudios.remove(audio);
         } else {
@@ -424,6 +454,28 @@ angular.module('ss.filters', ['ss.gridSizes'])
         }
     });
 angular.module('ss.header', []);
+angular.module('ss.panel', ['ss.services', 'parseServices', 'ss.filters', 'mouseWheel'])
+    .directive('panel', function() {
+        return {
+            restrict: 'E',
+            controller: panelController,
+            templateUrl: 'modules/panel/panel.html'
+        };
+    });
+
+function panelController($scope, $location, $rootScope, slideshowService, selectedPhotos, selectedAudios) {
+    $scope.saveSlideshow = function() {
+        slideshowService.saveNewSlideshow({
+            frames: selectedPhotos.get(),
+            audios: selectedAudios.getIds()
+        }).then(function(slideshow) {
+            $rootScope.$apply(function() {
+                var path = '/slideshow/' + slideshow.id;
+                $location.path(path);
+            });
+        });
+    };
+}
 angular.module('ss.photoSelector', ['vkontakteServices', 'ss.directives', 'ss.services', 'ngRoute'])
     .controller('AlbumsController', AlbumsController)
     .controller('PhotosController', PhotosController)
@@ -512,6 +564,10 @@ angular.module('ss.player', ['parseServices', 'ss.templates', 'ss.filters'])
             canvasPlayService.stop();
             audioPlayService.stop();
         });
+
+        $scope.fullScreen = function(event) {
+            event.currentTarget.webkitRequestFullScreen();
+        };
     });
 angular.module('parseServices', [])
     .constant('config', {
@@ -640,17 +696,29 @@ angular.module('ss.services', [])
                 audios = newCollection;
             },
 
+            getIds: function() {
+                return audios.map(function(audio) {
+                    return audio.id
+                });
+            },
+
             add: function(audio) {
-                var existIndex = this.exist(audio);
-
-                if (existIndex === -1) {
-                    audios.push(audio);
-                } else {
-                    if (audios[existIndex] !== audio) {
-                        audios[existIndex] = audio;
-                    }
-
+                //temporary
+                if (audios.length) {
+                    this.remove(audios[0]);
                 }
+                audios.push(audio);
+
+                //var existIndex = this.exist(audio);
+                //
+                //if (existIndex === -1) {
+                //    audios.push(audio);
+                //} else {
+                //    if (audios[existIndex] !== audio) {
+                //        audios[existIndex] = audio;
+                //    }
+                //
+                //}
 
                 audio.selected = true;
             },
@@ -797,29 +865,129 @@ angular.module('vkontakteServices', [])
             getAudios: getAudios
         };
     });
-angular.module('ss.timeline', ['ss.services', 'parseServices', 'ss.filters'])
-    .controller('FramesController', function($scope, $location, $rootScope, selectedPhotos, slideshowService, selectedAudios) {
-        $scope.frames = selectedPhotos.get();
-        $scope.audios = selectedAudios.get();
+angular.module('ss.tooltip', [])
+    .factory('tooltipService', function() {
+        var $body = angular.element(document.body);
+        var element;
+        var scope;
+        var offsetX = 0;
+        var offsetY = -20;
 
-        $scope.removeFrame = function(frame) {
-            selectedPhotos.remove(frame);
-        };
-
-        $scope.removeAudio = function(audio) {
-            selectedAudios.remove(audio);
-        };
-
-        $scope.saveSlideshow = function() {
-            slideshowService.saveNewSlideshow({
-                frames: $scope.frames,
-                audios: $scope.audios
-            }).then(function(slideshow) {
-                $rootScope.$apply(function() {
-                    var path = '/slideshow/' + slideshow.id;
-                    $location.path(path);
-                });
+        function onMove(event) {
+            element.css({
+                top: (event.pageY + offsetY) + 'px',
+                left: (event.pageX + offsetX) + 'px'
             });
+        }
+
+        return {
+            showed: false,
+            show: function(data) {
+                this.data = data;
+                this.showed = true;
+                $body.on('mousemove', onMove);
+                scope.$digest();
+                offsetX = -element[0].offsetWidth / 2;
+                offsetY = -element[0].offsetHeight - 10;
+            },
+
+            hide: function() {
+                this.showed = false;
+                $body.off('mousemove', onMove);
+                scope.$digest();
+            },
+
+            initialize: function(_element_, _scope_) {
+                element = _element_;
+                scope = _scope_;
+            }
+        };
+    })
+    .directive('tooltipPopup', function(tooltipService) {
+        return {
+            restrict: 'E',
+            templateUrl: 'modules/tooltip/tooltip.html',
+            replace: true,
+            scope: true,
+            link: function(scope, element) {
+                tooltipService.initialize(element, scope);
+                scope.tooltipService = tooltipService;
+            }
+        };
+    })
+    .directive('tooltip', function(tooltipService) {
+        return {
+            restrict: 'A',
+            link: function(scope, element, attrs) {
+                element.on('mouseenter', function() {
+                        tooltipService.show({
+                            message: attrs.tooltip
+                        });
+                    })
+                    .on('mouseleave', function() {
+                        tooltipService.hide();
+                    });
+            }
+        };
+    });
+angular.module('ss.audioSelector')
+    .directive('playAudio', function() {
+        var audio = new Audio();
+
+        audio.addEventListener('canplay', function() {
+            audio.play();
+            audio.element.addClass('played');
+        });
+
+        return {
+            restrict: 'A',
+            link: function(scope, element, attrs) {
+                if (audio.element && audio.element.hasClass('played') && attrs.playAudio === audio.src) {
+                    element.addClass('played');
+                    audio.element = element;
+                }
+
+                element.on('click', function(event) {
+                    event.playAudio = true;
+
+                    if (audio.element) {
+                        audio.element.removeClass('played');
+                    }
+
+                    if (audio.src === attrs.playAudio && !audio.paused) {
+                        audio.pause();
+                    } else {
+                        audio.src = attrs.playAudio;
+                        audio.element = element;
+                    }
+                });
+
+            }
+        }
+    });
+angular.module('ss')
+    .value('breadcrumbsConfig', {
+        'create.album': [
+            {
+                'name': 'Альбомы',
+                'link': 'create/albums/'
+            },
+
+            {
+                'name': 'Фотогорафии'
+            }
+        ]
+    })
+    .directive('breadcrumbs', function($route, breadcrumbsConfig, $location) {
+        return {
+            templateUrl: 'modules/directives/breadcrumbs/breadcrumbs.html',
+            controller: function($scope, $rootScope) {
+                $scope.breadcrumbs = breadcrumbsConfig[$route.current.segment];
+
+                $rootScope.$on('$routeChangeSuccess', function() {
+                    $scope.breadcrumbs = breadcrumbsConfig[$route.current.segment];
+                });
+            }
         };
     });
 angular.module('ss.directives', ['ss.gridSizes', 'ss.templates'])
@@ -1061,6 +1229,49 @@ angular.module('ss.player')
 
         return instance;
     });
+angular.module('ss.panel')
+    .directive('audioList', function() {
+        return {
+            restrict: 'E',
+            controller: audioListController,
+            templateUrl: 'modules/panel/directives/audio-list/audio-list.html'
+        };
+    });
+
+function audioListController($scope, selectedAudios) {
+    $scope.audios = selectedAudios.get();
+
+    $scope.removeAudio = function(audio) {
+        selectedAudios.remove(audio);
+    };
+}
+angular.module('ss.panel')
+    .directive('frameList', function() {
+        return {
+            restrict: 'E',
+            controller: frameListController,
+            templateUrl: 'modules/panel/directives/frame-list/frame-list.html'
+        };
+    });
+
+function frameListController($scope, selectedPhotos) {
+    $scope.frames = selectedPhotos.get();
+
+    $scope.removeFrame = function(frame) {
+        selectedPhotos.remove(frame);
+    };
+
+    $scope.scroll = function(event) {
+        var deltaY = event.wheelDeltaY;
+
+        if (isNaN(deltaY)) {
+            deltaY = 0;
+        }
+
+        event.currentTarget.scrollLeft -= deltaY;
+    };
+}
+
 angular.module('ss.player')
     .directive('playerCanvas', function(canvasPlayService) {
         return {

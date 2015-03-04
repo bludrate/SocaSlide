@@ -1,12 +1,12 @@
 @import '../../stylus/variables';
 
-.timeline {
+.panel {
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    background: rgba(0,0,0,0.5);
-    height: 150px;
+    background: $accentColor;
+    height: 110px;
     padding: 0 100px 0 0;
 }
 
@@ -25,7 +25,7 @@
         content: "\f246";
         font-family: 'icon-font';
         font-size: 90px;
-        color: #5C6BC0;
+        color: $textPrimaryColor;
     }
 }
 
@@ -36,6 +36,11 @@
     font-size: 0
     white-space: nowrap
     overflow: auto
+
+    &__holder {
+        overflow: hidden
+        height: 90px
+    }
 
     &__item {
         display: inline-block;
@@ -61,7 +66,7 @@
             opacity: 0;
             transition: opacity 0.1s;
             content: "\f102"
-            color: $red;
+            color: $redColor;
             line-height: 80px;
         }
 
@@ -86,7 +91,7 @@
     }
 }
 
-.timeline-audios {
+.panel-audios {
     overflow: auto;
     white-space: nowrap;
     margin: 0;

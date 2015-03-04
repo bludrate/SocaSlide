@@ -1,0 +1,7 @@
+<div class="frame-list__holder">
+    <ul class="frame-list" mouse-wheel="scroll($event)">
+        <li class="frame-list__item" ng-repeat="frame in frames track by frame.id" title="{{frame.title}}" ng-click="removeFrame(frame)">
+            <img ng-src="{{frame.sizes | photoSrc: 'o' }}"/>
+        </li>
+    </ul>
+</div>

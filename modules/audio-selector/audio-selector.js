@@ -6,7 +6,11 @@ function AudiosController($scope, VKAudios, selectedAudios) {
         $scope.audios = audios;
     });
 
-    $scope.toggleAudio = function(audio) {
+    $scope.toggleAudio = function(event, audio) {
+        if (event.playAudio) {
+            return false;
+        }
+
         if (audio.selected) {
             selectedAudios.remove(audio);
         } else {

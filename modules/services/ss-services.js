@@ -93,17 +93,29 @@ angular.module('ss.services', [])
                 audios = newCollection;
             },
 
+            getIds: function() {
+                return audios.map(function(audio) {
+                    return audio.id
+                });
+            },
+
             add: function(audio) {
-                var existIndex = this.exist(audio);
-
-                if (existIndex === -1) {
-                    audios.push(audio);
-                } else {
-                    if (audios[existIndex] !== audio) {
-                        audios[existIndex] = audio;
-                    }
-
+                //temporary
+                if (audios.length) {
+                    this.remove(audios[0]);
                 }
+                audios.push(audio);
+
+                //var existIndex = this.exist(audio);
+                //
+                //if (existIndex === -1) {
+                //    audios.push(audio);
+                //} else {
+                //    if (audios[existIndex] !== audio) {
+                //        audios[existIndex] = audio;
+                //    }
+                //
+                //}
 
                 audio.selected = true;
             },

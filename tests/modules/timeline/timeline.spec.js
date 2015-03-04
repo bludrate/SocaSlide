@@ -1,5 +1,5 @@
-describe("timeline", function() {
-    beforeEach(module('ss.timeline'));
+describe("panel", function() {
+    beforeEach(module('ss.panel'));
 
     describe('FramesController',function() {
         var ctrl, scope,

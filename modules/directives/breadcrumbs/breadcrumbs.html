@@ -1,0 +1,8 @@
+<ul ng-if="breadcrumbs" class="breadcrumbs">
+    <li ng-repeat="breadcrumb in breadcrumbs" class="breadcrumbs__item">
+        <ng-switch on="!!breadcrumb.link">
+            <a ng-href="#{{breadcrumb.link}}" ng-switch-when="true" class="breadcrumbs__link">{{breadcrumb.name}}</a>
+            <span ng-switch-default class="breadcrumbs__active">{{breadcrumb.name}}</span>
+        </ng-switch>
+    </li>
+</ul>

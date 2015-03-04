@@ -1,10 +1,10 @@
-.timeline {
+.panel {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(0,0,0,0.5);
-  height: 150px;
+  background: #795548;
+  height: 110px;
   padding: 0 100px 0 0;
 }
 .create-slideshow {
@@ -22,7 +22,7 @@
   content: "\f246";
   font-family: 'icon-font';
   font-size: 90px;
-  color: #5c6bc0;
+  color: #fff;
 }
 .frame-list {
   margin: 0;
@@ -31,6 +31,10 @@
   font-size: 0;
   white-space: nowrap;
   overflow: auto;
+}
+.frame-list__holder {
+  overflow: hidden;
+  height: 90px;
 }
 .frame-list__item {
   display: inline-block;
@@ -67,24 +71,24 @@
   vertical-align: top;
   min-height: 100%;
 }
-.timeline-audios {
+.panel-audios {
   overflow: auto;
   white-space: nowrap;
   margin: 0;
   padding: 0;
   list-style: none;
 }
-.timeline-audios__item {
+.panel-audios__item {
   display: inline-block;
   vertical-align: top;
   position: relative;
   padding: 5px 40px 5px 5px;
 }
-.timeline-audios__name {
+.panel-audios__name {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.timeline-audios__duration {
+.panel-audios__duration {
   position: absolute;
   right: 5px;
   top: 5px;

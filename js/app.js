@@ -1,5 +1,5 @@
-angular.module('ss', ['ngRoute', 'ss.audioSelector', 'route-segment', 'view-segment', 'ss.header', 'ss.photoSelector', 'ss.templates', 'ss.timeline', 'ss.player'])
-    .config(function ($routeProvider, $routeSegmentProvider, $locationProvider) {
+angular.module('ss', ['ngRoute', 'ss.audioSelector', 'route-segment', 'view-segment', 'ss.header', 'ss.photoSelector', 'ss.templates', 'ss.panel', 'ss.player', 'ss.tooltip'])
+    .config(function ($routeProvider, $routeSegmentProvider) {
         $routeSegmentProvider
             .when('/', 'home')
             .when('/create', 'create')
@@ -37,6 +37,4 @@ angular.module('ss', ['ngRoute', 'ss.audioSelector', 'route-segment', 'view-segm
             });
 
         $routeProvider.otherwise({redirectTo: '/'});
-
-        $locationProvider.html5Mode(true);
     });

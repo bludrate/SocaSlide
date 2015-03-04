@@ -8,11 +8,13 @@ var autoprefixer = require('gulp-autoprefixer');
 var ngTemplate = require('gulp-ng-template');
 var minifyHtml = require('gulp-minify-html');
 var clean = require('gulp-clean');
+var watch = require('gulp-watch');
 
 var jsFilesorder = [
     './vendor/parse-1.3.4.min.js',
     './vendor/angular.min.js',
     './vendor/angular-route.min.js',
+    './vendor/mousewheel.js',
     './vendor/angular-route-segment.min.js',
     './js/**/*.js',
     '!./js/main.js',
@@ -120,11 +122,18 @@ gulp.task('public', ['clean', 'compile'], function() {
 });
 
 gulp.task('default', function () {
+    gulp.run('compile');
+
     gulp.run(['webserver', 'styles']);
 
-    gulp.watch("**/*.styl", ['styles']);
+    watch("**/*.styl", function() {
+        gulp.run('styles');
+    });
+    watch("**/*.html", function() {
+        gulp.run('templates');
+    });
 
-    gulp.watch("**/*.html", ['templates']);
-
-    gulp.watch(["modules/**/*.js", "js/app.js", "js/templates.js"], ['js']);
+    watch(["modules/**/*.js", "js/app.js", "js/templates.js"], function() {
+        gulp.run('js');
+    });
 });

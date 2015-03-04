@@ -28,4 +28,8 @@ angular.module('ss.player', ['parseServices', 'ss.templates', 'ss.filters'])
             canvasPlayService.stop();
             audioPlayService.stop();
         });
+
+        $scope.fullScreen = function(event) {
+            event.currentTarget.webkitRequestFullScreen();
+        };
     });

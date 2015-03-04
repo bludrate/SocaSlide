@@ -1,0 +1,36 @@
+@import '../../../stylus/variables'
+
+.breadcrumbs {
+    margin: 0
+    padding: 7px 0 0
+    list-style: none
+    
+    &__item {
+        float: left
+        margin: 0 5px
+        font-size: 16px
+        line-height: 36px
+    }
+    
+    &__link{
+        display: block
+        color: white
+
+        &:before {
+            content: '<- '
+        }
+    }
+    
+    &__active {
+        display: block
+        color: $primaryTextColor
+
+        &:before {
+            content: '<- '
+        }
+    }
+        
+    &__item:first-child &__link:before {
+        display: none
+    }
+}

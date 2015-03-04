@@ -53,6 +53,7 @@ html {
   line-height: 40px;
   border-bottom: 1px solid #b6b6b6;
   margin-bottom: 2px;
+  position: relative;
 }
 .section__title {
   font-weight: normal;

@@ -8,7 +8,7 @@
             <img ng-src="{{album.sizes | photoSrc: gridSize }}"/>
             <span class="album-list__item-title">{{album.title}}</span>
             <div class="album-list__buttons">
-                <a href="/create/albums/{{album.id}}" class="album-list__button album-list__button_open" href="/create/albums/{{album.id}}" title="Открыть"></a>
+                <a href="#/create/albums/{{album.id}}" class="album-list__button album-list__button_open" title="Открыть"></a>
                 <button class="album-list__button album-list__button_add" ng-click="add(album)" title="Добавить весь альбом"></button>
             </div>
         </li>

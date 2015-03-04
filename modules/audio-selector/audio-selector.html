@@ -1,12 +1,14 @@
 <section class="audio-selector section" ng-controller="AudiosController">
     <header class="section__header">
-        <input type="text" ng-model="search" class="audio-selector__filter"/>
-        <h2 class="section__title">Choice audio</h2>
+        <input type="text" ng-model="search" class="audio-selector__filter" placeholder="Поиск"/>
+        <h2 class="section__title">Выберите музыку</h2>
     </header>
     <ul class="audio-list">
-        <li class="audio-list__item" ng-repeat="audio in audios | filter:search track by audio.id" title="{{audio.artist + '-' + audio.title}}" ng-click="toggleAudio(audio)">
+        <li class="audio-list__item" ng-repeat="audio in audios | filter:search track by audio.id" ng-class="{selected: audio.selected}" ng-click="toggleAudio($event, audio)">
+            <button class="audio-list__play" play-audio="{{audio.url}}"></button>
             <span class="audio-list__duration">{{audio.duration | timeFormatter}}</span>
             <span class="audio-list__name">{{audio.artist + ' - ' + audio.title}}</span>
+            <button class="audio-list__toggle"></button>
         </li>
     </ul>
 </section>

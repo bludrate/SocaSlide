@@ -1,0 +1,6 @@
+<ul class="panel-audios">
+    <li class="panel-audios__item" ng-repeat="audio in audios track by audio.id" title="{{audio.artist + ' - ' + audio.title}}">
+        <span class="panel-audios__duration">{{audio.duration | timeFormatter}}</span>
+        <span class="panel-audios__audio-name">{{audio.artist + ' - ' + audio.title}}</span>
+    </li>
+</ul>
