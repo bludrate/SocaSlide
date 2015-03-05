@@ -1,0 +1,20 @@
+<section class="dialog" ng-controller="SlideshowSettingsController">
+    <header class="dialog__header">
+        <h2 class="dialog__title">Настройки слайдшоу</h2>
+        <button class="dialog__close" ng-click="dialogService.close()"></button>
+    </header>
+    <main class="dialog__content">
+        <form ng-submit="save(); dialogService.close()">
+            <div class="form-row">
+                <label class="label" for="slideDuration">Длительность кадра</label>
+                <div class="input-holder">
+                    <input type="number" class="input" id="slideDuration" name="slideDuration" placeholder="slide duration" ng-model="data.slideDuration"/>
+                </div>
+            </div>
+            <div class="form-btns">
+                <button class="button button_cancel" ng-click="dialogService.close()">Отмена</button>
+                <button type="submit" class="button">Сохранить</button>
+            </div>
+        </form>
+    </main>
+</section>

@@ -2,6 +2,7 @@ angular.module('ss.panel')
     .directive('audioList', function() {
         return {
             restrict: 'E',
+            replace: true,
             controller: audioListController,
             templateUrl: 'modules/panel/directives/audio-list/audio-list.html'
         };

@@ -3,6 +3,9 @@ angular.module('ss.services', [])
         var photos = [];
 
         return {
+            size: function() {
+                return photos.length;
+            },
             get: function(index) {
                 if (index) {
                     return photos[index];

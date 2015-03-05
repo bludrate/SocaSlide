@@ -1,5 +1,12 @@
 <div class="panel">
     <frame-list></frame-list>
-    <audio-list></audio-list>
-    <button class="create-slideshow" ng-click="saveSlideshow()"></button>
+    <div class="panel__info">
+        <div class="panel__photo-count panel__info-row">{{selectedPhotos.size()}}</div>
+        <div class="panel__duration panel__info-row">{{ (selectedPhotos.size() * settings.slideDuration) | timeFormatter}}</div>
+        <audio-list class="panel__info-row"></audio-list>
+    </div>
+    <div class="panel__btns">
+        <button class="create-slideshow" ng-click="saveSlideshow()"></button>
+        <button class="open-settings" ng-click="openSettings()"></button>
+    </div>
 </div>

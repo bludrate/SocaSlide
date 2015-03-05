@@ -22,6 +22,10 @@ body,
 html {
   height: 100%;
 }
+button {
+  outline: none;
+  cursor: pointer;
+}
 .main {
   position: absolute;
   top: 50px;
@@ -77,10 +81,48 @@ html {
   cursor: pointer;
   text-transform: uppercase;
   transition: background 0.1s ease, box-shadow 0.05s ease;
+  border: none;
+  margin: 0;
 }
 .button:hover {
   background: #388e3c;
 }
 .button:active {
   box-shadow: 0 2px 3px #000 inset;
+}
+.button_cancel {
+  background: #727272;
+}
+.button_cancel:hover {
+  background: #676767;
+}
+.form-row {
+  margin: 0 0 10px;
+  overflow: hidden;
+}
+.input {
+  height: 30px;
+  border: 1px solid #b6b6b6;
+  line-height: 30px;
+  font-size: 14px;
+  width: 100%;
+  margin: 0;
+  padding: 0 5px 0 10px;
+  box-sizing: border-box;
+}
+.input-holder {
+  overflow: hidden;
+}
+.label {
+  float: left;
+  margin-right: 30px;
+  font-size: 16px;
+  line-height: 32px;
+}
+.form-btns {
+  text-align: right;
+  padding-top: 10px;
+}
+.form-btns .button {
+  margin-left: 20px;
 }

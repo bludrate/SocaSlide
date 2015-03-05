@@ -1,7 +1,14 @@
 <div class="frame-list__holder">
-    <ul class="frame-list" mouse-wheel="scroll($event)">
-        <li class="frame-list__item" ng-repeat="frame in frames track by frame.id" title="{{frame.title}}" ng-click="removeFrame(frame)">
-            <img ng-src="{{frame.sizes | photoSrc: 'o' }}"/>
-        </li>
-    </ul>
+    <button class="frame-list__prev" ng-click="prev()" ng-disabled="disabled || prevDisabled"></button>
+    <div class="frame-list__wrap" mouse-wheel="scroll($event)">
+        <ul class="frame-list">
+            <li class="frame-list__item" ng-repeat="frame in frames track by frame.id" title="{{frame.title}}" ng-click="removeFrame(frame)">
+                <img ng-src="{{frame.sizes | photoSrc: 'o' }}"/>
+            </li>
+        </ul>
+        <span class="frame-placeholders">
+            <span class="frame-placeholder" ng-repeat="placeholder in placeholders track by $index"></span>
+        </span>
+    </div>
+    <button class="frame-list__next" ng-click="next()" ng-disabled="disabled || nextDisabled"></button>
 </div>

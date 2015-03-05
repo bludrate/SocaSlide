@@ -13,6 +13,8 @@
     cursor: pointer;
     text-transform: uppercase;
     transition: background 0.1s ease, box-shadow 0.05s ease;
+    border: none
+    margin: 0
 
     &:hover {
         background: $darkPrimaryColor;
@@ -20,5 +22,48 @@
 
     &:active {
         box-shadow: 0 2px 3px #000 inset;
+    }
+        
+    &_cancel {
+        background: $grayColor;
+        &:hover {
+            background: darken($grayColor, 10%)
+        }
+    }
+}
+
+.form-row {
+    margin: 0 0 10px;
+    overflow: hidden;
+}
+
+.input {
+    height: 30px;
+    border: 1px solid $dividerColor;
+    line-height: 30px;
+    font-size: 14px;
+    width: 100%;
+    margin: 0;
+    padding: 0 5px 0 10px;
+    box-sizing: border-box;
+
+    &-holder {
+        overflow: hidden;
+    }
+}
+
+.label {
+    float: left;
+    margin-right: 30px;
+    font-size: 16px;
+    line-height: 32px;
+}
+
+.form-btns {
+    text-align: right;
+    padding-top: 10px;
+    
+    .button {
+        margin-left: 20px;
     }
 }
