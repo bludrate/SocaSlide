@@ -2,6 +2,7 @@ angular.module('ss.player')
     .directive('playerControls', function() {
         return  {
             restrict:'E',
+            replace: true,
             scope: true,
             templateUrl: 'modules/player/directives/player-controls/player-controls.html',
             controller: PlayerControlsController
@@ -21,12 +22,6 @@ function PlayerControlsController($scope, audioPlayService, canvasPlayService) {
         $scope.played = false;
     }
 
-    function stop() {
-        audioPlayService.stop();
-        canvasPlayService.stop();
-        $scope.played = false;
-    }
-
     function setVolume() {
         if ($scope.volume < 0 ) {
             $scope.volume = 0;
@@ -39,10 +34,16 @@ function PlayerControlsController($scope, audioPlayService, canvasPlayService) {
         audioPlayService.setVolume($scope.volume / 100);
     }
 
+    function toggle() {
+        if ($scope.played) {
+            pause();
+        } else {
+            play();
+        }
+    }
+
     $scope.volume = audioPlayService.volume * 100;
     $scope.played = false;
-    $scope.pause = pause;
-    $scope.stop = stop;
-    $scope.play = play;
+    $scope.toggle = toggle;
     $scope.setVolume = setVolume;
 }

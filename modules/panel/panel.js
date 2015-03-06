@@ -17,10 +17,15 @@ function panelController($scope, $location, $rootScope, slideshowService, select
             audios: selectedAudios.getIds(),
             settings: slideshowSettingsService.get()
         }).then(function(slideshow) {
-            $rootScope.$apply(function() {
-                var path = '/slideshow/' + slideshow.id;
-                $location.path(path);
-            });
+            //$rootScope.$apply(function() {
+            //    var path = '/slideshow/' + slideshow.id;
+            //    $location.path(path);
+            //});
+
+            dialogService.open({
+                template: 'modules/player-modal/player-modal.html',
+                id: slideshow.id
+            }, true);
         });
     };
 

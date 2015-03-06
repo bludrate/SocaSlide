@@ -163,8 +163,8 @@
 .dialog {
   position: absolute;
   left: 50%;
-  margin-left: -300px;
-  width: 600px;
+  margin-left: -320px;
+  width: 640px;
   background: #fff;
   top: 50px;
   box-shadow: 0 0 10px rgba(0,0,0,0.5);
@@ -207,6 +207,15 @@
   content: "\f29a";
   font-size: 30px;
   font-family: 'icon-font';
+}
+.dialog__close_video {
+  right: -35px;
+  top: 5px;
+  padding: 0;
+}
+.dialog__close_video:before {
+  color: #fff;
+  text-shadow: 0 1px 2px #000;
 }
 
 .header {
@@ -566,6 +575,16 @@
   background: #000;
   text-align: center;
 }
+.player {
+  background: #000;
+  position: relative;
+  overflow: hidden;
+}
+.player canvas {
+  width: 100%;
+  height: auto;
+  vertical-align: top;
+}
 
 .tooltip {
   position: absolute;
@@ -574,35 +593,6 @@
   background: rgba(0,0,0,0.85);
   padding: 5px;
   border-radius: 5px;
-}
-
-.grid-size-block {
-  float: right;
-  padding-left: 20px;
-}
-.grid-size {
-  display: inline-block;
-  border: none;
-  color: #fff;
-  background: #c8e6c9;
-  transition: background 0.1s ease, box-shadow 0.05s ease;
-  font-size: 14px;
-  text-align: center;
-  width: 30px;
-  height: 25px;
-  line-height: 25px;
-  outline: none;
-  margin: 0 2px;
-  padding: 0;
-  cursor: pointer;
-  border-radius: 2px;
-}
-.grid-size:active {
-  box-shadow: 0 1px 2px #000 inset;
-}
-.grid-size.active,
-.grid-size:hover {
-  background: #4caf50;
 }
 
 .breadcrumbs {
@@ -632,6 +622,35 @@
 }
 .breadcrumbs__item:first-child .breadcrumbs__link:before {
   display: none;
+}
+
+.grid-size-block {
+  float: right;
+  padding-left: 20px;
+}
+.grid-size {
+  display: inline-block;
+  border: none;
+  color: #fff;
+  background: #c8e6c9;
+  transition: background 0.1s ease, box-shadow 0.05s ease;
+  font-size: 14px;
+  text-align: center;
+  width: 30px;
+  height: 25px;
+  line-height: 25px;
+  outline: none;
+  margin: 0 2px;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 2px;
+}
+.grid-size:active {
+  box-shadow: 0 1px 2px #000 inset;
+}
+.grid-size.active,
+.grid-size:hover {
+  background: #4caf50;
 }
 
 .album-list {
@@ -923,6 +942,39 @@
   width: 100%;
   max-height: 100%;
   vertical-align: top;
+}
+
+.controls {
+  position: absolute;
+  bottom: -34px;
+  transition: bottom 0.1s;
+  left: 0;
+  right: 0;
+  padding: 5px;
+  height: 24px;
+  background: rgba(0,0,0,0.7);
+}
+.player:hover .controls {
+  bottom: 0;
+}
+.controls__toggle {
+  float: left;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0 10px 0 0;
+  width: 24px;
+  height: 24px;
+}
+.controls__toggle:before {
+  content: "\f0b9";
+  display: block;
+  font-size: 24px;
+  color: #fff;
+  font-family: 'icon-font';
+}
+.controls__toggle_pause:before {
+  content: "\f0b6";
 }
 
 .create-section {

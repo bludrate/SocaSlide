@@ -1,10 +1,19 @@
 angular.module('ss.dialog', [])
-    .factory('dialogService', function() {
+    .factory('dialogService', function($rootScope) {
         return {
             showed: false,
-            open: function(data) {
+
+            initialize: function(scope) {
+                this.scope = scope;
+            },
+
+            open: function(data, digest) {
                 this.data = data;
                 this.showed = true;
+
+                if (digest) {
+                    this.scope.$digest();
+                }
             },
 
             close: function() {
@@ -20,7 +29,14 @@ angular.module('ss.dialog', [])
             replace: true,
             templateUrl: 'modules/dialog/dialog.html',
             controller: function($scope, dialogService) {
+                dialogService.initialize($scope);
                 $scope.dialogService = dialogService;
+
+                $scope.closeOnBgClick = function(event) {
+                    if (event.target === event.currentTarget) {
+                        dialogService.close();
+                    }
+                };
             }
         };
     });

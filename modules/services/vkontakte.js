@@ -104,9 +104,11 @@ angular.module('vkontakteServices', [])
     })
 
     .factory('VKAudios', function(methodWrapper) {
-        function getAudios() {
+        function getAudios(audio_ids) {
             return methodWrapper(function(deferred){
-                VK.api('audio.get', {}, function(data) {
+                VK.api('audio.get', {
+                    audio_ids: audio_ids
+                }, function(data) {
                     if (data.response) {
                         deferred.resolve(data.response.items);
                     } else {

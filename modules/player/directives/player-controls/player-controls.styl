@@ -1,0 +1,36 @@
+.controls {
+    position: absolute;
+    bottom: -34px;
+    transition: bottom 0.1s;
+    left: 0;
+    right: 0;
+    padding: 5px;
+    height: 24px;
+    background: rgba(0,0,0,0.7);
+
+    .player:hover & {
+        bottom: 0;
+    }
+
+    &__toggle {
+        float: left;
+        border: none;
+        background: none;
+        padding: 0;
+        margin: 0 10px 0 0;
+        width: 24px;
+        height: 24px;
+        
+        &:before {
+            content: "\f0b9";
+            display: block;
+            font-size: 24px;
+            color: white;
+            font-family: 'icon-font';
+        }
+            
+        &_pause:before {
+            content: "\f0b6";
+        }
+    }
+}

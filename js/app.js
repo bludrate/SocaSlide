@@ -27,14 +27,7 @@ angular.module('ss', ['ngRoute', 'ss.audioSelector', 'route-segment', 'view-segm
                     templateUrl: 'modules/photo-selector/photos.html',
                     controller: 'PhotosController',
                     dependencies: ['id']
-                })
-
-            .up()
-            .segment('slideshow', {
-                templateUrl: 'modules/player/player.html',
-                controller: 'PlayerController',
-                dependencies: ['id']
-            });
+                });
 
         $routeProvider.otherwise({redirectTo: '/'});
     });

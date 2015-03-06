@@ -3,3 +3,13 @@
   background: #000;
   text-align: center;
 }
+.player {
+  background: #000;
+  position: relative;
+  overflow: hidden;
+}
+.player canvas {
+  width: 100%;
+  height: auto;
+  vertical-align: top;
+}
