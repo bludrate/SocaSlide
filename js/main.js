@@ -269,24 +269,6 @@ e,u,b)})}function k(){var a,b;d.forEach(g,function(f,g){var q;if(q=!b){var h=c.p
 g=f[1];c.push(b[g]);c.push(f[2]||"");delete b[g]}});return c.join("")}var w=!1,n,v,s={routes:g,reload:function(){w=!0;a.$evalAsync(function(){l();m()})},updateParams:function(a){if(this.current&&this.current.$$route){var b={},f=this;d.forEach(Object.keys(a),function(c){f.current.pathParams[c]||(b[c]=a[c])});a=d.extend({},this.current.params,a);c.path(t(this.current.$$route.originalPath,a));c.search(d.extend({},c.search(),b))}else throw B("norout");}};a.$on("$locationChangeStart",l);a.$on("$locationChangeSuccess",
 m);return s}]});var B=d.$$minErr("ngRoute");p.provider("$routeParams",function(){this.$get=function(){return{}}});p.directive("ngView",v);p.directive("ngView",A);v.$inject=["$route","$anchorScroll","$animate"];A.$inject=["$compile","$controller","$route"]})(window,window.angular);
 
-angular.module('mouseWheel', [])
-    .directive('mouseWheel', ['$parse', function($parse){
-      return {
-        restrict: 'A',
-        link: function(scope, element, attr) {
-          var expr = $parse(attr.mouseWheel);
-
-          element.bind('wheel', function(event){
-            scope.$apply(function() {
-              expr(scope, {
-                $event: event
-              });
-            });
-          });
-        }
-      };
-    }]);
-
 /**
  * angular-route-segment 1.3.3
  * https://angular-route-segment.com
@@ -362,11 +344,11 @@ angular.module('ss.templates', []).run(['$templateCache', function($templateCach
 
   $templateCache.put('modules/panel/directives/audio-list/audio-list.html', '<ul class="panel-audios"><li class="panel-audios__item" ng-repeat="audio in audios track by audio.id" title="{{audio.artist + \' - \' + audio.title}}"><span class="panel-audios__info">{{audio.artist + \' - \' + audio.title}}&nbsp;&nbsp;&nbsp;{{audio.duration | timeFormatter}}</span></li></ul>');
 
-  $templateCache.put('modules/panel/directives/frame-list/frame-list.html', '<div class="frame-list__holder"><button class="frame-list__prev" ng-click="prev()" ng-disabled="disabled || prevDisabled"></button><div class="frame-list__wrap" mouse-wheel="scroll($event)"><ul class="frame-list"><li class="frame-list__item" ng-repeat="frame in frames track by frame.id" title="{{frame.title}}" ng-click="removeFrame(frame)"><img ng-src="{{frame.sizes | photoSrc: \'o\' }}"></li></ul><span class="frame-placeholders"><span class="frame-placeholder" ng-repeat="placeholder in placeholders track by $index"></span></span></div><button class="frame-list__next" ng-click="next()" ng-disabled="disabled || nextDisabled"></button></div>');
+  $templateCache.put('modules/panel/directives/frame-list/frame-list.html', '<div class="frame-list__holder"><button class="frame-list__prev" ng-click="prev()" ng-disabled="disabled || prevDisabled"></button><div class="frame-list__wrap"><ul class="frame-list"><li class="frame-list__item" ng-repeat="frame in frames track by frame.id" title="{{frame.title}}" ng-click="removeFrame(frame)"><img ng-src="{{frame.sizes | photoSrc: \'o\' }}"></li></ul><span class="frame-placeholders"><span class="frame-placeholder" ng-repeat="placeholder in placeholders track by $index"></span></span></div><button class="frame-list__next" ng-click="next()" ng-disabled="disabled || nextDisabled"></button></div>');
 
   $templateCache.put('modules/panel/directives/timeline/timeline.html', '');
 
-  $templateCache.put('modules/player/directives/player-controls/player-controls.html', '<div class="controls"><button ng-click="toggle()" class="controls__toggle" ng-class="{controls__toggle_pause: played}"></button> <input type="text" ng-model="volume" ng-blur="setVolume(volume / 100)"></div>');
+  $templateCache.put('modules/player/directives/player-controls/player-controls.html', '<div class="controls" ng-class="{controls_paused: !played}"><button ng-click="toggle()" class="controls__toggle" ng-class="{controls__toggle_pause: played}"></button> <input type="text" ng-model="volume" ng-click="setVolume(volume / 100)"></div>');
 
 }]);
 angular.module('ss.audioSelector', ['vkontakteServices', 'ss.services', 'ss.filters'])
@@ -495,7 +477,7 @@ angular.module('ss.filters', ['ss.gridSizes'])
         }
     });
 angular.module('ss.header', []);
-angular.module('ss.panel', ['ss.services', 'parseServices', 'ss.filters', 'mouseWheel', 'ss.settings', 'ss.dialog'])
+angular.module('ss.panel', ['ss.services', 'parseServices', 'ss.filters', 'ss.settings', 'ss.dialog'])
     .directive('panel', function() {
         return {
             restrict: 'E',
@@ -617,23 +599,13 @@ function playerController($scope, slideshowService, $filter, canvasPlayService, 
             image.src = $filter('photoSrc')(frames[i].sizes, 'w');
         }
 
-        VKAudios.getAudios(audioIds.join(',')).then(function(audioList) {
-            var audios = [];
-            for (var j = 0; j < audioList.length; j++) {
-                audio = new Audio();
-                audio.src = audioList[j].url;
-                audios.push(audio);
-            }
-
-            audioPlayService.initialize(audios);
-        });
+        VKAudios.getAudios(audioIds.join(',')).then(audioPlayService.initialize);
 
         canvasPlayService.setImages(images);
     });
 
     $scope.$on('$destroy', function() {
         canvasPlayService.stop();
-        audioPlayService.stop();
     });
 }
 angular.module('parseServices', [])
@@ -1059,28 +1031,6 @@ angular.module('ss.audioSelector')
             }
         }
     });
-angular.module('ss.directives', ['ss.gridSizes', 'ss.templates'])
-    .directive('gridSize', function() {
-        return {
-            restrict: 'E',
-            replace: true,
-            scope: {
-                gridSize: '=size'
-            },
-            templateUrl: "modules/directives/grid-size/grid-size.html",
-            controller: function($scope, gridSizes) {
-                function changeSize(size) {
-                    $scope.gridSize = size;
-                }
-
-                $scope.sizes = ['o', 'p', 'q'];
-                $scope.names = gridSizes.names;
-
-                $scope.changeSize = changeSize;
-            }
-        }
-    });
-
 angular.module('ss')
     .value('breadcrumbsConfig', {
         'create.album': [
@@ -1106,62 +1056,82 @@ angular.module('ss')
             }
         };
     });
+angular.module('ss.directives', ['ss.gridSizes', 'ss.templates'])
+    .directive('gridSize', function() {
+        return {
+            restrict: 'E',
+            replace: true,
+            scope: {
+                gridSize: '=size'
+            },
+            templateUrl: "modules/directives/grid-size/grid-size.html",
+            controller: function($scope, gridSizes) {
+                function changeSize(size) {
+                    $scope.gridSize = size;
+                }
+
+                $scope.sizes = ['o', 'p', 'q'];
+                $scope.names = gridSizes.names;
+
+                $scope.changeSize = changeSize;
+            }
+        }
+    });
+
 angular.module('ss.player')
     .factory('audioPlayService', function() {
         var audios = [],
             currentAudio = 0,
-            instance;
+            instance,
+            audio = new Audio();
 
         function initialize(_audios_) {
             audios = _audios_;
 
-            for (var i = 0; i < audios.length; i++) {
-                audios[i].volume = instance.volume;
-                audios[i].addEventListener('ended', audioEnded);
-            }
+            currentAudio = 0;
+
+            audio.src = audios[currentAudio].url;
         }
 
         function play() {
             if (!audios.length)
                 return false;
 
-            audios[currentAudio].play();
+            audio.play();
         }
 
         function pause() {
-            audios[currentAudio].pause()
-        }
-
-        function stop() {
-            audios[currentAudio].pause();
-            audios[currentAudio].currentTime = 0;
-            currentAudio = 0;
+            audio.pause()
         }
 
         function audioEnded() {
-            currentAudio++;
+            if (audios.length === 1) {
+                audio.currentTime = 0;
+            } else {
+                currentAudio++;
 
-            if (currentAudio >= audios.length) {
-                currentAudio = 0;
+                if (currentAudio >= audios.length) {
+                    currentAudio = 0;
+                }
+
+                audio.src = audios[currentAudio].url;
             }
 
-            audios[currentAudio].play();
+            audio.play();
         }
 
         function setVolume(volume) {
-            instance.volume = volume;
-
-            for (var i = 0; i < audios.length; i++) {
-                audios[i].volume = instance.volume;
-            }
+            audio.volume = volume;
         }
 
+        audio.addEventListener('ended', audioEnded);
+        audio.volume = 0.5;
+
         instance = {
-            volume: 0.5,
+            volume: audio.volume,
             initialize: initialize,
             play: play,
             pause: pause,
-            stop: stop,
             setVolume: setVolume
         };
 
@@ -1363,16 +1333,6 @@ angular.module('ss.panel')
                     checkButtons();
                 });
 
-                scope.scroll = function(event) {
-                    var deltaY = event.wheelDeltaY;
-
-                    if (isNaN(deltaY)) {
-                        deltaY = 0;
-                    }
-
-                    wrap.scrollLeft -= deltaY;
-                };
-
                 scope.prev = function() {
                     wrap.scrollLeft -= 200;
 
@@ -1389,6 +1349,18 @@ angular.module('ss.panel')
                     checkButtons();
 
                     scope.$digest();
+                });
+
+                wrap.addEventListener('wheel', function(event) {
+                    event.stopPropagation();
+
+                    var deltaY = event.wheelDeltaY;
+
+                    if (isNaN(deltaY)) {
+                        deltaY = 0;
+                    }
+
+                    wrap.scrollLeft -= deltaY;
                 });
 
                 function checkButtons() {

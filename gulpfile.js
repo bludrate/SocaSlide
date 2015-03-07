@@ -14,7 +14,6 @@ var jsFilesorder = [
     './vendor/parse-1.3.4.min.js',
     './vendor/angular.min.js',
     './vendor/angular-route.min.js',
-    './vendor/mousewheel.js',
     './vendor/angular-route-segment.min.js',
     './js/**/*.js',
     '!./js/main.js',

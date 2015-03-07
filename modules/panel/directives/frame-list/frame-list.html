@@ -1,6 +1,6 @@
 <div class="frame-list__holder">
     <button class="frame-list__prev" ng-click="prev()" ng-disabled="disabled || prevDisabled"></button>
-    <div class="frame-list__wrap" mouse-wheel="scroll($event)">
+    <div class="frame-list__wrap">
         <ul class="frame-list">
             <li class="frame-list__item" ng-repeat="frame in frames track by frame.id" title="{{frame.title}}" ng-click="removeFrame(frame)">
                 <img ng-src="{{frame.sizes | photoSrc: 'o' }}"/>

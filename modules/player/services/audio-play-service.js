@@ -2,58 +2,56 @@ angular.module('ss.player')
     .factory('audioPlayService', function() {
         var audios = [],
             currentAudio = 0,
-            instance;
+            instance,
+            audio = new Audio();
 
         function initialize(_audios_) {
             audios = _audios_;
 
-            for (var i = 0; i < audios.length; i++) {
-                audios[i].volume = instance.volume;
-                audios[i].addEventListener('ended', audioEnded);
-            }
+            currentAudio = 0;
+
+            audio.src = audios[currentAudio].url;
         }
 
         function play() {
             if (!audios.length)
                 return false;
 
-            audios[currentAudio].play();
+            audio.play();
         }
 
         function pause() {
-            audios[currentAudio].pause()
-        }
-
-        function stop() {
-            audios[currentAudio].pause();
-            audios[currentAudio].currentTime = 0;
-            currentAudio = 0;
+            audio.pause()
         }
 
         function audioEnded() {
-            currentAudio++;
+            if (audios.length === 1) {
+                audio.currentTime = 0;
+            } else {
+                currentAudio++;
 
-            if (currentAudio >= audios.length) {
-                currentAudio = 0;
+                if (currentAudio >= audios.length) {
+                    currentAudio = 0;
+                }
+
+                audio.src = audios[currentAudio].url;
             }
 
-            audios[currentAudio].play();
+            audio.play();
         }
 
         function setVolume(volume) {
-            instance.volume = volume;
-
-            for (var i = 0; i < audios.length; i++) {
-                audios[i].volume = instance.volume;
-            }
+            audio.volume = volume;
         }
 
+        audio.addEventListener('ended', audioEnded);
+        audio.volume = 0.5;
+
         instance = {
-            volume: 0.5,
+            volume: audio.volume,
             initialize: initialize,
             play: play,
             pause: pause,
-            stop: stop,
             setVolume: setVolume
         };
 

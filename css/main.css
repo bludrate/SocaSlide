@@ -12,7 +12,7 @@
 }
 .audio-selector__filter {
   position: absolute;
-  right: 0;
+  right: 3px;
   top: 16px;
   font-size: 14px;
   width: 46px;
@@ -953,6 +953,9 @@
   padding: 5px;
   height: 24px;
   background: rgba(0,0,0,0.7);
+}
+.controls_paused {
+  bottom: 0;
 }
 .player:hover .controls {
   bottom: 0;

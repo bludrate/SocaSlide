@@ -25,22 +25,12 @@ function playerController($scope, slideshowService, $filter, canvasPlayService, 
             image.src = $filter('photoSrc')(frames[i].sizes, 'w');
         }
 
-        VKAudios.getAudios(audioIds.join(',')).then(function(audioList) {
-            var audios = [];
-            for (var j = 0; j < audioList.length; j++) {
-                audio = new Audio();
-                audio.src = audioList[j].url;
-                audios.push(audio);
-            }
-
-            audioPlayService.initialize(audios);
-        });
+        VKAudios.getAudios(audioIds.join(',')).then(audioPlayService.initialize);
 
         canvasPlayService.setImages(images);
     });
 
     $scope.$on('$destroy', function() {
         canvasPlayService.stop();
-        audioPlayService.stop();
     });
 }

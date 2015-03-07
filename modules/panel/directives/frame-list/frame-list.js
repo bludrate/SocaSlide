@@ -21,16 +21,6 @@ angular.module('ss.panel')
                     checkButtons();
                 });
 
-                scope.scroll = function(event) {
-                    var deltaY = event.wheelDeltaY;
-
-                    if (isNaN(deltaY)) {
-                        deltaY = 0;
-                    }
-
-                    wrap.scrollLeft -= deltaY;
-                };
-
                 scope.prev = function() {
                     wrap.scrollLeft -= 200;
 
@@ -47,6 +37,18 @@ angular.module('ss.panel')
                     checkButtons();
 
                     scope.$digest();
+                });
+
+                wrap.addEventListener('wheel', function(event) {
+                    event.stopPropagation();
+
+                    var deltaY = event.wheelDeltaY;
+
+                    if (isNaN(deltaY)) {
+                        deltaY = 0;
+                    }
+
+                    wrap.scrollLeft -= deltaY;
                 });
 
                 function checkButtons() {

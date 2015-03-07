@@ -1,4 +1,4 @@
-angular.module('ss.panel', ['ss.services', 'parseServices', 'ss.filters', 'mouseWheel', 'ss.settings', 'ss.dialog'])
+angular.module('ss.panel', ['ss.services', 'parseServices', 'ss.filters', 'ss.settings', 'ss.dialog'])
     .directive('panel', function() {
         return {
             restrict: 'E',

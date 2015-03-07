@@ -1,0 +1,28 @@
+.breadcrumbs {
+  margin: 0;
+  padding: 7px 0 0;
+  list-style: none;
+}
+.breadcrumbs__item {
+  float: left;
+  margin: 0 5px;
+  font-size: 16px;
+  line-height: 36px;
+}
+.breadcrumbs__link {
+  display: block;
+  color: #fff;
+}
+.breadcrumbs__link:before {
+  content: '<- ';
+}
+.breadcrumbs__active {
+  display: block;
+  color: #212121;
+}
+.breadcrumbs__active:before {
+  content: '<- ';
+}
+.breadcrumbs__item:first-child .breadcrumbs__link:before {
+  display: none;
+}

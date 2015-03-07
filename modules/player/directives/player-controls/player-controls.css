@@ -1,0 +1,35 @@
+.controls {
+  position: absolute;
+  bottom: -34px;
+  transition: bottom 0.1s;
+  left: 0;
+  right: 0;
+  padding: 5px;
+  height: 24px;
+  background: rgba(0,0,0,0.7);
+}
+.controls_paused {
+  bottom: 0;
+}
+.player:hover .controls {
+  bottom: 0;
+}
+.controls__toggle {
+  float: left;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0 10px 0 0;
+  width: 24px;
+  height: 24px;
+}
+.controls__toggle:before {
+  content: "\f0b9";
+  display: block;
+  font-size: 24px;
+  color: #fff;
+  font-family: 'icon-font';
+}
+.controls__toggle_pause:before {
+  content: "\f0b6";
+}
