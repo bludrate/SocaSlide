@@ -8,11 +8,15 @@
     height: 24px;
     background: rgba(0,0,0,0.7);
 
-    &_paused {
+    .player:hover & {
         bottom: 0;
     }
 
-    .player:hover & {
+    .player_no-activity:hover & {
+        bottom: -34px;
+    }
+
+    &_paused {
         bottom: 0;
     }
 
@@ -35,6 +39,28 @@
             
         &_pause:before {
             content: "\f0b6";
+        }
+    }
+
+    &__full-screen {
+        float: right;
+        border: none;
+        background: none;
+        padding: 0;
+        margin: 0 0 0 10px;
+        width: 24px;
+        height: 24px;
+
+        &:before {
+            content: "\f29f";
+            display: block;
+            font-size: 24px;
+            color: white;
+            font-family: 'icon-font';
+        }
+
+        &_active:before {
+            content: "\f2a0";
         }
     }
 }

@@ -40,6 +40,16 @@ angular.module('ss.player')
             audio.play();
         }
 
+        function stop() {
+            audio.pause();
+            audio.currentTime = 0;
+        }
+
+        function destroy() {
+            stop();
+            audios.length = 0;
+        }
+
         function setVolume(volume) {
             audio.volume = volume;
         }
@@ -51,8 +61,10 @@ angular.module('ss.player')
             volume: audio.volume,
             initialize: initialize,
             play: play,
+            stop: stop,
             pause: pause,
-            setVolume: setVolume
+            setVolume: setVolume,
+            destroy: destroy
         };
 
         return instance;

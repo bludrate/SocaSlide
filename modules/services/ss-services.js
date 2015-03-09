@@ -1,4 +1,18 @@
 angular.module('ss.services', [])
+    .factory('slideshowSettingsService', function() {
+        var data = {
+            slideDuration: 5
+        };
+
+        return {
+            get: function() {
+                return data;
+            },
+            save: function(_data_) {
+                angular.extend(data, _data_);
+            }
+        };
+    })
     .factory('selectedPhotos', function() {
         var photos = [];
 

@@ -3,7 +3,7 @@ angular.module('ss')
         'create.album': [
             {
                 'name': 'Альбомы',
-                'link': 'create/albums/'
+                'link': 'create/albums'
             },
 
             {

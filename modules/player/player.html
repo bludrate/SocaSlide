@@ -1,4 +1,4 @@
-<div class="player">
+<div class="player" ng-mousemove="checkActivity()" ng-class="{'player_no-activity': noActivity}">
     <player-canvas></player-canvas>
-    <player-controls></player-controls>
+    <player-controls full-screen="fullScreen()"></player-controls>
 </div>

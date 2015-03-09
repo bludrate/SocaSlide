@@ -1,18 +1,4 @@
-angular.module('ss.settings', ['ss.dialog'])
-    .factory('slideshowSettingsService', function() {
-        var data = {
-            slideDuration: 5
-        };
-
-        return {
-            get: function() {
-                return data;
-            },
-            save: function(_data_) {
-                angular.extend(data, _data_);
-            }
-        };
-    })
+angular.module('ss.settings', ['ss.services'])
     .controller('SlideshowSettingsController', function($scope, slideshowSettingsService) {
         $scope.data = angular.copy(slideshowSettingsService.get());
 

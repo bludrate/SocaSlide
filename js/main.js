@@ -276,18 +276,29 @@ m);return s}]});var B=d.$$minErr("ngRoute");p.provider("$routeParams",function()
  * @license MIT License http://opensource.org/licenses/MIT
  */
 "use strict";!function(a){var b=a.module("route-segment",[]);b.provider("$routeSegment",["$routeProvider",function(b){function c(a){return a.replace(/([\:\-\_]+(.))/g,function(a,b,c,d){return d?c.toUpperCase():c})}function d(a,b){if(!a)throw new Error("Invalid pointer segment");var e;return{segment:function(b,d){return a[c(b)]={params:d},e=b,this},within:function(b){var g;if(b=b||e,g=a[c(b)])void 0==g.children&&(g.children={});else{if(f.strictMode)throw new Error("Cannot get into unknown `"+b+"` segment");g=a[c(b)]={params:{},children:{}}}return d(g.children,this)},up:function(){return b},root:function(){return h}}}var e=this,f=e.options={autoLoadTemplates:!0,strictMode:!1},g=this.segments={},h=d(g,null),i={};e.when=function(a,c){return b.when(a,{segment:c}),i[c]=a,this},a.extend(e,h),this.$get=["$rootScope","$q","$http","$templateCache","$route","$routeParams","$injector",function(b,d,e,h,j,k,l){function m(b){var c=!1;return b.params.dependencies&&a.forEach(b.params.dependencies,function(b){a.equals(r.$routeParams[b],k[b])||(c=!0)}),c}function n(a,b){return r.chain[a]&&r.chain[a].clearWatcher&&r.chain[a].clearWatcher(),b?(s[a]=b.name,b.params.untilResolved?o(a,b.name,b.params.untilResolved).then(function(c){return void 0!=c.success&&p(a),o(a,b.name,b.params)}):o(a,b.name,b.params)):(s[a]=null,void p(a))}function o(c,g,i){var j=a.extend({},i.resolve);return a.forEach(j,function(b,c){j[c]=a.isString(b)?l.get(b):l.invoke(b)}),i.template&&(j.$template=i.template,a.isFunction(j.$template)&&(j.$template=l.invoke(j.$template))),f.autoLoadTemplates&&i.templateUrl&&(j.$template=i.templateUrl,a.isFunction(j.$template)&&(j.$template=l.invoke(j.$template)),j.$template=e.get(j.$template,{cache:h}).then(function(a){return a.data})),d.all(j).then(function(e){if(s[c]!=g)return d.reject();if(r.chain[c]={name:g,params:i,locals:e,reload:function(){var a=q(c,r.name.split("."));n(c,a).then(function(a){void 0!=a.success&&p(c)})}},i.watcher){var f=function(){if(!a.isFunction(i.watcher)&&!a.isArray(i.watcher))throw new Error("Watcher is not a function in segment `"+g+"`");return l.invoke(i.watcher,{},{segment:r.chain[c]})},h=f();r.chain[c].clearWatcher=b.$watch(f,function(a){a!=h&&(h=a,r.chain[c].reload())})}return{success:c}},function(b){if(i.resolveFailed){var e={error:function(){return d.when(b)}};return o(c,g,a.extend({resolve:e},i.resolveFailed))}throw new Error("Resolving failed with a reason `"+b+"`, but no `resolveFailed` provided for segment `"+g+"`")})}function p(c){r.$routeParams=a.copy(k),r.name="";for(var d=0;d<r.chain.length;d++)r.chain[d]&&(r.name+=r.chain[d].name+".");r.name=r.name.substr(0,r.name.length-1),b.$broadcast("routeSegmentChange",{index:c,segment:r.chain[c]||null})}function q(a,b){if(!b)return null;if(a>=b.length)return null;for(var d,e=g,f=0;a>=f;f++)d=b[f],void 0!=e[c(d)]&&(e=e[c(d)]),a>f&&(e=e.children);return{name:d,params:e.params,children:e.children}}var r={name:"",$routeParams:a.copy(k),chain:[],startsWith:function(a){var b=new RegExp("^"+a);return b.test(r.name)},contains:function(a){for(var b=0;b<this.chain.length;b++)if(this.chain[b]&&this.chain[b].name==a)return!0;return!1},getSegmentUrl:function(b,c){var d,e,f;if(!i[b])throw new Error("Can not get URL for segment with name `"+b+"`");c=a.extend({},k,c||{}),d=i[b];for(e in c){var g=new RegExp(":"+e+"[*?]?","g");d=d.replace(g,c[e])}if(d=d.replace(/\/\:.*?\?/g,""),f=d.match(/\/\:([^\/]*)/))throw new Error("Route param `"+f[1]+"` is not specified for route `"+i[b]+"`");return d}},s={};return b.$on("$routeChangeSuccess",function(a,b){var c=b.$route||b.$$route;if(c&&c.segment){for(var e=c.segment,f=e.split("."),g=[],h=-1,i=0;i<f.length;i++){var j=q(i,f);(s[i]!=j.name||g.length>0||m(j))&&(r.chain[i]&&r.chain[i].name==j.name&&0==g.length&&!m(j)?s[i]=j.name:(g.push({index:i,newSegment:j}),h=i))}var k=d.when();if(g.length>0)for(var i=0;i<g.length;i++)!function(a){k=k.then(function(){return n(g[a].index,g[a].newSegment)}).then(function(b){if(void 0!=b.success){p(b.success);for(var c=g[a].index+1;c<r.chain.length;c++)r.chain[c]&&(r.chain[c]=null,n(c,null))}})}(i);k.then(function(){if(r.chain.length>f.length){var a=r.chain.length,b=r.chain.length-f.length;r.chain.splice(-b,b);for(var c=f.length;a>c;c++)n(c,null),h=r.chain.length-1}}).then(function(){var a=d.when();if(h==r.chain.length-1)for(var b=q(h,r.name.split("."));b;){var c=b.children,e=h+1;b=null;for(var f in c)!function(c,d,e){d[c].params["default"]&&(a=a.then(function(){return n(e,{name:c,params:d[c].params}).then(function(a){a.success&&p(a.success)})}),b=d[c],h=e)}(f,c,e)}return a})}}),r}]}]),b.filter("routeSegmentUrl",["$routeSegment",function(a){var b=function(b,c){return a.getSegmentUrl(b,c)};return b.$stateful=!0,b}]),b.filter("routeSegmentEqualsTo",["$routeSegment",function(a){var b=function(b){return a.name==b};return b.$stateful=!0,b}]),b.filter("routeSegmentStartsWith",["$routeSegment",function(a){var b=function(b){return a.startsWith(b)};return b.$stateful=!0,b}]),b.filter("routeSegmentContains",["$routeSegment",function(a){var b=function(b){return a.contains(b)};return b.$stateful=!0,b}]),b.filter("routeSegmentParam",["$routeSegment",function(a){var b=function(b){return a.$routeParams[b]};return b.$stateful=!0,b}])}(angular),function(a){a.module("view-segment",["route-segment"]).directive("appViewSegment",["$route","$compile","$controller","$routeParams","$routeSegment","$q","$injector","$timeout",function(b,c,d,e,f,g,h,i){return{restrict:"ECA",priority:500,compile:function(b,e){var g=b.html(),j=!0,k=a.element(document.createComment(" view-segment "));return b.prepend(k),function(l){function m(){p&&(r.leave(p),p=null),o&&(o.$destroy(),o=null)}function n(e){if(q=e,j&&(j=!1,b.replaceWith(k)),!e)return m(),p=b.clone(),p.html(g),r.enter(p,null,k),void c(p,!1,499)(l);var f=a.extend({},e.locals),h=f&&f.$template;m(),p=b.clone(),p.html(h?h:g),r.enter(p,null,k);var i,n=c(p,!1,499);o=l.$new(),e.params.controller&&(f.$scope=o,i=d(e.params.controller,f),e.params.controllerAs&&(o[e.params.controllerAs]=i),p.data("$ngControllerController",i),p.children().data("$ngControllerController",i)),n(o),o.$emit("$viewContentLoaded"),o.$eval(t)}var o,p,q,r,s,t=e.onload||"",u=parseInt(e.appViewSegment);try{var v=h.get("$animator");r=v(l,e)}catch(w){}try{r=h.get("$animate")}catch(w){}f.chain[u]&&(s=i(function(){n(f.chain[u])},0)),l.$on("routeSegmentChange",function(a,b){s&&i.cancel(s),b.index==u&&q!=b.segment&&n(b.segment)})}}}}])}(angular);
-angular.module('ss', ['ngRoute', 'ss.audioSelector', 'route-segment', 'view-segment', 'ss.header', 'ss.photoSelector', 'ss.templates', 'ss.panel', 'ss.player', 'ss.tooltip'])
-    .config(function ($routeProvider, $routeSegmentProvider) {
+angular.module('ss', ['ngRoute', 'ss.audioSelector', 'route-segment', 'view-segment', 'ss.header', 'ss.photoSelector', 'ss.templates', 'ss.panel', 'ss.player', 'ss.tooltip', 'vkontakteServices', 'ss.slideshow', 'ss.playerModal'])
+    .config(function ($routeSegmentProvider, $routeProvider) {
+        VK.loadParams(window.location.href);
+
         $routeSegmentProvider
-            .when('/', 'home')
+            .when('/', 'start')
+            .when('/home', 'home')
             .when('/create', 'create')
             .when('/create/albums', 'create.albums')
             .when('/create/albums/:id', 'create.album')
             .when('/slideshow/:id', 'slideshow')
 
+            .segment('start', {
+                templateUrl: 'pages/start-page/start-page.html'
+            })
             .segment('home', {
                 default: true,
                 templateUrl: 'pages/home-page/home-page.html'
+            })
+            .segment('slideshow', {
+                templateUrl: 'pages/slideshow-page/slideshow-page.html',
+                controller: 'SlideshowController',
+                dependencies: ['id']
             })
 
             .segment('create', {
@@ -307,9 +318,32 @@ angular.module('ss', ['ngRoute', 'ss.audioSelector', 'route-segment', 'view-segm
                     dependencies: ['id']
                 });
 
-        $routeProvider.otherwise({redirectTo: '/'});
-    });
+        $routeProvider.otherwise({redirectTo: '/home'});
+    })
+    .run(function($location, $rootScope) {
+        var locationInitialized = false;
 
+        VK.addCallback('onLocationChanged', function(location) {
+            if (!locationInitialized) {
+                locationInitialized = true;
+                if (!location || location === '/') {
+                    location = '/home';
+                }
+            }
+
+            if (location !== $location.url()) {
+                $rootScope.$apply(function() {
+                    $location.path(location);
+                });
+            }
+        });
+
+        $rootScope.$on('$locationChangeSuccess', function() {
+            if (locationInitialized) {
+                VK.callMethod('setLocation', $location.url());
+            }
+        });
+    });
 'use strict';
 
 angular.module('ss.templates', []).run(['$templateCache', function($templateCache) {
@@ -318,17 +352,19 @@ angular.module('ss.templates', []).run(['$templateCache', function($templateCach
 
   $templateCache.put('modules/dialog/dialog.html', '<div class="dialog-holder" ng-show="dialogService.showed" ng-include="dialogService.data.template" ng-click="closeOnBgClick($event)"></div>');
 
-  $templateCache.put('modules/header/header.html', '<header class="header"><a href="/#/" active-link="home" class="logo">SocaSlide</a><breadcrumbs></breadcrumbs></header>');
+  $templateCache.put('modules/header/header.html', '<header class="header"><a href="#/home" active-link="home" class="logo">SocaSlide</a><breadcrumbs></breadcrumbs></header>');
 
-  $templateCache.put('modules/panel/panel.html', '<div class="panel"><frame-list></frame-list><div class="panel__info"><div class="panel__photo-count panel__info-row">{{selectedPhotos.size()}}</div><div class="panel__duration panel__info-row">{{ (selectedPhotos.size() * settings.slideDuration) | timeFormatter}}</div><audio-list class="panel__info-row"></audio-list></div><div class="panel__btns"><button class="create-slideshow" ng-click="saveSlideshow()"></button> <button class="open-settings" ng-click="openSettings()"></button></div></div>');
+  $templateCache.put('modules/panel/panel.html', '<div class="panel"><frame-list></frame-list><div class="panel__info"><div class="panel__photo-count panel__info-row">{{selectedPhotos.size()}}</div><div class="panel__duration panel__info-row">{{ (selectedPhotos.size() * settings.slideDuration) | timeFormatter}}</div><audio-list class="panel__info-row"></audio-list></div><div class="panel__btns"><button class="create-slideshow" ng-click="preview()"></button> <button class="open-settings" ng-click="openSettings()"></button></div></div>');
 
-  $templateCache.put('modules/photo-selector/albums.html', '<header class="section__header"><grid-size size="gridSize"></grid-size><h2 class="section__title">Альбомы</h2></header><div class="section__content"><ul class="album-list album-list_size_{{gridSize}}"><li class="album-list__item" data-ng-repeat="album in albums track by album.id"><img ng-src="{{album.sizes | photoSrc: gridSize }}"> <span class="album-list__item-title">{{album.title}}</span><div class="album-list__buttons"><a href="#/create/albums/{{album.id}}" class="album-list__button album-list__button_open" title="Открыть"></a> <button class="album-list__button album-list__button_add" ng-click="add(album)" title="Добавить весь альбом"></button></div></li></ul></div>');
+  $templateCache.put('modules/photo-selector/albums.html', '<header class="section__header"><grid-size size="gridSize"></grid-size><h2 class="section__title">Альбомы</h2></header><div class="section__content"><ul class="album-list album-list_size_{{gridSize}}"><li class="album-list__item" data-ng-repeat="album in albums track by album.id"><img ng-src="{{album.sizes | photoSrc: gridSize }}"> <span class="album-list__item-title" title="{{album.title}}">{{album.title}}</span><div class="album-list__buttons"><a href="#/create/albums/{{album.id}}" class="album-list__button album-list__button_open" title="Открыть"></a> <button class="album-list__button album-list__button_add" ng-click="add(album)" title="Добавить весь альбом"></button></div></li></ul></div>');
 
   $templateCache.put('modules/photo-selector/photos.html', '<header class="section__header"><grid-size size="gridSize"></grid-size><h2 class="section__title">{{album.title}}</h2></header><div class="section__content"><ul class="photo-list photo-list_size_{{gridSize}}"><li class="photo-list__item" ng-class="{selected: photo.selected}" ng-repeat="photo in photos track by photo.id" title="{{photo.title}}" ng-click="togglePhoto(photo)"><img ng-src="{{photo.sizes | photoSrc: gridSize }}"></li></ul></div>');
 
-  $templateCache.put('modules/player/player.html', '<div class="player"><player-canvas></player-canvas><player-controls></player-controls></div>');
+  $templateCache.put('modules/player/player.html', '<div class="player" ng-mousemove="checkActivity()" ng-class="{\'player_no-activity\': noActivity}"><player-canvas></player-canvas><player-controls full-screen="fullScreen()"></player-controls></div>');
 
-  $templateCache.put('modules/player-modal/player-modal.html', '<section class="dialog"><button class="dialog__close dialog__close_video" ng-click="dialogService.close()"></button><player src="{{dialogService.data.id}}"></player></section>');
+  $templateCache.put('modules/player-modal/player-modal.html', '<section class="dialog"><button class="dialog__close dialog__close_video" ng-click="dialogService.close()"></button><player src="{{dialogService.data.src}}"></player><div ng-controller="PlayerModalController"><button class="button" ng-click="saveSlideshow()">Сохранить</button></div></section>');
+
+  $templateCache.put('modules/slideshow-saved-modal/slideshow-saved-modal.html', '<section class="dialog" ng-controller="SlideshowSettingsController"><header class="dialog__header"><h2 class="dialog__title">Слайдшоу сохранено</h2><button class="dialog__close" ng-click="dialogService.close()"></button></header><main class="dialog__content"><a href="{{dialogService.data.link}}">Ссылка на слайдшоу</a> <a href="{{dialogService.data.previewLink}}">Просмотреть</a></main></section>');
 
   $templateCache.put('modules/slideshow-settings/slideshow-settings.html', '<section class="dialog" ng-controller="SlideshowSettingsController"><header class="dialog__header"><h2 class="dialog__title">Настройки слайдшоу</h2><button class="dialog__close" ng-click="dialogService.close()"></button></header><main class="dialog__content"><form ng-submit="save(); dialogService.close()"><div class="form-row"><label class="label" for="slideDuration">Длительность кадра</label><div class="input-holder"><input type="number" class="input" id="slideDuration" name="slideDuration" placeholder="slide duration" ng-model="data.slideDuration"></div></div><div class="form-btns"><button class="button button_cancel" ng-click="dialogService.close()">Отмена</button> <button type="submit" class="button">Сохранить</button></div></form></main></section>');
 
@@ -337,6 +373,10 @@ angular.module('ss.templates', []).run(['$templateCache', function($templateCach
   $templateCache.put('pages/create-page/create-page.html', '<section class="create-section"><ng-include src="\'modules/audio-selector/audio-selector.html\'"></ng-include><section class="section" app-view-segment="1"></section><panel></panel></section>');
 
   $templateCache.put('pages/home-page/home-page.html', '<div class="wrapper"><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi at aut blanditiis corporis culpa cum deserunt dolor ducimus eaque eos esse et, eveniet explicabo facere iusto maiores numquam possimus provident qui quidem quo repellat repudiandae sapiente sequi similique, sint soluta sunt tempore ut vel. Alias aliquam cumque delectus deleniti dolores error excepturi, ipsa iure laboriosam, molestias quae repellat sapiente sit ut veritatis. A aliquam aliquid amet assumenda blanditiis consectetur dignissimos doloremque eaque esse eum eveniet ex fugit illum impedit laudantium necessitatibus nobis perspiciatis quibusdam recusandae repellendus sequi similique, sint sit tempora tempore, vero voluptates! Ab amet blanditiis enim eveniet facere fugiat placeat qui sapiente tenetur? Ab aperiam, beatae blanditiis consequatur dolore ducimus ea, et eum itaque laudantium nesciunt optio, perferendis quam reiciendis repudiandae vitae voluptatem. Accusantium aliquid amet iure, quaerat quam quia sint soluta vero. A accusamus amet eligendi est facilis hic itaque magni odit quaerat, sequi soluta voluptas voluptatibus. Accusantium assumenda dolorem harum laboriosam necessitatibus qui voluptates. Aut doloremque doloribus eligendi eos esse et eveniet explicabo facilis fuga illum in minima nam natus necessitatibus nobis nulla omnis perspiciatis porro, quaerat, quam quia quod repellendus similique soluta sunt velit voluptatem. Ab et saepe sapiente? Doloremque dolores nulla omnis optio quam sunt ullam. Accusantium aliquam atque cupiditate deleniti dignissimos dolorem earum eligendi excepturi explicabo iure nam, nulla numquam quasi rerum sint tempore voluptatibus? Aspernatur quam rerum suscipit temporibus? Enim obcaecati officiis quos ratione repellat reprehenderit, sapiente unde. Dolore eius hic maiores odit pariatur repudiandae ullam vel! Alias consequuntur, earum fuga harum, ipsa magnam odio, perferendis perspiciatis quibusdam sed soluta voluptates! Ab atque inventore maiores rerum. Maiores minima qui ut. Ab animi aspernatur dolore et id incidunt iusto, labore libero mollitia nemo neque nobis non nulla, obcaecati quaerat recusandae sed sit tempore totam ullam ut vero voluptates. Minima pariatur quia voluptatem voluptatum!</p><div class="tac"><a href="#/create" class="button">Create slideshow</a></div></div>');
+
+  $templateCache.put('pages/slideshow-page/slideshow-page.html', '<player src="{{src}}"></player>');
+
+  $templateCache.put('pages/start-page/start-page.html', '<div class="location-loading">Инициализация...</div>');
 
   $templateCache.put('modules/directives/breadcrumbs/breadcrumbs.html', '<ul ng-if="breadcrumbs" class="breadcrumbs"><li ng-repeat="breadcrumb in breadcrumbs" class="breadcrumbs__item"><ng-switch on="!!breadcrumb.link"><a ng-href="#{{breadcrumb.link}}" ng-switch-when="true" class="breadcrumbs__link">{{breadcrumb.name}}</a> <span ng-switch-default="" class="breadcrumbs__active">{{breadcrumb.name}}</span></ng-switch></li></ul>');
 
@@ -348,42 +388,12 @@ angular.module('ss.templates', []).run(['$templateCache', function($templateCach
 
   $templateCache.put('modules/panel/directives/timeline/timeline.html', '');
 
-  $templateCache.put('modules/player/directives/player-controls/player-controls.html', '<div class="controls" ng-class="{controls_paused: !played}"><button ng-click="toggle()" class="controls__toggle" ng-class="{controls__toggle_pause: played}"></button> <input type="text" ng-model="volume" ng-click="setVolume(volume / 100)"></div>');
+  $templateCache.put('modules/player/directives/player-controls/player-controls.html', '<div class="controls" ng-class="{controls_paused: !played}"><button ng-click="toggle()" class="controls__toggle" ng-class="{controls__toggle_pause: played}"></button> <input type="text" ng-model="volume" ng-click="setVolume(volume / 100)"> <button ng-click="fullScreen()" class="controls__full-screen"></button></div>');
 
 }]);
-angular.module('ss.audioSelector', ['vkontakteServices', 'ss.services', 'ss.filters'])
-    .controller('AudiosController', AudiosController);
-
-function AudiosController($scope, VKAudios, selectedAudios) {
-    VKAudios.getAudios().then(function(audios){
-        $scope.audios = audios;
-    });
-
-    $scope.toggleAudio = function(event, audio) {
-        if (event.playAudio) {
-            return false;
-        }
-
-        if (audio.selected) {
-            selectedAudios.remove(audio);
-        } else {
-            selectedAudios.add(audio);
-        }
-    }
-}
-angular.module('ss.gridSizes', [])
-    .value('gridSizes', {
-        types: ['s', 'm', 'x', 'o', 'p', 'q', 'r', 'y', 'z', 'w'],
-        names: {
-            's': 'S',
-            'o': 'M',
-            'p': 'L',
-            'q': 'XL'
-        }
-    });
 angular.module('ss.dialog', [])
     .factory('dialogService', function($rootScope) {
-        return {
+        var instance = {
             showed: false,
 
             initialize: function(scope) {
@@ -404,6 +414,12 @@ angular.module('ss.dialog', [])
                 this.showed = false;
             }
         };
+
+        $rootScope.$on('$locationChangeSuccess', function() {
+            instance.close();
+        });
+
+        return instance;
     })
     .directive('dialog', function() {
         return {
@@ -423,6 +439,26 @@ angular.module('ss.dialog', [])
             }
         };
     });
+angular.module('ss.audioSelector', ['vkontakteServices', 'ss.services', 'ss.filters'])
+    .controller('AudiosController', AudiosController);
+
+function AudiosController($scope, VKAudios, selectedAudios) {
+    VKAudios.getAudios().then(function(audios){
+        $scope.audios = audios;
+    });
+
+    $scope.toggleAudio = function(event, audio) {
+        if (event.playAudio) {
+            return false;
+        }
+
+        if (audio.selected) {
+            selectedAudios.remove(audio);
+        } else {
+            selectedAudios.add(audio);
+        }
+    }
+}
 angular.module('ss')
     .directive('addSpace', function() {
         return {
@@ -486,25 +522,14 @@ angular.module('ss.panel', ['ss.services', 'parseServices', 'ss.filters', 'ss.se
         };
     });
 
-function panelController($scope, $location, $rootScope, slideshowService, selectedPhotos, selectedAudios, slideshowSettingsService, dialogService) {
+function panelController($scope, selectedPhotos, slideshowSettingsService, dialogService) {
     $scope.selectedPhotos = selectedPhotos;
     $scope.settings = slideshowSettingsService.get();
 
-    $scope.saveSlideshow = function() {
-        slideshowService.saveNewSlideshow({
-            frames: selectedPhotos.get(),
-            audios: selectedAudios.getIds(),
-            settings: slideshowSettingsService.get()
-        }).then(function(slideshow) {
-            //$rootScope.$apply(function() {
-            //    var path = '/slideshow/' + slideshow.id;
-            //    $location.path(path);
-            //});
-
-            dialogService.open({
-                template: 'modules/player-modal/player-modal.html',
-                id: slideshow.id
-            }, true);
+    $scope.preview = function() {
+        dialogService.open({
+            template: 'modules/player-modal/player-modal.html',
+            src: 'local'
         });
     };
 
@@ -572,7 +597,7 @@ function PhotosController($scope, VKPhotos, selectedPhotos, $routeParams) {
         $scope.album = album;
     });
 }
-angular.module('ss.player', ['parseServices', 'ss.templates', 'ss.filters', 'vkontakteServices'])
+angular.module('ss.player', ['parseServices', 'ss.templates', 'ss.filters', 'vkontakteServices', 'ss.services'])
     .directive('player', function() {
         return {
             replace: true,
@@ -581,33 +606,82 @@ angular.module('ss.player', ['parseServices', 'ss.templates', 'ss.filters', 'vko
             scope: {
                 src: '@'
             },
-            controller: playerController
+            controller: playerController,
+            link: function(scope, element) {
+                scope.fullScreen = function() {
+                    element[0].webkitRequestFullScreen();
+                }
+            }
         };
     });
 
-function playerController($scope, slideshowService, $filter, canvasPlayService, audioPlayService, VKAudios) {
-    slideshowService.getSlideshow($scope.src).then(function(data) {
-        var frames = data.get('frames'),
-            audioIds = data.get('audios'),
-            images = [],
-            image,
-            audio;
+function playerController($scope, slideshowService, $filter, canvasPlayService, audioPlayService, VKAudios, selectedPhotos, selectedAudios) {
+    if ($scope.src === 'local') {
+        initialize(selectedPhotos.get(), selectedAudios.getIds());
+    } else {
+        slideshowService.getSlideshow($scope.src).then(function(data) {
+            initialize(data.get('frames'), data.get('audios'));
+        });
+    }
+
+    function initialize(frames, audioIds) {
+        var images = [],
+            image;
 
         for (var i = 0; i < frames.length; i++) {
             image = new Image();
             images.push(image);
-            image.src = $filter('photoSrc')(frames[i].sizes, 'w');
+            image.src = $filter('photoSrc')(frames[i].sizes, 'z');
         }
 
-        VKAudios.getAudios(audioIds.join(',')).then(audioPlayService.initialize);
+        if (audioIds.length) {
+            VKAudios.getAudios(audioIds.join(',')).then(audioPlayService.initialize);
+        }
 
         canvasPlayService.setImages(images);
-    });
+    }
+
 
     $scope.$on('$destroy', function() {
-        canvasPlayService.stop();
+        canvasPlayService.destroy();
+        audioPlayService.destroy();
     });
+
+    var activityTimer;
+
+    function checkActivity() {
+        clearTimeout(activityTimer);
+
+        activityTimer = setTimeout(function() {
+            $scope.noActivity = true;
+            $scope.$digest();
+        }, 3000);
+
+        if ($scope.noActivity) {
+            $scope.noActivity = false;
+        }
+    }
+
+    $scope.checkActivity = checkActivity;
 }
+angular.module('ss.playerModal', ['ss.player', 'parseServices', 'ss.services', 'ss.constants', 'ss.dialog'])
+    .controller('PlayerModalController', function($scope, slideshowService, selectedPhotos, selectedAudios, slideshowSettingsService, URLS, dialogService) {
+        $scope.saveSlideshow = function() {
+            slideshowService.saveNewSlideshow({
+                frames: selectedPhotos.get(),
+                audios: selectedAudios.getIds(),
+                settings: slideshowSettingsService.get(),
+                author: VK.params.viewer_id
+            }).then(function(slideshow) {
+                var link = '#/slideshow/' + slideshow.id;
+                dialogService.open({
+                    template: 'modules/slideshow-saved-modal/slideshow-saved-modal.html',
+                    link: URLS.app + link,
+                    previewLink: link
+                }, true);
+            });
+        };
+    });
 angular.module('parseServices', [])
     .constant('config', {
         appId: "d95PTnwnQvQCj49xf9AUMgXpbSEIl78rVDUg55X0",
@@ -641,6 +715,20 @@ angular.module('parseServices', [])
         };
     });
 angular.module('ss.services', [])
+    .factory('slideshowSettingsService', function() {
+        var data = {
+            slideDuration: 5
+        };
+
+        return {
+            get: function() {
+                return data;
+            },
+            save: function(_data_) {
+                angular.extend(data, _data_);
+            }
+        };
+    })
     .factory('selectedPhotos', function() {
         var photos = [];
 
@@ -909,21 +997,11 @@ angular.module('vkontakteServices', [])
             getAudios: getAudios
         };
     });
-angular.module('ss.settings', ['ss.dialog'])
-    .factory('slideshowSettingsService', function() {
-        var data = {
-            slideDuration: 5
-        };
-
-        return {
-            get: function() {
-                return data;
-            },
-            save: function(_data_) {
-                angular.extend(data, _data_);
-            }
-        };
-    })
+angular.module('ss.slideshow', [])
+    .controller('SlideshowController', function($scope, $route) {
+        $scope.src = $route.current.params.id;
+    });
+angular.module('ss.settings', ['ss.services'])
     .controller('SlideshowSettingsController', function($scope, slideshowSettingsService) {
         $scope.data = angular.copy(slideshowSettingsService.get());
 
@@ -996,6 +1074,20 @@ angular.module('ss.tooltip', [])
             }
         };
     });
+angular.module('ss.constants', [])
+    .constant('URLS', {
+        app: 'http://vk.com/app4750775_238478875'
+    });
+angular.module('ss.gridSizes', [])
+    .value('gridSizes', {
+        types: ['s', 'm', 'x', 'o', 'p', 'q', 'r', 'y', 'z', 'w'],
+        names: {
+            's': 'S',
+            'o': 'M',
+            'p': 'L',
+            'q': 'XL'
+        }
+    });
 angular.module('ss.audioSelector')
     .directive('playAudio', function() {
         var audio = new Audio();
@@ -1036,7 +1128,7 @@ angular.module('ss')
         'create.album': [
             {
                 'name': 'Альбомы',
-                'link': 'create/albums/'
+                'link': 'create/albums'
             },
 
             {
@@ -1120,6 +1212,16 @@ angular.module('ss.player')
             audio.play();
         }
 
+        function stop() {
+            audio.pause();
+            audio.currentTime = 0;
+        }
+
+        function destroy() {
+            stop();
+            audios.length = 0;
+        }
+
         function setVolume(volume) {
             audio.volume = volume;
         }
@@ -1131,38 +1233,83 @@ angular.module('ss.player')
             volume: audio.volume,
             initialize: initialize,
             play: play,
+            stop: stop,
             pause: pause,
-            setVolume: setVolume
+            setVolume: setVolume,
+            destroy: destroy
         };
 
         return instance;
     });
 angular.module('ss.player')
     .factory('defaultAnimationType', function() {
+        function drawImageSize(image, cWidth, cHeight, scale) {
+            var factor = 1,
+                width,
+                height;
+
+            if (image.width > cWidth) {
+                width = cWidth;
+                factor = cWidth / image.width;
+            }
+
+            if (image.height * factor > cHeight) {
+                height = cHeight;
+                factor = cHeight / image.height;
+                width = factor * image.width;
+            } else {
+                height = image.height;
+                width = image.width;
+            }
+
+            return {
+                width: width * scale,
+                height: height * scale
+            };
+        }
+
         function animFunc(currentSlide, currentSlideTime, slideTime, images, cWidth, cHeight) {
             var result = {};
+            var scaleSize, scale;
 
-            result[currentSlide] = {};
+            result[currentSlide] = {
+                sx: 0,
+                sy: 0
+            };
 
             if (currentSlideTime < this.hideDuration) {
 
                 if (currentSlide > 0) {
-                    var scale = this.timingValue(currentSlideTime + slideTime, slideTime + this.hideDuration, 1.2, this.scale);
+                    scale = this.timingValue(currentSlideTime + slideTime, slideTime + this.hideDuration, 1, this.scale);
+                    var prevIndex = currentSlide - 1;
 
-                    result[currentSlide - 1] = {
+                    scaleSize = drawImageSize(images[prevIndex], cWidth, cHeight, scale);
+
+                    result[prevIndex] = {
                         opacity: this.timingValue(currentSlideTime, this.hideDuration, 1, 0),
-                        scale: scale,
-                        x: (cWidth/scale - images[currentSlide - 1].width)/2,
-                        y: (cHeight/scale - images[currentSlide - 1].height)/2
+                        sx: 0,
+                        sy: 0,
+                        x: (cWidth - scaleSize.width) / 2,
+                        y: (cHeight - scaleSize.height) / 2,
+                        width: images[prevIndex].width,
+                        height: images[prevIndex].height,
+                        scaleWidth: scaleSize.width,
+                        scaleHeight: scaleSize.height
                     };
                 }
 
                 result[currentSlide].opacity = this.timingValue(currentSlideTime, this.hideDuration, 0, 1);
             }
 
-            result[currentSlide].scale = this.timingValue(currentSlideTime, slideTime + this.hideDuration, 1.2, this.scale);
-            result[currentSlide].x = (cWidth/result[currentSlide].scale - images[currentSlide].width)/2;
-            result[currentSlide].y = (cHeight/result[currentSlide].scale - images[currentSlide].height)/2;
+            scale = this.timingValue(currentSlideTime, slideTime + this.hideDuration, 1, this.scale);
+            scaleSize = drawImageSize(images[currentSlide], cWidth, cHeight, scale);
+
+            result[currentSlide].x = (cWidth - scaleSize.width) / 2;
+            result[currentSlide].y = (cHeight - scaleSize.height) / 2;
+            result[currentSlide].width = images[currentSlide].width;
+            result[currentSlide].height = images[currentSlide].height;
+            result[currentSlide].scaleWidth = scaleSize.width;
+            result[currentSlide].scaleHeight = scaleSize.height;
 
             return result;
         }
@@ -1176,7 +1323,7 @@ angular.module('ss.player')
         }
 
         return {
-            scale: 1.4,
+            scale: 1.2,
 
             func: animFunc,
             timingValue: timingValue,
@@ -1263,6 +1410,11 @@ angular.module('ss.player')
             instance.paused = false;
         }
 
+        function destroy() {
+            stop();
+            images.length = 0;
+        }
+
         function draw(image, object){
             ctx.save();
             for (var key in object) {
@@ -1275,7 +1427,8 @@ angular.module('ss.player')
                         break;
                 }
             }
-            ctx.drawImage(image, object.x, object.y);
+
+            ctx.drawImage(image, object.sx, object.sy, object.width, object.height, object.x, object.y, object.scaleWidth, object.scaleHeight);
             ctx.restore();
         }
 
@@ -1283,7 +1436,7 @@ angular.module('ss.player')
             cWidth: 1280,
             cHeight: 720,
             paused: true,
-
+            destroy: destroy,
             setCanvas: setCanvas,
             setImages: setImages,
             play: play,
@@ -1407,7 +1560,9 @@ angular.module('ss.player')
         return  {
             restrict:'E',
             replace: true,
-            scope: true,
+            scope: {
+                fullScreen: '&'
+            },
             templateUrl: 'modules/player/directives/player-controls/player-controls.html',
             controller: PlayerControlsController
         }
@@ -1447,6 +1602,7 @@ function PlayerControlsController($scope, audioPlayService, canvasPlayService) {
     }
 
     $scope.volume = audioPlayService.volume * 100;
+    $scope.noActivity = false;
     $scope.played = false;
     $scope.toggle = toggle;
     $scope.setVolume = setVolume;

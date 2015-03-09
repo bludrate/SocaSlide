@@ -17,7 +17,6 @@ var jsFilesorder = [
     './vendor/angular-route-segment.min.js',
     './js/**/*.js',
     '!./js/main.js',
-    '!./js/fakeApi.js',
     './modules/*/*.js',
     './modules/**/*.js'
 ];

@@ -7,25 +7,14 @@ angular.module('ss.panel', ['ss.services', 'parseServices', 'ss.filters', 'ss.se
         };
     });
 
-function panelController($scope, $location, $rootScope, slideshowService, selectedPhotos, selectedAudios, slideshowSettingsService, dialogService) {
+function panelController($scope, selectedPhotos, slideshowSettingsService, dialogService) {
     $scope.selectedPhotos = selectedPhotos;
     $scope.settings = slideshowSettingsService.get();
 
-    $scope.saveSlideshow = function() {
-        slideshowService.saveNewSlideshow({
-            frames: selectedPhotos.get(),
-            audios: selectedAudios.getIds(),
-            settings: slideshowSettingsService.get()
-        }).then(function(slideshow) {
-            //$rootScope.$apply(function() {
-            //    var path = '/slideshow/' + slideshow.id;
-            //    $location.path(path);
-            //});
-
-            dialogService.open({
-                template: 'modules/player-modal/player-modal.html',
-                id: slideshow.id
-            }, true);
+    $scope.preview = function() {
+        dialogService.open({
+            template: 'modules/player-modal/player-modal.html',
+            src: 'local'
         });
     };
 

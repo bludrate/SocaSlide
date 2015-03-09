@@ -1,0 +1,10 @@
+<section class="dialog" ng-controller="SlideshowSettingsController">
+    <header class="dialog__header">
+        <h2 class="dialog__title">Слайдшоу сохранено</h2>
+        <button class="dialog__close" ng-click="dialogService.close()"></button>
+    </header>
+    <main class="dialog__content">
+        <a href="{{dialogService.data.link}}">Ссылка на слайдшоу</a>
+        <a href="{{dialogService.data.previewLink}}">Просмотреть</a>
+    </main>
+</section>

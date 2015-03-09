@@ -1,6 +1,6 @@
 angular.module('ss.dialog', [])
     .factory('dialogService', function($rootScope) {
-        return {
+        var instance = {
             showed: false,
 
             initialize: function(scope) {
@@ -21,6 +21,12 @@ angular.module('ss.dialog', [])
                 this.showed = false;
             }
         };
+
+        $rootScope.$on('$locationChangeSuccess', function() {
+            instance.close();
+        });
+
+        return instance;
     })
     .directive('dialog', function() {
         return {

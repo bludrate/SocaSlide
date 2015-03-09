@@ -1,29 +1,72 @@
 angular.module('ss.player')
     .factory('defaultAnimationType', function() {
+        function drawImageSize(image, cWidth, cHeight, scale) {
+            var factor = 1,
+                width,
+                height;
+
+            if (image.width > cWidth) {
+                width = cWidth;
+                factor = cWidth / image.width;
+            }
+
+            if (image.height * factor > cHeight) {
+                height = cHeight;
+                factor = cHeight / image.height;
+                width = factor * image.width;
+            } else {
+                height = image.height;
+                width = image.width;
+            }
+
+            return {
+                width: width * scale,
+                height: height * scale
+            };
+        }
+
         function animFunc(currentSlide, currentSlideTime, slideTime, images, cWidth, cHeight) {
             var result = {};
+            var scaleSize, scale;
 
-            result[currentSlide] = {};
+            result[currentSlide] = {
+                sx: 0,
+                sy: 0
+            };
 
             if (currentSlideTime < this.hideDuration) {
 
                 if (currentSlide > 0) {
-                    var scale = this.timingValue(currentSlideTime + slideTime, slideTime + this.hideDuration, 1.2, this.scale);
+                    scale = this.timingValue(currentSlideTime + slideTime, slideTime + this.hideDuration, 1, this.scale);
+                    var prevIndex = currentSlide - 1;
 
-                    result[currentSlide - 1] = {
+                    scaleSize = drawImageSize(images[prevIndex], cWidth, cHeight, scale);
+
+                    result[prevIndex] = {
                         opacity: this.timingValue(currentSlideTime, this.hideDuration, 1, 0),
-                        scale: scale,
-                        x: (cWidth/scale - images[currentSlide - 1].width)/2,
-                        y: (cHeight/scale - images[currentSlide - 1].height)/2
+                        sx: 0,
+                        sy: 0,
+                        x: (cWidth - scaleSize.width) / 2,
+                        y: (cHeight - scaleSize.height) / 2,
+                        width: images[prevIndex].width,
+                        height: images[prevIndex].height,
+                        scaleWidth: scaleSize.width,
+                        scaleHeight: scaleSize.height
                     };
                 }
 
                 result[currentSlide].opacity = this.timingValue(currentSlideTime, this.hideDuration, 0, 1);
             }
 
-            result[currentSlide].scale = this.timingValue(currentSlideTime, slideTime + this.hideDuration, 1.2, this.scale);
-            result[currentSlide].x = (cWidth/result[currentSlide].scale - images[currentSlide].width)/2;
-            result[currentSlide].y = (cHeight/result[currentSlide].scale - images[currentSlide].height)/2;
+            scale = this.timingValue(currentSlideTime, slideTime + this.hideDuration, 1, this.scale);
+            scaleSize = drawImageSize(images[currentSlide], cWidth, cHeight, scale);
+
+            result[currentSlide].x = (cWidth - scaleSize.width) / 2;
+            result[currentSlide].y = (cHeight - scaleSize.height) / 2;
+            result[currentSlide].width = images[currentSlide].width;
+            result[currentSlide].height = images[currentSlide].height;
+            result[currentSlide].scaleWidth = scaleSize.width;
+            result[currentSlide].scaleHeight = scaleSize.height;
 
             return result;
         }
@@ -37,7 +80,7 @@ angular.module('ss.player')
         }
 
         return {
-            scale: 1.4,
+            scale: 1.2,
 
             func: animFunc,
             timingValue: timingValue,
@@ -124,6 +167,11 @@ angular.module('ss.player')
             instance.paused = false;
         }
 
+        function destroy() {
+            stop();
+            images.length = 0;
+        }
+
         function draw(image, object){
             ctx.save();
             for (var key in object) {
@@ -136,7 +184,8 @@ angular.module('ss.player')
                         break;
                 }
             }
-            ctx.drawImage(image, object.x, object.y);
+
+            ctx.drawImage(image, object.sx, object.sy, object.width, object.height, object.x, object.y, object.scaleWidth, object.scaleHeight);
             ctx.restore();
         }
 
@@ -144,7 +193,7 @@ angular.module('ss.player')
             cWidth: 1280,
             cHeight: 720,
             paused: true,
-
+            destroy: destroy,
             setCanvas: setCanvas,
             setImages: setImages,
             play: play,

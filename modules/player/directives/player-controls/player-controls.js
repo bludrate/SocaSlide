@@ -3,7 +3,9 @@ angular.module('ss.player')
         return  {
             restrict:'E',
             replace: true,
-            scope: true,
+            scope: {
+                fullScreen: '&'
+            },
             templateUrl: 'modules/player/directives/player-controls/player-controls.html',
             controller: PlayerControlsController
         }
@@ -43,6 +45,7 @@ function PlayerControlsController($scope, audioPlayService, canvasPlayService) {
     }
 
     $scope.volume = audioPlayService.volume * 100;
+    $scope.noActivity = false;
     $scope.played = false;
     $scope.toggle = toggle;
     $scope.setVolume = setVolume;
