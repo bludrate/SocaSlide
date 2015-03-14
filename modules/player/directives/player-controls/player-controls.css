@@ -14,8 +14,22 @@
 .player_no-activity:hover .controls {
   bottom: -34px;
 }
+.controls__progress {
+  box-sizing: border-box;
+  width: 100%;
+  margin: 6px 0;
+}
+.controls__progress-holder {
+  overflow: hidden;
+  padding: 0 10px;
+}
 .controls_paused {
   bottom: 0;
+}
+.controls__volume {
+  float: right;
+  margin: 6px;
+  width: 80px;
 }
 .controls__toggle {
   float: left;

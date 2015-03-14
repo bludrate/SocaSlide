@@ -1,4 +1,4 @@
-<div class="player" ng-mousemove="checkActivity()" ng-class="{'player_no-activity': noActivity}">
+<div class="player" ng-mousemove="resetActivity()" ng-class="{'player_no-activity': noActivity}">
     <player-canvas></player-canvas>
-    <player-controls full-screen="fullScreen()"></player-controls>
+    <player-controls full-screen="fullScreen()" duration="{{duration}}" no-activity="noActivity" rewind-started="rewindStarted"></player-controls>
 </div>

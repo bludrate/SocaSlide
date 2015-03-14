@@ -4,7 +4,10 @@ angular.module('ss.player')
             restrict:'E',
             replace: true,
             scope: {
-                fullScreen: '&'
+                fullScreen: '&',
+                duration: '@',
+                rewindStarted: '=',
+                noActivity: '='
             },
             templateUrl: 'modules/player/directives/player-controls/player-controls.html',
             controller: PlayerControlsController
@@ -25,14 +28,6 @@ function PlayerControlsController($scope, audioPlayService, canvasPlayService) {
     }
 
     function setVolume() {
-        if ($scope.volume < 0 ) {
-            $scope.volume = 0;
-        }
-
-        if ($scope.volume > 100) {
-            $scope.volume = 100;
-        }
-
         audioPlayService.setVolume($scope.volume / 100);
     }
 
@@ -44,9 +39,44 @@ function PlayerControlsController($scope, audioPlayService, canvasPlayService) {
         }
     }
 
+    function rewindStart() {
+        audioPlayService.pause();
+        canvasPlayService.pause();
+        $scope.rewindStarted = true;
+    }
+
+    function rewindEnd() {
+        if ($scope.played) {
+            audioPlayService.play();
+            canvasPlayService.play();
+        }
+        $scope.rewindStarted = false;
+    }
+
+    function rewind() {
+        audioPlayService.rewind(Number($scope.currentTime) / 1000);
+        canvasPlayService.rewind(Number($scope.currentTime));
+    }
+
+    $scope.$on('playProgress', function(event, progress) {
+        $scope.currentTime = progress;
+
+        if (!$scope.noActivity) {
+            $scope.$digest();
+        }
+    });
+
+    $scope.$on('playEnd', function() {
+        $scope.played = false;
+        $scope.$digest();
+    });
+
     $scope.volume = audioPlayService.volume * 100;
-    $scope.noActivity = false;
+    $scope.currentTime = 0;
     $scope.played = false;
     $scope.toggle = toggle;
     $scope.setVolume = setVolume;
+    $scope.rewind = rewind;
+    $scope.rewindStart = rewindStart;
+    $scope.rewindEnd = rewindEnd;
 }

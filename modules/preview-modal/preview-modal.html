@@ -1,0 +1,16 @@
+<section class="dialog">
+    <button class="dialog__close dialog__close_video" ng-click="dialogService.close()"></button>
+    <player src="{{dialogService.data.src}}"></player>
+    <form class="preview-modal__content" ng-submit="saveSlideshow()" ng-controller="PreviewModalController">
+        <div class="form-row">
+            <label class="label" for="slideshowTitle">Заголовок</label>
+            <div class="input-holder">
+                <input class="input" id="slideshowTitle" type="text" ng-model="title"/>
+            </div>
+        </div>
+        <div class="form-btns">
+            <button class="button button_cancel" type="button" ng-click="dialogService.close()">Отмена</button>
+            <button class="button" type="submit">Сохранить</button>
+        </div>
+    </form>
+</section>

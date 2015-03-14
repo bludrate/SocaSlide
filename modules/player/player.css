@@ -13,3 +13,6 @@
   height: auto;
   vertical-align: top;
 }
+.player_no-activity {
+  cursor: none;
+}

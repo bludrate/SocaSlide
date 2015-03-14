@@ -33,8 +33,8 @@
 }
 
 .form-row {
-    margin: 0 0 10px;
     overflow: hidden;
+    margin-bottom: 10px;
 }
 
 .input {
@@ -65,5 +65,42 @@
     
     .button {
         margin-left: 20px;
+    }
+}
+
+.column {
+    float: left
+}
+.two-columns {
+    overflow: hidden;
+    margin-bottom: 10px;
+    .column {
+        width: 48%;
+        &:first-child {
+            margin-right: 4%;
+        }
+    }
+}
+
+.textarea {
+    height: 30px;
+    border: 1px solid $dividerColor;
+    line-height: 18px;
+    font-size: 14px;
+    width: 100%;
+    margin: 0;
+    padding: 6px 5px 6px 10px;
+    box-sizing: border-box;
+    resize: none;
+    transition: height 0.1s;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis
+
+    &:focus {
+        height: 150px;
+        overflow: auto;
+        text-overflow: clip;
+        white-space: normal;
     }
 }

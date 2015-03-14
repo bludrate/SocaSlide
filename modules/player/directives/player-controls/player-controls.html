@@ -1,5 +1,8 @@
 <div class="controls" ng-class="{controls_paused: !played}">
     <button ng-click="toggle()" class="controls__toggle" ng-class="{controls__toggle_pause: played}"></button>
-    <input type="text" ng-model="volume" ng-click="setVolume(volume / 100)"/>
     <button ng-click="fullScreen()" class="controls__full-screen"></button>
+    <input class="controls__volume" type="range" ng-model="volume" min="0" max="100" ng-change="setVolume()"/>
+    <div class="controls__progress-holder">
+        <input type="range" class="controls__progress" min="0" max="{{duration}}" ng-model="currentTime" ng-change="rewind()" ng-mousedown="rewindStart()" ng-mouseup="rewindEnd()"/>
+    </div>
 </div>

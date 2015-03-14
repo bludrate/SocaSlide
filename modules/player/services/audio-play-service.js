@@ -1,9 +1,9 @@
 angular.module('ss.player')
-    .factory('audioPlayService', function() {
+    .factory('audioPlayService', function(audioService) {
         var audios = [],
             currentAudio = 0,
             instance,
-            audio = new Audio();
+            audio = audioService.audio;
 
         function initialize(_audios_) {
             audios = _audios_;
@@ -17,11 +17,11 @@ angular.module('ss.player')
             if (!audios.length)
                 return false;
 
-            audio.play();
+            audioService.play();
         }
 
         function pause() {
-            audio.pause()
+            audioService.pause()
         }
 
         function audioEnded() {
@@ -37,12 +37,11 @@ angular.module('ss.player')
                 audio.src = audios[currentAudio].url;
             }
 
-            audio.play();
+            audioService.play();
         }
 
         function stop() {
-            audio.pause();
-            audio.currentTime = 0;
+            audioService.stop();
         }
 
         function destroy() {
@@ -52,6 +51,10 @@ angular.module('ss.player')
 
         function setVolume(volume) {
             audio.volume = volume;
+        }
+
+        function rewind(value) {
+            audio.currentTime = value;
         }
 
         audio.addEventListener('ended', audioEnded);
@@ -64,7 +67,8 @@ angular.module('ss.player')
             stop: stop,
             pause: pause,
             setVolume: setVolume,
-            destroy: destroy
+            destroy: destroy,
+            rewind: rewind
         };
 
         return instance;

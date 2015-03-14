@@ -1,4 +1,4 @@
-angular.module('ss.audioSelector', ['vkontakteServices', 'ss.services', 'ss.filters'])
+angular.module('ss.audioSelector', ['vkontakteServices', 'ss.services', 'ss.filters', 'ss.audioService'])
     .controller('AudiosController', AudiosController);
 
 function AudiosController($scope, VKAudios, selectedAudios) {

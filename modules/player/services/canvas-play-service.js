@@ -25,7 +25,7 @@ angular.module('ss.player')
             };
         }
 
-        function animFunc(currentSlide, currentSlideTime, slideTime, images, cWidth, cHeight) {
+        function animFunc(currentSlide, currentSlideTime, slideDuration, images, cWidth, cHeight) {
             var result = {};
             var scaleSize, scale;
 
@@ -37,7 +37,7 @@ angular.module('ss.player')
             if (currentSlideTime < this.hideDuration) {
 
                 if (currentSlide > 0) {
-                    scale = this.timingValue(currentSlideTime + slideTime, slideTime + this.hideDuration, 1, this.scale);
+                    scale = this.timingValue(currentSlideTime + slideDuration, slideDuration + this.hideDuration, 1, this.scale);
                     var prevIndex = currentSlide - 1;
 
                     scaleSize = drawImageSize(images[prevIndex], cWidth, cHeight, scale);
@@ -58,7 +58,7 @@ angular.module('ss.player')
                 result[currentSlide].opacity = this.timingValue(currentSlideTime, this.hideDuration, 0, 1);
             }
 
-            scale = this.timingValue(currentSlideTime, slideTime + this.hideDuration, 1, this.scale);
+            scale = this.timingValue(currentSlideTime, slideDuration + this.hideDuration, 1, this.scale);
             scaleSize = drawImageSize(images[currentSlide], cWidth, cHeight, scale);
 
             result[currentSlide].x = (cWidth - scaleSize.width) / 2;
@@ -75,8 +75,8 @@ angular.module('ss.player')
             return startValue + currentSlideTime/endTime * (endValue - startValue);
         }
 
-        function init(slideTime) {
-            this.hideDuration = slideTime * 0.3;
+        function init(slideDuration) {
+            this.hideDuration = slideDuration * 0.3;
         }
 
         return {
@@ -87,33 +87,48 @@ angular.module('ss.player')
             init: init
         };
     })
-    .factory('canvasPlayService', function(defaultAnimationType) {
+    .factory('canvasPlayService', function($rootScope, defaultAnimationType) {
         var requestAnimationFrameId,
             ctx,
             images,
             startTime,
-            currentSlide,
             pausedAt = 0,
-            slideTime = 5000,
-            instance;
+            slideDuration = 5000,
+            instance,
+            scope;
 
-        defaultAnimationType.init(slideTime);
+        defaultAnimationType.init(slideDuration);
 
         function setCanvas(canvas) {
             ctx = canvas.getContext('2d');
         }
 
-        function setImages(_images_) {
+        function initialize(_images_, playerScope, settings) {
             images = _images_;
+            scope = playerScope;
+            slideDuration = settings.slideDuration * 1000 || slideDuration;
+
+            console.log(settings);
         }
 
-        function render(currentSlideTime) {
+        function render() {
+            if (instance.currentTime < 0) {
+                instance.currentTime = 0;
+            }
+
+            var currentSlide = parseInt(instance.currentTime/slideDuration, 10);
+            var currentSlideTime = instance.currentTime % slideDuration;
+
+            if (currentSlide >= images.length) {
+                return false;
+            }
+
             ctx.clearRect(0, 0, instance.cWidth, instance.cHeight);
 
             var animationObject = defaultAnimationType.func(
                 currentSlide,
                 currentSlideTime,
-                slideTime,
+                slideDuration,
                 images,
                 instance.cWidth,
                 instance.cHeight
@@ -122,24 +137,19 @@ angular.module('ss.player')
             for (var key in animationObject) {
                 draw(images[key], animationObject[key]);
             }
+
+            return true;
         }
 
         function step(time) {
-            var currentTime = (time - startTime);
+            instance.currentTime = (time - startTime);
 
-            if (currentTime < 0) {
-                currentTime = 0;
+            if (render()) {
+                scope.$broadcast('playProgress', instance.currentTime);
+                requestAnimationFrameId = window.requestAnimationFrame(step);
+            } else {
+                scope.$broadcast('playEnd');
             }
-
-            currentSlide = parseInt(currentTime/slideTime, 10);
-
-            if (currentSlide >= images.length) {
-                return false;
-            }
-
-            render(currentTime % slideTime);
-
-            requestAnimationFrameId = window.requestAnimationFrame(step);
         }
 
         function pause() {
@@ -172,6 +182,12 @@ angular.module('ss.player')
             images.length = 0;
         }
 
+        function rewind(time) {
+            instance.currentTime = time;
+            pausedAt = time;
+            render();
+        }
+
         function draw(image, object){
             ctx.save();
             for (var key in object) {
@@ -195,10 +211,12 @@ angular.module('ss.player')
             paused: true,
             destroy: destroy,
             setCanvas: setCanvas,
-            setImages: setImages,
+            initialize: initialize,
             play: play,
             pause: pause,
-            stop: stop
+            stop: stop,
+            rewind: rewind,
+            currentTime: 0
         };
 
         return instance;

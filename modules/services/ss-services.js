@@ -1,11 +1,22 @@
 angular.module('ss.services', [])
+    .factory('durationService', function(selectedPhotos, slideshowSettingsService) {
+        return {
+            value: function() {
+                return selectedPhotos.size() * slideshowSettingsService.get('slideDuration') * 1000;
+            }
+        };
+    })
     .factory('slideshowSettingsService', function() {
         var data = {
             slideDuration: 5
         };
 
         return {
-            get: function() {
+            get: function(name) {
+                if (name) {
+                    return data[name];
+                }
+
                 return data;
             },
             save: function(_data_) {

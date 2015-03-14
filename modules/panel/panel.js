@@ -7,13 +7,13 @@ angular.module('ss.panel', ['ss.services', 'parseServices', 'ss.filters', 'ss.se
         };
     });
 
-function panelController($scope, selectedPhotos, slideshowSettingsService, dialogService) {
+function panelController($scope, selectedPhotos, durationService, dialogService) {
     $scope.selectedPhotos = selectedPhotos;
-    $scope.settings = slideshowSettingsService.get();
+    $scope.duration = durationService.value;
 
     $scope.preview = function() {
         dialogService.open({
-            template: 'modules/player-modal/player-modal.html',
+            template: 'modules/preview-modal/preview-modal.html',
             src: 'local'
         });
     };

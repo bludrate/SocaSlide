@@ -1,4 +1,4 @@
-angular.module('ss.player', ['parseServices', 'ss.templates', 'ss.filters', 'vkontakteServices', 'ss.services'])
+angular.module('ss.player', ['parseServices', 'ss.templates', 'ss.filters', 'vkontakteServices', 'ss.services', 'ss.audioService'])
     .directive('player', function() {
         return {
             replace: true,
@@ -16,16 +16,16 @@ angular.module('ss.player', ['parseServices', 'ss.templates', 'ss.filters', 'vko
         };
     });
 
-function playerController($scope, slideshowService, $filter, canvasPlayService, audioPlayService, VKAudios, selectedPhotos, selectedAudios) {
+function playerController($scope, slideshowService, $filter, canvasPlayService, audioPlayService, VKAudios, selectedPhotos, selectedAudios, durationService, slideshowSettingsService) {
     if ($scope.src === 'local') {
-        initialize(selectedPhotos.get(), selectedAudios.getIds());
+        initialize(selectedPhotos.get(), selectedAudios.getIds(), durationService.value(), slideshowSettingsService.get());
     } else {
         slideshowService.getSlideshow($scope.src).then(function(data) {
-            initialize(data.get('frames'), data.get('audios'));
+            initialize(data.get('frames'), data.get('audios'), data.get('duration'), data.get('settings'));
         });
     }
 
-    function initialize(frames, audioIds) {
+    function initialize(frames, audioIds, duration, settings) {
         var images = [],
             image;
 
@@ -39,7 +39,9 @@ function playerController($scope, slideshowService, $filter, canvasPlayService, 
             VKAudios.getAudios(audioIds.join(',')).then(audioPlayService.initialize);
         }
 
-        canvasPlayService.setImages(images);
+        canvasPlayService.initialize(images, $scope, settings);
+
+        $scope.duration = duration;
     }
 
 
@@ -50,18 +52,42 @@ function playerController($scope, slideshowService, $filter, canvasPlayService, 
 
     var activityTimer;
 
-    function checkActivity() {
-        clearTimeout(activityTimer);
+    function resetActivity() {
+        if ($scope.rewindStarted) {
+            return false;
+        }
 
-        activityTimer = setTimeout(function() {
-            $scope.noActivity = true;
-            $scope.$digest();
-        }, 3000);
+        clearActivity();
+        setActivity();
+    }
+
+    function clearActivity() {
+        clearTimeout(activityTimer);
 
         if ($scope.noActivity) {
             $scope.noActivity = false;
         }
     }
 
-    $scope.checkActivity = checkActivity;
+    function setActivity() {
+        activityTimer = setTimeout(function() {
+            $scope.noActivity = true;
+            $scope.$digest();
+        }, 3000);
+    }
+
+    $scope.$watch('rewindStarted', function(started) {
+        if (started) {
+            clearActivity();
+        } else {
+            setActivity();
+        }
+    });
+
+    $scope.$on('playEnd', function() {
+        audioPlayService.stop();
+    });
+
+    $scope.rewindStarted = false;
+    $scope.resetActivity = resetActivity;
 }

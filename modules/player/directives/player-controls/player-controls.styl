@@ -16,8 +16,25 @@
         bottom: -34px;
     }
 
+    &__progress {
+        box-sizing: border-box;
+        width: 100%;
+        margin: 6px 0;
+
+        &-holder {
+            overflow: hidden;
+            padding: 0 10px;
+        }
+    }
+
     &_paused {
         bottom: 0;
+    }
+        
+    &__volume {
+        float: right;
+        margin: 6px;
+        width: 80px;
     }
 
     &__toggle {
