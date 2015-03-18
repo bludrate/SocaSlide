@@ -1,4 +1,9 @@
-<header class="header">
+<header class="header" ng-controller="HeaderController">
     <a href="#/home" active-link="home" class="logo">SocaSlide</a>
     <breadcrumbs></breadcrumbs>
+    <div class="header__user">
+        {{firstName}}
+        {{lastName}}
+    </div>
+    <a href="#/slideshow/{{slideshow.id}}" ng-repeat="slideshow in slideshows" style="margin-right: 10px;">{{slideshow.get('title') || 'hi'}}</a>
 </header>

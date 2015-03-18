@@ -107,8 +107,6 @@ angular.module('ss.player')
             images = _images_;
             scope = playerScope;
             slideDuration = settings.slideDuration * 1000 || slideDuration;
-
-            console.log(settings);
         }
 
         function render() {

@@ -1,0 +1,18 @@
+<div>
+    <ul class="slideshow-list" ng-if="slideshows.length">
+        <li class="slideshow-list__item" ng-repeat="slideshow in slideshows">
+            <img ng-src="{{slideshow.get('cover').sizes | photoSrc:'p'}}"/>
+        <span class="slideshow-list__item-title-wrap">
+            <span class="slideshow-list__item-duration">{{slideshow.get('duration') | timeFormatter: 'ms'}}</span>
+            <span class="slideshow-list__item-title">{{slideshow.get('title') || 'Без заголовка'}}</span>
+        </span>
+            <div class="slideshow-list__buttons">
+                <!--<a ng-href="#/slideshow/{{slideshow.id}}" class="slideshow-list__button slideshow-list__button_edit" title="Редактировать"></a>-->
+                <button ng-click="show(slideshow.id)" class="slideshow-list__button slideshow-list__button_show" title="Просмотр"></button>
+                <button ng-click="share(slideshow)" class="slideshow-list__button slideshow-list__button_share" title="Опубликовать"></button>
+                <button ng-click="remove(slideshow)" class="slideshow-list__button slideshow-list__button_remove" title="Удалить"></button>
+            </div>
+        </li>
+    </ul>
+    <div ng-if="slideshows && !slideshows.length" class="wrapper"><br/><br/>Вы пока еще не создали ни 1 слайдшоу. <a href="#/create/">Создать мое первое слайдшоу</a></div>
+</div>

@@ -1,4 +1,4 @@
-angular.module('vkontakteServices', [])
+angular.module('vkontakteServices', ['ss.constants', 'ss.filters'])
     .run(function(VKReady) {
         VK.init(function() {
             VKReady.deferred.resolve();
@@ -27,6 +27,44 @@ angular.module('vkontakteServices', [])
             then: function(successCallback, errorCallback) {
                 this.deferred.promise.then(successCallback, errorCallback);
             }
+        };
+    })
+
+    .factory('VKUser', function(methodWrapper) {
+        function getInfo() {
+            return methodWrapper(function(deferred) {
+                VK.api('users.get', {}, function(data) {
+                    if (data.response) {
+                        deferred.resolve(data.response[0]);
+                    } else {
+                        deferred.reject('error while getting user info');
+                    }
+                });
+            });
+        }
+
+        return {
+            getInfo: getInfo
+        };
+    })
+
+    .factory('VKWall', function(methodWrapper, URLS) {
+        function postSlideshow(slideshow) {
+            var cover = slideshow.get('cover');
+
+            return methodWrapper(function(deferred) {
+                VK.api('wall.post', {
+                    message: 'Слайдшоу ' + slideshow.get('title'),
+                    attachments: 'photo' + cover.owner_id + '_' + cover.id + ',' + URLS.app + '#/slideshow/' + slideshow.id
+                }, function(response) {
+                    console.log(response);
+                    deferred.resolve();
+                });
+            });
+        }
+
+        return {
+            postSlideshow: postSlideshow
         };
     })
 

@@ -36,6 +36,7 @@ button {
   top: 50px;
   bottom: 0;
   width: 100%;
+  overflow: auto;
 }
 .wrapper {
   padding: 0 20px;
@@ -63,6 +64,10 @@ button {
   border-bottom: 1px solid #b6b6b6;
   margin-bottom: 2px;
   position: relative;
+}
+.section__header-controls {
+  float: right;
+  margin-left: 15px;
 }
 .section__title {
   font-weight: normal;

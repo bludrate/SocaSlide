@@ -13,8 +13,7 @@ function panelController($scope, selectedPhotos, durationService, dialogService)
 
     $scope.preview = function() {
         dialogService.open({
-            template: 'modules/preview-modal/preview-modal.html',
-            src: 'local'
+            template: 'modules/preview-modal/preview-modal.html'
         });
     };
 

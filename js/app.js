@@ -1,6 +1,26 @@
-angular.module('ss', ['ngRoute', 'ss.audioSelector', 'route-segment', 'view-segment', 'ss.header', 'ss.photoSelector', 'ss.templates', 'ss.panel', 'ss.player', 'ss.tooltip', 'vkontakteServices', 'ss.slideshow', 'ss.previewModal'])
+angular.module('ss', [
+    'ngRoute',
+    'ss.audioSelector',
+    'route-segment',
+    'view-segment',
+    'ss.header',
+    'ss.photoSelector',
+    'ss.templates',
+    'ss.panel',
+    'ss.player',
+    'ss.tooltip',
+    'vkontakteServices',
+    'ss.slideshow',
+    'ss.previewModal',
+    'ss.slideshowList'
+])
     .config(function ($routeSegmentProvider, $routeProvider) {
-        VK.loadParams(window.location.href);
+        VK.addCallback('onScrollTop', function(scrollTop, windowHeight, offsetTop) {
+            VK.callMethod('scrollWindow', offsetTop);
+            VK.callMethod('resizeWindow', 1000, windowHeight > 500 ? windowHeight : 500);
+        });
+
+        VK.callMethod('scrollTop');
 
         $routeSegmentProvider
             .when('/', 'start')
@@ -42,7 +62,7 @@ angular.module('ss', ['ngRoute', 'ss.audioSelector', 'route-segment', 'view-segm
 
         $routeProvider.otherwise({redirectTo: '/home'});
     })
-    .run(function($location, $rootScope) {
+    .run(function($location, $rootScope, currentUser, URLS) {
         var locationInitialized = false;
 
         VK.addCallback('onLocationChanged', function(location) {
@@ -65,4 +85,7 @@ angular.module('ss', ['ngRoute', 'ss.audioSelector', 'route-segment', 'view-segm
                 VK.callMethod('setLocation', $location.url());
             }
         });
+
+        $rootScope.currentUser = currentUser;
+        $rootScope.URLS = URLS;
     });

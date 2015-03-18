@@ -22,6 +22,7 @@ button {
     top: $headerHeight;
     bottom: 0;
     width: 100%;
+    overflow: auto;
 }
 
 .wrapper {
@@ -52,6 +53,11 @@ button {
         border-bottom: 1px solid $dividerColor;
         margin-bottom: 2px;
         position: relative;
+
+        &-controls {
+            float: right;
+            margin-left: 15px;
+        }
     }
 
     &__title {

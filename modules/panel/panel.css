@@ -170,9 +170,8 @@
   opacity: 1;
 }
 .frame-list__item img {
-  min-width: 100%;
+  width: 100%;
   vertical-align: top;
-  min-height: 100%;
 }
 .frame-placeholder {
   display: inline-block;

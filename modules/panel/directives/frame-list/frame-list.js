@@ -40,15 +40,18 @@ angular.module('ss.panel')
                 });
 
                 wrap.addEventListener('wheel', function(event) {
-                    event.stopPropagation();
+                    var deltaX = event.wheelDeltaX ? event.wheelDeltaX : event.wheelDeltaY;
+                    var oldValue = wrap.scrollLeft;
 
-                    var deltaY = event.wheelDeltaY;
-
-                    if (isNaN(deltaY)) {
-                        deltaY = 0;
+                    if (isNaN(deltaX)) {
+                        deltaX = 0;
                     }
 
-                    wrap.scrollLeft -= deltaY;
+                    wrap.scrollLeft -= deltaX;
+
+                    if (wrap.scrollLeft !== oldValue) {
+                        event.preventDefault();
+                    }
                 });
 
                 function checkButtons() {

@@ -8,10 +8,16 @@ angular.module('ss.player', ['parseServices', 'ss.templates', 'ss.filters', 'vko
                 src: '@'
             },
             controller: playerController,
-            link: function(scope, element) {
-                scope.fullScreen = function() {
-                    element[0].webkitRequestFullScreen();
-                }
+            link: function(scope, element, attrs) {
+                scope.toggleFullScreen = function() {
+                    if (document.webkitFullscreenElement) {
+                        document.webkitCancelFullScreen();
+                    } else {
+                        element[0].webkitRequestFullScreen();
+                    }
+                };
+
+                scope.autoplay = 'autoplay' in attrs;
             }
         };
     });

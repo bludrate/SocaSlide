@@ -1,5 +1,7 @@
 angular.module('ss.filters', ['ss.gridSizes'])
     .filter('photoSrc', function(gridSizes) {
+        var retina = window.devicePixelRatio > 1;
+
         function searchSize(sizes, type) {
             for (var i = 0; i < sizes.length; i++) {
                 if (sizes[i].type === type) {
@@ -8,9 +10,27 @@ angular.module('ss.filters', ['ss.gridSizes'])
             }
         }
 
+        function retinaType(type) {
+            switch(type) {
+                case 's': return 'm';
+                case 'm': return 'p';
+                case 'o': return 'p';
+                case 'p': return 'r';
+                case 'q': return 'x';
+                case 'x': return 'z';
+                case 'y': return 'z';
+                case 'r': return 'z';
+                default: return 'z';
+            }
+        }
+
         return function(sizes, type) {
             if (!sizes || !type) {
                 return ;
+            }
+
+            if (retina) {
+                type = retinaType(type);
             }
 
             var i = gridSizes.types.indexOf(type);

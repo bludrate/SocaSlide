@@ -9,7 +9,7 @@ angular.module('parseServices', [])
     .factory('slideshowService', function() {
         var Slideshow = Parse.Object.extend('Slideshow');
 
-        function createSlideshow(slideshowData) {
+        function create(slideshowData) {
             return new Slideshow(slideshowData);
         }
 
@@ -18,15 +18,28 @@ angular.module('parseServices', [])
             return query.get(id);
         }
 
-        function saveNewSlideshow(slideshowData) {
-            var newSlideshow = this.createSlideshow(slideshowData);
+        function remove(slideshow) {
+            return slideshow.destroy();
+        }
+
+        function saveNew(slideshowData) {
+            var newSlideshow = this.create(slideshowData);
 
             return newSlideshow.save();
         }
 
+        function getUserSlideshows(userId) {
+            var query = new Parse.Query(Slideshow);
+            query.equalTo('author', userId);
+            query.select('title', 'cover', 'duration');
+            return query.find();
+        }
+
         return {
-            createSlideshow: createSlideshow,
+            create: create,
             getSlideshow: getSlideshow,
-            saveNewSlideshow: saveNewSlideshow
+            saveNew: saveNew,
+            remove: remove,
+            getUserSlideshows: getUserSlideshows
         };
     });

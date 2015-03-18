@@ -8,7 +8,8 @@
   height: 24px;
   background: rgba(0,0,0,0.7);
 }
-.player:hover .controls {
+.player:hover .controls,
+.player_rewind-started .controls {
   bottom: 0;
 }
 .player_no-activity:hover .controls {
@@ -66,6 +67,6 @@
   color: #fff;
   font-family: 'icon-font';
 }
-.controls__full-screen_active:before {
+.controls__full-screen.active:before {
   content: "\f2a0";
 }

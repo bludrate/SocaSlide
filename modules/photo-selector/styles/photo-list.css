@@ -44,9 +44,8 @@
   content: "\f102";
 }
 .photo-list__item img {
-  min-width: 100%;
+  width: 100%;
   vertical-align: top;
-  min-height: 100%;
 }
 .photo-list_size_p .photo-list__item:after {
   line-height: 130px;
@@ -58,12 +57,12 @@
   margin: 7px 16px;
 }
 .photo-list_size_q .photo-list__item:after {
-  line-height: 210px;
+  line-height: 180px;
   font-size: 130px;
 }
 .photo-list_size_q .photo-list__item {
   width: 320px;
-  height: 210px;
+  height: 180px;
   margin: 10px 15px;
 }
 @-moz-keyframes create {
