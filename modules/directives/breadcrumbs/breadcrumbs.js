@@ -15,7 +15,9 @@ angular.module('ss')
         return {
             templateUrl: 'modules/directives/breadcrumbs/breadcrumbs.html',
             controller: function($scope, $rootScope) {
-                $scope.breadcrumbs = breadcrumbsConfig[$route.current.segment];
+                if ($route.current) {
+                    $scope.breadcrumbs = breadcrumbsConfig[$route.current.segment];
+                }
 
                 $rootScope.$on('$routeChangeSuccess', function() {
                     $scope.breadcrumbs = breadcrumbsConfig[$route.current.segment];

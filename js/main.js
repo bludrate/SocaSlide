@@ -301,16 +301,12 @@ angular.module('ss', [
         VK.callMethod('scrollTop');
 
         $routeSegmentProvider
-            .when('/', 'start')
             .when('/home', 'home')
             .when('/create', 'create')
             .when('/create/albums', 'create.albums')
             .when('/create/albums/:id', 'create.album')
             .when('/slideshow/:id', 'slideshow')
 
-            .segment('start', {
-                templateUrl: 'pages/start-page/start-page.html'
-            })
             .segment('home', {
                 default: true,
                 templateUrl: 'pages/home-page/home-page.html'
@@ -341,16 +337,9 @@ angular.module('ss', [
         $routeProvider.otherwise({redirectTo: '/home'});
     })
     .run(function($location, $rootScope, currentUser, URLS) {
-        var locationInitialized = false;
+        $location.path(VK.params.hash);
 
         VK.addCallback('onLocationChanged', function(location) {
-            if (!locationInitialized) {
-                locationInitialized = true;
-                if (!location || location === '/') {
-                    location = '/home';
-                }
-            }
-
             if (location !== $location.url()) {
                 $rootScope.$apply(function() {
                     $location.path(location);
@@ -359,9 +348,7 @@ angular.module('ss', [
         });
 
         $rootScope.$on('$locationChangeSuccess', function() {
-            if (locationInitialized) {
-                VK.callMethod('setLocation', $location.url());
-            }
+            VK.callMethod('setLocation', $location.url());
         });
 
         $rootScope.currentUser = currentUser;
@@ -371,9 +358,11 @@ angular.module('ss', [
 
 angular.module('ss.templates', []).run(['$templateCache', function($templateCache) {
 
-  $templateCache.put('modules/dialog/dialog.html', '<div class="dialog-holder" ng-show="dialogService.showed" ng-include="dialogService.data.template" ng-click="closeOnBgClick($event)"></div>');
+  $templateCache.put('modules/tooltip/tooltip.html', '<span class="tooltip" ng-show="tooltipService.showed">{{tooltipService.data.message}}</span>');
 
   $templateCache.put('modules/audio-selector/audio-selector.html', '<section class="audio-selector section" ng-controller="AudiosController"><header class="section__header"><input type="text" ng-model="search" class="audio-selector__filter" placeholder="Поиск"><h2 class="section__title">Выберите музыку</h2></header><ul class="audio-list"><li class="audio-list__item" ng-repeat="audio in audios | filter:search track by audio.id" ng-class="{selected: audio.selected}" ng-click="toggleAudio($event, audio)"><button class="audio-list__play" play-audio="{{audio.url}}"></button> <span class="audio-list__duration">{{audio.duration | timeFormatter}}</span> <span class="audio-list__name">{{audio.artist + \' - \' + audio.title}}</span> <button class="audio-list__toggle"></button></li></ul></section>');
+
+  $templateCache.put('modules/dialog/dialog.html', '<div class="dialog-holder" ng-show="dialogService.showed" ng-include="dialogService.data.template" ng-click="closeOnBgClick($event)"></div>');
 
   $templateCache.put('modules/header/header.html', '<header class="header" ng-controller="HeaderController"><a href="#/home" active-link="home" class="logo">SocaSlide</a><breadcrumbs></breadcrumbs><div class="header__user">{{firstName}} {{lastName}}</div><a href="#/slideshow/{{slideshow.id}}" ng-repeat="slideshow in slideshows" style="margin-right: 10px;">{{slideshow.get(\'title\') || \'hi\'}}</a></header>');
 
@@ -389,17 +378,15 @@ angular.module('ss.templates', []).run(['$templateCache', function($templateCach
 
   $templateCache.put('modules/preview-modal/preview-modal.html', '<section class="dialog"><button class="dialog__close dialog__close_video" ng-click="dialogService.close()"></button><player src="local"></player><form class="preview-modal__content" ng-submit="saveSlideshow()" ng-controller="PreviewModalController"><div class="form-row"><label class="label" for="slideshowTitle">Заголовок</label><div class="input-holder"><input class="input" id="slideshowTitle" type="text" ng-model="title"></div></div><div class="form-btns"><button class="button button_cancel" type="button" ng-click="dialogService.close()">Отмена</button> <button class="button" type="submit">Сохранить</button></div></form></section>');
 
-  $templateCache.put('modules/slideshow-list/slideshow-list.html', '<div><ul class="slideshow-list" ng-if="slideshows.length"><li class="slideshow-list__item" ng-repeat="slideshow in slideshows"><img ng-src="{{slideshow.get(\'cover\').sizes | photoSrc:\'p\'}}"> <span class="slideshow-list__item-title-wrap"><span class="slideshow-list__item-duration">{{slideshow.get(\'duration\') | timeFormatter: \'ms\'}}</span> <span class="slideshow-list__item-title">{{slideshow.get(\'title\') || \'Без заголовка\'}}</span></span><div class="slideshow-list__buttons"><button ng-click="show(slideshow.id)" class="slideshow-list__button slideshow-list__button_show" title="Просмотр"></button> <button ng-click="share(slideshow)" class="slideshow-list__button slideshow-list__button_share" title="Опубликовать"></button> <button ng-click="remove(slideshow)" class="slideshow-list__button slideshow-list__button_remove" title="Удалить"></button></div></li></ul><div ng-if="slideshows && !slideshows.length" class="wrapper"><br><br>Вы пока еще не создали ни 1 слайдшоу. <a href="#/create/">Создать мое первое слайдшоу</a></div></div>');
+  $templateCache.put('modules/slideshow-list/slideshow-list.html', '<div><ul class="slideshow-list" ng-if="slideshows.length"><li class="slideshow-list__item" ng-repeat="slideshow in slideshows"><img ng-src="{{slideshow.get(\'cover\').sizes | photoSrc:\'p\'}}"> <span class="slideshow-list__item-title-wrap"><span class="slideshow-list__item-duration">{{slideshow.get(\'duration\') | timeFormatter: \'ms\'}}</span> <span class="slideshow-list__item-title">{{slideshow.get(\'title\') || \'Без заголовка\'}}</span></span><div class="slideshow-list__buttons"><button ng-click="show(slideshow.id)" class="slideshow-list__button slideshow-list__button_show" title="Просмотр"></button> <button ng-click="share(slideshow)" class="slideshow-list__button slideshow-list__button_share" title="Опубликовать"></button> <button ng-click="remove(slideshow)" class="slideshow-list__button slideshow-list__button_remove" title="Удалить"></button></div></li></ul><div ng-if="slideshows && !slideshows.length" class="wrapper"><br><br>Вы пока еще не создали ни 1 слайдшоу. <a href="#/create">Создать мое первое слайдшоу</a></div></div>');
 
   $templateCache.put('modules/slideshow-saved-modal/slideshow-saved-modal.html', '<section class="dialog" ng-controller="SlideshowSavedController"><header class="dialog__header"><h2 class="dialog__title">Слайдшоу сохранено</h2><button class="dialog__close" ng-click="dialogService.close()"></button></header><main class="dialog__content"><a href="{{URLS.app + \'#/slideshow/\' + dialogService.data.slideshow.id}}">Ссылка на слайдшоу</a><br><a href ng-click="share(dialogService.data.slideshow)">Опубликовать</a></main></section>');
 
   $templateCache.put('modules/slideshow-settings/slideshow-settings.html', '<section class="dialog" ng-controller="SlideshowSettingsController"><header class="dialog__header"><h2 class="dialog__title">Настройки слайдшоу</h2><button class="dialog__close" ng-click="dialogService.close()"></button></header><main class="dialog__content"><form ng-submit="save(); dialogService.close()"><div class="form-row"><label class="label" for="slideDuration">Длительность кадра</label><div class="input-holder"><input type="number" class="input" id="slideDuration" name="slideDuration" placeholder="slide duration" ng-model="data.slideDuration"></div></div><div class="form-btns"><button class="button button_cancel" ng-click="dialogService.close()">Отмена</button> <button type="submit" class="button">Сохранить</button></div></form></main></section>');
 
-  $templateCache.put('modules/tooltip/tooltip.html', '<span class="tooltip" ng-show="tooltipService.showed">{{tooltipService.data.message}}</span>');
+  $templateCache.put('pages/create-page/create-page.html', '<section class="create-section"><ng-include src="\'modules/audio-selector/audio-selector.html\'"></ng-include><section class="section" app-view-segment="1"></section><panel></panel></section>');
 
   $templateCache.put('pages/home-page/home-page.html', '<section class="section"><header class="section__header"><div class="section__header-controls"><a href="#/create" class="button">Создать своё слайдшоу</a></div><h2 class="section__title">Мои слайдшоу</h2></header><section class="section__content"><slideshow-list user-id="{{currentUser}}"></slideshow-list></section></section>');
-
-  $templateCache.put('pages/create-page/create-page.html', '<section class="create-section"><ng-include src="\'modules/audio-selector/audio-selector.html\'"></ng-include><section class="section" app-view-segment="1"></section><panel></panel></section>');
 
   $templateCache.put('pages/slideshow-page/slideshow-page.html', '<player src="{{src}}"></player>');
 
@@ -409,9 +396,9 @@ angular.module('ss.templates', []).run(['$templateCache', function($templateCach
 
   $templateCache.put('modules/directives/grid-size/grid-size.html', '<div class="grid-size-block"><button ng-repeat="size in sizes" class="grid-size grid-size_{{size}}" ng-class="{active: size === gridSize}" ng-click="$parent.changeSize(size)">{{$parent.names[size]}}</button></div>');
 
-  $templateCache.put('modules/panel/directives/frame-list/frame-list.html', '<div class="frame-list__holder"><button class="frame-list__prev" ng-click="prev()" ng-disabled="disabled || prevDisabled"></button><div class="frame-list__wrap"><ul class="frame-list"><li class="frame-list__item" ng-repeat="frame in frames track by frame.id" title="{{frame.title}}" ng-click="removeFrame(frame)"><img ng-src="{{frame.sizes | photoSrc: \'o\' }}"></li></ul><span class="frame-placeholders"><span class="frame-placeholder" ng-repeat="placeholder in placeholders track by $index"></span></span></div><button class="frame-list__next" ng-click="next()" ng-disabled="disabled || nextDisabled"></button></div>');
-
   $templateCache.put('modules/panel/directives/audio-list/audio-list.html', '<ul class="panel-audios"><li class="panel-audios__item" ng-repeat="audio in audios track by audio.id" title="{{audio.artist + \' - \' + audio.title}}"><span class="panel-audios__info">{{audio.artist + \' - \' + audio.title}}&nbsp;&nbsp;&nbsp;{{audio.duration | timeFormatter}}</span></li></ul>');
+
+  $templateCache.put('modules/panel/directives/frame-list/frame-list.html', '<div class="frame-list__holder"><button class="frame-list__prev" ng-click="prev()" ng-disabled="disabled || prevDisabled"></button><div class="frame-list__wrap"><ul class="frame-list"><li class="frame-list__item" ng-repeat="frame in frames track by frame.id" title="{{frame.title}}" ng-click="removeFrame(frame)"><img ng-src="{{frame.sizes | photoSrc: \'o\' }}"></li></ul><span class="frame-placeholders"><span class="frame-placeholder" ng-repeat="placeholder in placeholders track by $index"></span></span></div><button class="frame-list__next" ng-click="next()" ng-disabled="disabled || nextDisabled"></button></div>');
 
   $templateCache.put('modules/panel/directives/timeline/timeline.html', '');
 
@@ -438,6 +425,54 @@ function AudiosController($scope, VKAudios, selectedAudios) {
         }
     }
 }
+angular.module('ss.dialog', [])
+    .factory('dialogService', function($rootScope) {
+        var instance = {
+            showed: false,
+
+            initialize: function(scope) {
+                this.scope = scope;
+            },
+
+            open: function(data, digest) {
+                this.data = data;
+                this.showed = true;
+
+                if (digest) {
+                    this.scope.$digest();
+                }
+            },
+
+            close: function() {
+                this.data = undefined;
+                this.showed = false;
+            }
+        };
+
+        $rootScope.$on('$locationChangeSuccess', function() {
+            instance.close();
+        });
+
+        return instance;
+    })
+    .directive('dialog', function() {
+        return {
+            restrict: 'E',
+            scope: true,
+            replace: true,
+            templateUrl: 'modules/dialog/dialog.html',
+            controller: function($scope, dialogService) {
+                dialogService.initialize($scope);
+                $scope.dialogService = dialogService;
+
+                $scope.closeOnBgClick = function(event) {
+                    if (event.target === event.currentTarget) {
+                        dialogService.close();
+                    }
+                };
+            }
+        };
+    });
 angular.module('ss')
     .directive('addSpace', function() {
         return {
@@ -521,54 +556,6 @@ angular.module('ss.header', ['vkontakteServices'])
             $scope.firstName = data.first_name;
             $scope.lastName = data.last_name;
         });
-    });
-angular.module('ss.dialog', [])
-    .factory('dialogService', function($rootScope) {
-        var instance = {
-            showed: false,
-
-            initialize: function(scope) {
-                this.scope = scope;
-            },
-
-            open: function(data, digest) {
-                this.data = data;
-                this.showed = true;
-
-                if (digest) {
-                    this.scope.$digest();
-                }
-            },
-
-            close: function() {
-                this.data = undefined;
-                this.showed = false;
-            }
-        };
-
-        $rootScope.$on('$locationChangeSuccess', function() {
-            instance.close();
-        });
-
-        return instance;
-    })
-    .directive('dialog', function() {
-        return {
-            restrict: 'E',
-            scope: true,
-            replace: true,
-            templateUrl: 'modules/dialog/dialog.html',
-            controller: function($scope, dialogService) {
-                dialogService.initialize($scope);
-                $scope.dialogService = dialogService;
-
-                $scope.closeOnBgClick = function(event) {
-                    if (event.target === event.currentTarget) {
-                        dialogService.close();
-                    }
-                };
-            }
-        };
     });
 angular.module('ss.panel', ['ss.services', 'parseServices', 'ss.filters', 'ss.settings', 'ss.dialog'])
     .directive('panel', function() {
@@ -1370,7 +1357,9 @@ angular.module('ss')
         return {
             templateUrl: 'modules/directives/breadcrumbs/breadcrumbs.html',
             controller: function($scope, $rootScope) {
-                $scope.breadcrumbs = breadcrumbsConfig[$route.current.segment];
+                if ($route.current) {
+                    $scope.breadcrumbs = breadcrumbsConfig[$route.current.segment];
+                }
 
                 $rootScope.$on('$routeChangeSuccess', function() {
                     $scope.breadcrumbs = breadcrumbsConfig[$route.current.segment];
@@ -1697,6 +1686,23 @@ angular.module('ss.player')
         return instance;
     });
 angular.module('ss.panel')
+    .directive('audioList', function() {
+        return {
+            restrict: 'E',
+            replace: true,
+            controller: audioListController,
+            templateUrl: 'modules/panel/directives/audio-list/audio-list.html'
+        };
+    });
+
+function audioListController($scope, selectedAudios) {
+    $scope.audios = selectedAudios.get();
+
+    $scope.removeAudio = function(audio) {
+        selectedAudios.remove(audio);
+    };
+}
+angular.module('ss.panel')
     .directive('frameList', function() {
         return {
             restrict: 'E',
@@ -1768,23 +1774,6 @@ function frameListController($scope, selectedPhotos) {
 
     $scope.removeFrame = function(frame) {
         selectedPhotos.remove(frame);
-    };
-}
-angular.module('ss.panel')
-    .directive('audioList', function() {
-        return {
-            restrict: 'E',
-            replace: true,
-            controller: audioListController,
-            templateUrl: 'modules/panel/directives/audio-list/audio-list.html'
-        };
-    });
-
-function audioListController($scope, selectedAudios) {
-    $scope.audios = selectedAudios.get();
-
-    $scope.removeAudio = function(audio) {
-        selectedAudios.remove(audio);
     };
 }
 

@@ -92,8 +92,8 @@
 }
 .audio-list__item.selected .audio-list__toggle:before {
   content: "\f102";
-  color: #dc5959;
-  background-color: #727272;
+  color: #fff;
+  background-color: #d32f2f;
 }
 .audio-list__item:hover .audio-list__toggle,
 .audio-list__item.selected .audio-list__toggle {

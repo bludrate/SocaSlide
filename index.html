@@ -10,7 +10,9 @@
 </head>
 <body>
     <ng-include src="'modules/header/header.html'"></ng-include>
-    <main class='main' app-view-segment="0"></main>
+    <main class='main' app-view-segment="0">
+        <ng-include src="'pages/start-page/start-page.html'"></ng-include>
+    </main>
     <tooltip-popup></tooltip-popup>
     <dialog></dialog>
 </body>

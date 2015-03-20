@@ -23,16 +23,12 @@ angular.module('ss', [
         VK.callMethod('scrollTop');
 
         $routeSegmentProvider
-            .when('/', 'start')
             .when('/home', 'home')
             .when('/create', 'create')
             .when('/create/albums', 'create.albums')
             .when('/create/albums/:id', 'create.album')
             .when('/slideshow/:id', 'slideshow')
 
-            .segment('start', {
-                templateUrl: 'pages/start-page/start-page.html'
-            })
             .segment('home', {
                 default: true,
                 templateUrl: 'pages/home-page/home-page.html'
@@ -63,16 +59,9 @@ angular.module('ss', [
         $routeProvider.otherwise({redirectTo: '/home'});
     })
     .run(function($location, $rootScope, currentUser, URLS) {
-        var locationInitialized = false;
+        $location.path(VK.params.hash);
 
         VK.addCallback('onLocationChanged', function(location) {
-            if (!locationInitialized) {
-                locationInitialized = true;
-                if (!location || location === '/') {
-                    location = '/home';
-                }
-            }
-
             if (location !== $location.url()) {
                 $rootScope.$apply(function() {
                     $location.path(location);
@@ -81,9 +70,7 @@ angular.module('ss', [
         });
 
         $rootScope.$on('$locationChangeSuccess', function() {
-            if (locationInitialized) {
-                VK.callMethod('setLocation', $location.url());
-            }
+            VK.callMethod('setLocation', $location.url());
         });
 
         $rootScope.currentUser = currentUser;
