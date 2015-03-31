@@ -22,7 +22,7 @@ angular.module('ss.player', ['parseServices', 'ss.templates', 'ss.filters', 'vko
         };
     });
 
-function playerController($scope, slideshowService, $filter, canvasPlayService, audioPlayService, VKAudios, selectedPhotos, selectedAudios, durationService, slideshowSettingsService) {
+function playerController($scope, slideshowService, $filter, canvasPlayService, audioPlayService, VKAudios, selectedPhotos, selectedAudios, durationService, slideshowSettingsService, playerImgLoader) {
     if ($scope.src === 'local') {
         initialize(selectedPhotos.get(), selectedAudios.getIds(), durationService.value(), slideshowSettingsService.get());
     } else {
