@@ -10,7 +10,6 @@ angular.module('ss.panel')
 
                 scope.disabled = wrap.scrollWidth === wrap.offsetWidth;
 
-
                 scope.$watch('frames.length', function(currentLength, prevLength) {
                     if (prevLength < currentLength) {
                         wrap.scrollLeft = 99999;

@@ -6,7 +6,7 @@ angular.module('ss.player')
     })
     .factory('playerAudioLoader', function() {
         function load(audios, progressCallback, finishCallback) {
-            audios[0].addEventListener('progress', function(a,b) {
+            audios[0].addEventListener('progress', function(a, b) {
                 console.log(a, b);
             })
         }

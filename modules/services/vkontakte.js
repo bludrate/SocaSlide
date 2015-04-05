@@ -8,7 +8,7 @@ angular.module('vkontakteServices', ['ss.constants', 'ss.filters'])
     })
 
     .factory('methodWrapper', function(VKReady, $q) {
-        return function (method) {
+        return function(method) {
             var deferred = $q.defer();
 
             VKReady.then(function() {
@@ -53,9 +53,14 @@ angular.module('vkontakteServices', ['ss.constants', 'ss.filters'])
             var cover = slideshow.get('cover');
 
             return methodWrapper(function(deferred) {
+                //jscs: disable
+                var attachments = 'photo' + cover.owner_id + '_' + cover.id + ',' +
+                    URLS.app + '#/slideshow/' + slideshow.id;
+                //jscs: enable
+
                 VK.api('wall.post', {
                     message: 'Слайдшоу ' + slideshow.get('title'),
-                    attachments: 'photo' + cover.owner_id + '_' + cover.id + ',' + URLS.app + '#/slideshow/' + slideshow.id
+                    attachments: attachments
                 }, function(response) {
                     console.log(response);
                     deferred.resolve();
@@ -70,13 +75,15 @@ angular.module('vkontakteServices', ['ss.constants', 'ss.filters'])
 
     .factory('VKPhotos', function(methodWrapper) {
         function getAlbums() {
+            //jscs: disable requireCamelCaseOrUpperCaseIdentifiers
             var parameters = {
                 need_system: 1,
                 need_covers: 1,
                 photo_sizes: 1
             };
+            //jscs: enable requireCamelCaseOrUpperCaseIdentifiers
 
-            return methodWrapper(function(deferred){
+            return methodWrapper(function(deferred) {
                 VK.api('photos.getAlbums', parameters, function(data) {
                     if (data.response) {
                         deferred.resolve(data.response.items);
@@ -89,6 +96,7 @@ angular.module('vkontakteServices', ['ss.constants', 'ss.filters'])
 
         function getAlbumPhotos(id) {
             return methodWrapper(function(deferred) {
+                //jscs: disable requireCamelCaseOrUpperCaseIdentifiers
                 VK.api('photos.get', {
                     album_id: id,
                     photo_sizes: 1
@@ -99,22 +107,27 @@ angular.module('vkontakteServices', ['ss.constants', 'ss.filters'])
                         deferred.reject('error in getting data');
                     }
                 });
+                //jscs: enable requireCamelCaseOrUpperCaseIdentifiers
             });
         }
 
         function getAlbum(id) {
-            var parameters = {},
-                system;
+            var parameters = {};
+            var system;
 
             if (id < 0) {
                 system = true;
+                //jscs: disable requireCamelCaseOrUpperCaseIdentifiers
                 parameters.need_system = 1;
+                //jscs: enable requireCamelCaseOrUpperCaseIdentifiers
             } else {
                 system = false;
+                //jscs: disable requireCamelCaseOrUpperCaseIdentifiers
                 parameters.album_ids = id;
+                //jscs: enable requireCamelCaseOrUpperCaseIdentifiers
             }
 
-            return methodWrapper(function(deferred){
+            return methodWrapper(function(deferred) {
                 VK.api('photos.getAlbums', parameters, function(data) {
                     if (data.response) {
                         if (system) {
@@ -142,8 +155,9 @@ angular.module('vkontakteServices', ['ss.constants', 'ss.filters'])
     })
 
     .factory('VKAudios', function(methodWrapper) {
+        //jscs: disable requireCamelCaseOrUpperCaseIdentifiers
         function getAudios(audio_ids) {
-            return methodWrapper(function(deferred){
+            return methodWrapper(function(deferred) {
                 VK.api('audio.get', {
                     audio_ids: audio_ids
                 }, function(data) {
@@ -155,6 +169,7 @@ angular.module('vkontakteServices', ['ss.constants', 'ss.filters'])
                 });
             });
         }
+        //jscs: enable requireCamelCaseOrUpperCaseIdentifiers
 
         return {
             getAudios: getAudios

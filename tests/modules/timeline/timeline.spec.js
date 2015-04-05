@@ -1,9 +1,11 @@
-describe("panel", function() {
+describe('panel', function() {
     beforeEach(module('ss.panel'));
 
-    describe('FramesController',function() {
-        var ctrl, scope,
-             selectedPhotos, selectedAudios;
+    describe('FramesController', function() {
+        var ctrl;
+        var scope;
+        var selectedPhotos;
+        var selectedAudios;
 
         beforeEach(inject(function($controller, $rootScope, _selectedAudios_, _selectedPhotos_) {
             selectedAudios = _selectedAudios_;
@@ -47,7 +49,8 @@ describe("panel", function() {
         });
 
         describe('saveSlideshow', function() {
-            var slideshowService, location;
+            var slideshowService;
+            var location;
 
             beforeEach(inject(function(_slideshowService_, $location) {
                 location = $location;
@@ -55,8 +58,8 @@ describe("panel", function() {
             }));
 
             it('should save slideshow', function() {
-                var frames = [],
-                    audios = [];
+                var frames = [];
+                var audios = [];
 
                 spyOn(slideshowService, 'saveNewSlideshow').and.callFake(function() {
                     return {

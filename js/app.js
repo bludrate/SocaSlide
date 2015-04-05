@@ -14,7 +14,7 @@ angular.module('ss', [
     'ss.previewModal',
     'ss.slideshowList'
 ])
-    .config(function ($routeSegmentProvider, $routeProvider) {
+    .config(function($routeSegmentProvider, $routeProvider) {
         VK.addCallback('onScrollTop', function(scrollTop, windowHeight, offsetTop) {
             VK.callMethod('scrollWindow', offsetTop);
             VK.callMethod('resizeWindow', 1000, windowHeight > 500 ? windowHeight : 500);

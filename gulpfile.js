@@ -36,25 +36,25 @@ gulp.task('webserver', function() {
         }));
 });
 
-gulp.task('modules_styl', function () {
+gulp.task('modules_styl', function() {
     return gulp.src(['./modules/**/*.styl'])
         .pipe(stylus())
         .pipe(gulp.dest('./modules/'));
 });
 
-gulp.task('page_styl', function () {
+gulp.task('page_styl', function() {
     return gulp.src(['./pages/**/*.styl'])
         .pipe(stylus())
         .pipe(gulp.dest('./pages/'));
 });
 
-gulp.task('stylus', function () {
+gulp.task('stylus', function() {
     return gulp.src(['./stylus/main.styl'])
         .pipe(stylus())
         .pipe(gulp.dest('./stylus/'));
 });
 
-gulp.task('autoprefixer', function () {
+gulp.task('autoprefixer', function() {
     return gulp.src('./css/main.css')
         .pipe(autoprefixer({
             browsers: ['last 2 versions'],
@@ -119,19 +119,19 @@ gulp.task('public', ['clean', 'compile'], function() {
         .pipe(gulp.dest('../public/css'));
 });
 
-gulp.task('default', function () {
+gulp.task('default', function() {
     gulp.run('compile');
 
     gulp.run(['webserver', 'styles']);
 
-    watch("**/*.styl", function() {
+    watch('**/*.styl', function() {
         gulp.run('styles');
     });
-    watch("**/*.html", function() {
+    watch('**/*.html', function() {
         gulp.run('templates');
     });
 
-    watch(["modules/**/*.js", "js/app.js", "js/templates.js"], function() {
+    watch(['modules/**/*.js', 'js/app.js', 'js/templates.js'], function() {
         gulp.run('js');
     });
 });

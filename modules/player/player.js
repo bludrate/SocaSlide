@@ -1,4 +1,11 @@
-angular.module('ss.player', ['parseServices', 'ss.templates', 'ss.filters', 'vkontakteServices', 'ss.services', 'ss.audioService'])
+angular.module('ss.player', [
+    'parseServices',
+    'ss.templates',
+    'ss.filters',
+    'vkontakteServices',
+    'ss.services',
+    'ss.audioService'
+])
     .directive('player', function() {
         return {
             replace: true,
@@ -22,9 +29,26 @@ angular.module('ss.player', ['parseServices', 'ss.templates', 'ss.filters', 'vko
         };
     });
 
-function playerController($scope, slideshowService, $filter, canvasPlayService, audioPlayService, VKAudios, selectedPhotos, selectedAudios, durationService, slideshowSettingsService, playerImgLoader) {
+function playerController(
+    $scope,
+    slideshowService,
+    $filter,
+    canvasPlayService,
+    audioPlayService,
+    VKAudios,
+    selectedPhotos,
+    selectedAudios,
+    durationService,
+    slideshowSettingsService,
+    playerImgLoader
+) {
     if ($scope.src === 'local') {
-        initialize(selectedPhotos.get(), selectedAudios.getIds(), durationService.value(), slideshowSettingsService.get());
+        initialize(
+            selectedPhotos.get(),
+            selectedAudios.getIds(),
+            durationService.value(),
+            slideshowSettingsService.get()
+        );
     } else {
         slideshowService.getSlideshow($scope.src).then(function(data) {
             initialize(data.get('frames'), data.get('audios'), data.get('duration'), data.get('settings'));
@@ -32,8 +56,8 @@ function playerController($scope, slideshowService, $filter, canvasPlayService, 
     }
 
     function initialize(frames, audioIds, duration, settings) {
-        var images = [],
-            image;
+        var images = [];
+        var image;
 
         for (var i = 0; i < frames.length; i++) {
             image = new Image();
@@ -49,7 +73,6 @@ function playerController($scope, slideshowService, $filter, canvasPlayService, 
 
         $scope.duration = duration;
     }
-
 
     $scope.$on('$destroy', function() {
         canvasPlayService.destroy();

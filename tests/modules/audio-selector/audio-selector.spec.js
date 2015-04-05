@@ -1,8 +1,10 @@
-describe("ss.audioSelector", function() {
+describe('ss.audioSelector', function() {
     beforeEach(module('ss.audioSelector'));
 
     describe('AudiosController', function() {
-        var scope, ctrl, VKAudios;
+        var scope;
+        var ctrl;
+        var VKAudios;
 
         beforeEach(inject(function($controller, $rootScope) {
             scope = $rootScope.$new();
@@ -25,8 +27,8 @@ describe("ss.audioSelector", function() {
         });
 
         describe('AudiosController.toggleAudio', function() {
-            var selectedAudios,
-                audio = VK.data['audio.get'].response.items[3];
+            var selectedAudios;
+            var audio = VK.data['audio.get'].response.items[3];
 
             beforeEach(inject(function(_selectedAudios_) {
                 selectedAudios = _selectedAudios_;

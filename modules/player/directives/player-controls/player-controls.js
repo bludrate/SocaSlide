@@ -1,6 +1,6 @@
 angular.module('ss.player')
     .directive('playerControls', function() {
-        return  {
+        return {
             restrict:'E',
             replace: true,
             scope: {

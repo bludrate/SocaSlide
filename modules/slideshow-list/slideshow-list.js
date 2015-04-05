@@ -26,7 +26,9 @@ function SlideshowListController($scope, slideshowService, dialogService, VKWall
     };
 
     $scope.remove = function(slideshow) {
-        if (!confirm("Вы верены, что хотите удалить слайдшоу \"" + slideshow.get('title') + '"')) return ;
+        if (!confirm('Вы верены, что хотите удалить слайдшоу "' + slideshow.get('title') + '"')) {
+            return ;
+        }
 
         slideshowService
             .remove(slideshow)

@@ -6,7 +6,7 @@ angular.module('ss.directives', ['ss.gridSizes', 'ss.templates'])
             scope: {
                 gridSize: '=size'
             },
-            templateUrl: "modules/directives/grid-size/grid-size.html",
+            templateUrl: 'modules/directives/grid-size/grid-size.html',
             controller: function($scope, gridSizes) {
                 function changeSize(size) {
                     $scope.gridSize = size;

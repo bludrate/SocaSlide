@@ -1,9 +1,9 @@
 angular.module('ss.player')
     .factory('defaultAnimationType', function() {
         function drawImageSize(image, cWidth, cHeight, scale) {
-            var factor = 1,
-                width,
-                height;
+            var factor = 1;
+            var width;
+            var height;
 
             if (image.width > cWidth) {
                 width = cWidth;
@@ -27,7 +27,8 @@ angular.module('ss.player')
 
         function animFunc(currentSlide, currentSlideTime, slideDuration, images, cWidth, cHeight) {
             var result = {};
-            var scaleSize, scale;
+            var scaleSize;
+            var scale;
 
             result[currentSlide] = {
                 sx: 0,
@@ -37,9 +38,14 @@ angular.module('ss.player')
             if (currentSlideTime < this.hideDuration) {
 
                 if (currentSlide > 0) {
-                    scale = this.timingValue(currentSlideTime + slideDuration, slideDuration + this.hideDuration, 1, this.scale);
                     var prevIndex = currentSlide - 1;
 
+                    scale = this.timingValue(
+                        currentSlideTime + slideDuration,
+                        slideDuration + this.hideDuration,
+                        1,
+                        this.scale
+                    );
                     scaleSize = drawImageSize(images[prevIndex], cWidth, cHeight, scale);
 
                     result[prevIndex] = {
@@ -72,7 +78,7 @@ angular.module('ss.player')
         }
 
         function timingValue(currentSlideTime, endTime, startValue, endValue) {
-            return startValue + currentSlideTime/endTime * (endValue - startValue);
+            return startValue + currentSlideTime / endTime * (endValue - startValue);
         }
 
         function init(slideDuration) {
@@ -88,14 +94,14 @@ angular.module('ss.player')
         };
     })
     .factory('canvasPlayService', function($rootScope, defaultAnimationType) {
-        var requestAnimationFrameId,
-            ctx,
-            images,
-            startTime,
-            pausedAt = 0,
-            slideDuration = 5000,
-            instance,
-            scope;
+        var requestAnimationFrameId;
+        var ctx;
+        var images;
+        var startTime;
+        var pausedAt = 0;
+        var slideDuration = 5000;
+        var instance;
+        var scope;
 
         defaultAnimationType.init(slideDuration);
 
@@ -114,7 +120,7 @@ angular.module('ss.player')
                 instance.currentTime = 0;
             }
 
-            var currentSlide = parseInt(instance.currentTime/slideDuration, 10);
+            var currentSlide = parseInt(instance.currentTime / slideDuration, 10);
             var currentSlideTime = instance.currentTime % slideDuration;
 
             if (currentSlide >= images.length) {
@@ -151,8 +157,9 @@ angular.module('ss.player')
         }
 
         function pause() {
-            if (instance.paused)
+            if (instance.paused) {
                 return false;
+            }
 
             window.cancelAnimationFrame(requestAnimationFrameId);
             pausedAt = performance.now() - startTime;
@@ -167,8 +174,9 @@ angular.module('ss.player')
         }
 
         function play() {
-            if (!instance.paused)
+            if (!instance.paused) {
                 return false;
+            }
 
             startTime = performance.now() - pausedAt;
             window.requestAnimationFrame(step);
@@ -186,7 +194,7 @@ angular.module('ss.player')
             render();
         }
 
-        function draw(image, object){
+        function draw(image, object) {
             ctx.save();
             for (var key in object) {
                 switch (key) {
@@ -199,7 +207,18 @@ angular.module('ss.player')
                 }
             }
 
-            ctx.drawImage(image, object.sx, object.sy, object.width, object.height, object.x, object.y, object.scaleWidth, object.scaleHeight);
+            ctx.drawImage(
+                image,
+                object.sx,
+                object.sy,
+                object.width,
+                object.height,
+                object.x,
+                object.y,
+                object.scaleWidth,
+                object.scaleHeight
+            );
+
             ctx.restore();
         }
 

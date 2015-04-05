@@ -2,7 +2,7 @@ angular.module('ss.audioSelector', ['vkontakteServices', 'ss.services', 'ss.filt
     .controller('AudiosController', AudiosController);
 
 function AudiosController($scope, VKAudios, selectedAudios) {
-    VKAudios.getAudios().then(function(audios){
+    VKAudios.getAudios().then(function(audios) {
         $scope.audios = audios;
     });
 

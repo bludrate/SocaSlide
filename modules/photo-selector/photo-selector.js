@@ -23,7 +23,7 @@ function AlbumsController($scope, VKPhotos, selectedPhotos) {
     }
 
     $scope.albums = [];
-    $scope.sizes = ['o','p','q'];
+    $scope.sizes = ['o', 'p', 'q'];
     $scope.gridSize = 'p';
 
     $scope.add = add;

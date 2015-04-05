@@ -1,8 +1,10 @@
-describe("ss.photoSelector", function() {
+describe('ss.photoSelector', function() {
     beforeEach(module('ss.photoSelector'));
 
     describe('AlbumsController', function() {
-        var scope, ctrl, VKPhotos;
+        var scope;
+        var ctrl;
+        var VKPhotos;
 
         beforeEach(inject(function($controller, $rootScope) {
             scope = $rootScope.$new();
@@ -30,7 +32,9 @@ describe("ss.photoSelector", function() {
     });
 
     describe('PhotosController', function() {
-        var scope, ctrl, VKPhotos;
+        var scope;
+        var ctrl;
+        var VKPhotos;
 
         beforeEach(inject(function($controller, $rootScope, $routeParams) {
             $routeParams.id = 6;
@@ -58,8 +62,8 @@ describe("ss.photoSelector", function() {
         });
 
         describe('PhotosController.togglePhoto', function() {
-            var selectedPhotos,
-                photo = VK.data['photos.get'].response.items[3];
+            var selectedPhotos;
+            var photo = VK.data['photos.get'].response.items[3];
 
             beforeEach(inject(function(_selectedPhotos_) {
                 selectedPhotos = _selectedPhotos_;

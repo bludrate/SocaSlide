@@ -2,8 +2,8 @@ describe('ss.services', function() {
     beforeEach(module('ss.services'));
 
     describe('selectedPhotos', function() {
-        var examplePhotos = VK.data['photos.get'].response.items,
-            selectedPhotos;
+        var examplePhotos = VK.data['photos.get'].response.items;
+        var selectedPhotos;
 
         beforeEach(inject(function(_selectedPhotos_) {
             selectedPhotos = _selectedPhotos_;
@@ -78,8 +78,8 @@ describe('ss.services', function() {
     });
 
     describe('selectedAudios', function() {
-        var exampleAudios = VK.data['audio.get'].response.items,
-            selectedAudios;
+        var exampleAudios = VK.data['audio.get'].response.items;
+        var selectedAudios;
 
         beforeEach(inject(function(_selectedAudios_) {
             selectedAudios = _selectedAudios_;

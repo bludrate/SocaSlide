@@ -1,11 +1,13 @@
 describe('player-canvas directive', function() {
-    var scope, controller, template;
+    var scope;
+    var controller;
+    var template;
 
     beforeEach(module('ss.player'));
     beforeEach(inject(function($rootScope, $compile) {
         var element = angular.element('<player-canvas images="images"></player-canvas>');
         scope = $rootScope.$new();
-        scope.images = [new Image(200, 200), new Image(200,200)];
+        scope.images = [new Image(200, 200), new Image(200, 200)];
         template = $compile(element)(scope);
         $rootScope.$digest();
         controller = element.controller('playerCanvas');

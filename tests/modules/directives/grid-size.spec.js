@@ -1,5 +1,8 @@
 describe('grid-size directive', function() {
-    var scope, controller, template;
+    var scope;
+    var controller;
+    var template;
+
     beforeEach(module('ss.directives'));
     beforeEach(inject(function($rootScope, $compile) {
         var element = angular.element('<grid-size size="gridSize"></grid-size>');

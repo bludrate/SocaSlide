@@ -1,9 +1,9 @@
 angular.module('ss.player')
     .factory('audioPlayService', function(audioService) {
-        var audios = [],
-            currentAudio = 0,
-            instance,
-            audio = audioService.audio;
+        var audios = [];
+        var currentAudio = 0;
+        var instance;
+        var audio = audioService.audio;
 
         function initialize(_audios_) {
             audios = _audios_;
@@ -14,8 +14,9 @@ angular.module('ss.player')
         }
 
         function play() {
-            if (!audios.length)
+            if (!audios.length) {
                 return false;
+            }
 
             audioService.play();
         }

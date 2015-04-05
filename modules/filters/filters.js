@@ -11,7 +11,7 @@ angular.module('ss.filters', ['ss.gridSizes'])
         }
 
         function retinaType(type) {
-            switch(type) {
+            switch (type) {
                 case 's': return 'm';
                 case 'm': return 'p';
                 case 'o': return 'p';
@@ -40,7 +40,7 @@ angular.module('ss.filters', ['ss.gridSizes'])
             }
 
             var size;
-            for(; i >= 0; i-- ) {
+            for (; i >= 0; i--) {
                 size = searchSize(sizes, gridSizes.types[i]);
                 if (size) {
                     return size.src;

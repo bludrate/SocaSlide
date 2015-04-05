@@ -57,7 +57,7 @@ angular.module('ss.services', [])
             },
 
             addAll: function(photoArray) {
-                for(var i = 0; i < photoArray.length; i++) {
+                for (var i = 0; i < photoArray.length; i++) {
                     this.add(photoArray[i]);
                 }
             },

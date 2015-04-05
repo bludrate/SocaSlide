@@ -20,14 +20,17 @@ describe('vkonatke services', function() {
     });
 
     describe('VKPhotos', function() {
-        var VKPhotos, VKReady, rootScope;
+        var VKPhotos;
+        var VKReady;
+        var rootScope;
+
         beforeEach(inject(function(_VKPhotos_, _VKReady_, $rootScope) {
             rootScope = $rootScope;
             VKPhotos = _VKPhotos_;
             VKReady = _VKReady_;
         }));
 
-        describe('getAlbums', function(){
+        describe('getAlbums', function() {
             it('should wait for VKready', function() {
                 spyOn(VKReady, 'then');
 
@@ -57,11 +60,13 @@ describe('vkonatke services', function() {
 
                 rootScope.$apply();
 
+                //jscs: disable
                 expect(VK.api).toHaveBeenCalledWith('photos.getAlbums', {
                     need_system: 1,
                     need_covers: 1,
                     photo_sizes: 1
                 }, jasmine.any(Function));
+                //jscs: enable
             });
 
             it('should respond with array', function() {
@@ -85,9 +90,9 @@ describe('vkonatke services', function() {
                     'photos.getAlbums': {}
                 };
 
-                VKPhotos.getAlbums().then(function(){
+                VKPhotos.getAlbums().then(function() {
 
-                }, function(response){
+                }, function(response) {
                     spy(response);
                 });
 
@@ -99,7 +104,7 @@ describe('vkonatke services', function() {
             });
         });
 
-        describe('getAlbumPhotos', function(){
+        describe('getAlbumPhotos', function() {
             it('should wait for VKready', function() {
                 spyOn(VKReady, 'then');
 
@@ -131,9 +136,9 @@ describe('vkonatke services', function() {
                     'photos.getAlbums': {}
                 };
 
-                VKPhotos.getAlbumPhotos().then(function(){
+                VKPhotos.getAlbumPhotos().then(function() {
 
-                }, function(response){
+                }, function(response) {
                     spy(response);
                 });
 
@@ -151,10 +156,12 @@ describe('vkonatke services', function() {
 
                 rootScope.$apply();
 
+                //jscs: disable
                 expect(VK.api).toHaveBeenCalledWith('photos.get', {
                     album_id: 2,
                     photo_sizes: 1
                 }, jasmine.any(Function));
+                //jscs: enable
             });
 
             it('should respond with array', function() {
@@ -172,14 +179,17 @@ describe('vkonatke services', function() {
     });
 
     describe('VKAudios', function() {
-        var VKAudios, VKReady, rootScope;
+        var VKAudios;
+        var VKReady;
+        var rootScope;
+
         beforeEach(inject(function(_VKAudios_, _VKReady_, $rootScope) {
             rootScope = $rootScope;
             VKAudios = _VKAudios_;
             VKReady = _VKReady_;
         }));
 
-        describe('getAudios', function(){
+        describe('getAudios', function() {
             it('should wait for VKready', function() {
                 spyOn(VKReady, 'then');
 
@@ -232,9 +242,9 @@ describe('vkonatke services', function() {
                     'audio.get': {}
                 };
 
-                VKAudios.getAudios().then(function(){
+                VKAudios.getAudios().then(function() {
 
-                }, function(response){
+                }, function(response) {
                     spy(response);
                 });
 

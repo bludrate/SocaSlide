@@ -2,7 +2,7 @@ describe('parseServices', function() {
     var examplePhotos = VK.data['photos.get'].response.items;
 
     beforeEach(function() {
-        spyOn(Parse, 'initialize').and.callFake(function(){});
+        spyOn(Parse, 'initialize').and.callFake(function() {});
         module('parseServices');
     });
 
@@ -11,9 +11,9 @@ describe('parseServices', function() {
     }));
 
     describe('slideshowService', function() {
-        var slideshowService,
-            getSpy = jasmine.createSpy('get').and.callFake(function() {return 'get result'}),
-            slideshowData = {
+        var slideshowService;
+        var getSpy = jasmine.createSpy('get').and.callFake(function() {return 'get result'});
+        var slideshowData = {
                 frames: [examplePhotos[0], examplePhotos[1]]
             };
 
@@ -23,7 +23,7 @@ describe('parseServices', function() {
             FakeExtend.prototype.set = function() {};
             FakeExtend.prototype.save = function() {};
 
-            spyOn(Parse.Object, 'extend').and.callFake(function(){
+            spyOn(Parse.Object, 'extend').and.callFake(function() {
                 return FakeExtend;
             });
 
