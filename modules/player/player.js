@@ -32,7 +32,6 @@ angular.module('ss.player', [
 function playerController(
     $scope,
     slideshowService,
-    $filter,
     canvasPlayService,
     audioPlayService,
     VKAudios,
@@ -56,20 +55,20 @@ function playerController(
     }
 
     function initialize(frames, audioIds, duration, settings) {
-        var images = [];
-        var image;
-
-        for (var i = 0; i < frames.length; i++) {
-            image = new Image();
-            images.push(image);
-            image.src = $filter('photoSrc')(frames[i].sizes, 'z');
-        }
+        playerImgLoader.load(frames, 'w', function(images) {
+            canvasPlayService.initialize(images, $scope, settings);
+        }).then(function() {
+            $scope.loaded = true;
+        }, function() {
+            alert('Error while loading images')
+        }, function(progress) {
+            $scope.loadProgress = progress;
+            $scope.canPlay = duration * progress / 100 > 15;
+        });
 
         if (audioIds.length) {
             VKAudios.getAudios(audioIds.join(',')).then(audioPlayService.initialize);
         }
-
-        canvasPlayService.initialize(images, $scope, settings);
 
         $scope.duration = duration;
     }
@@ -77,6 +76,7 @@ function playerController(
     $scope.$on('$destroy', function() {
         canvasPlayService.destroy();
         audioPlayService.destroy();
+        playerImgLoader.destroy();
     });
 
     var activityTimer;

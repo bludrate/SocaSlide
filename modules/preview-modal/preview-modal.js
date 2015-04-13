@@ -8,13 +8,10 @@ function PreviewModalController(
     selectedPhotos,
     selectedAudios,
     slideshowSettingsService,
-    URLS,
     dialogService,
     durationService
 ) {
-    $scope.title = '';
-
-    $scope.saveSlideshow = function() {
+    function saveSlideshow() {
         slideshowService.saveNew({
             frames: selectedPhotos.get(),
             audios: selectedAudios.getIds(),
@@ -29,5 +26,9 @@ function PreviewModalController(
                 slideshow: slideshow
             }, true);
         });
-    };
+    }
+
+    $scope.title = '';
+
+    $scope.saveSlideshow = saveSlideshow;
 }

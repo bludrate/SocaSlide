@@ -24,6 +24,7 @@ describe('ss.audioSelector', function() {
         it('should get audios and set it to scope.audios', function() {
             expect(VKAudios.getAudios).toHaveBeenCalled();
             expect(scope.audios).not.toBeUndefined();
+            expect(scope.audios).toEqual([]);
         });
 
         describe('AudiosController.toggleAudio', function() {

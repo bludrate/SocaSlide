@@ -7,12 +7,14 @@ angular.module('ss.player')
                 toggleFullScreen: '&',
                 duration: '@',
                 rewindStarted: '=',
-                noActivity: '='
+                noActivity: '=',
+                canPlay: '='
             },
             templateUrl: 'modules/player/directives/player-controls/player-controls.html',
             controller: PlayerControlsController,
             link: function(scope, element, attrs) {
-                if (attrs.autoplay) {
+                if (attrs.autoplay === 'true') {
+                    //TODO: need wait for loading
                     setTimeout(function() {
                         scope.play();
                     }, 1000);
@@ -65,6 +67,10 @@ function PlayerControlsController($scope, audioPlayService, canvasPlayService) {
         canvasPlayService.rewind(Number($scope.currentTime));
     }
 
+    function isFullScreenActive() {
+        return Boolean(document.webkitFullscreenElement);
+    }
+
     $scope.$on('playProgress', function(event, progress) {
         $scope.currentTime = progress;
 
@@ -81,9 +87,7 @@ function PlayerControlsController($scope, audioPlayService, canvasPlayService) {
     $scope.volume = audioPlayService.volume * 100;
     $scope.currentTime = 0;
     $scope.played = false;
-    $scope.fullScreenActive = function() {
-        return Boolean(document.webkitFullscreenElement);
-    };
+    $scope.isFullScreenActive = isFullScreenActive;
     $scope.toggle = toggle;
     $scope.play = play;
     $scope.pause = pause;

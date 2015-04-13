@@ -51,6 +51,9 @@
 .controls__toggle_pause:before {
   content: "\f0b6";
 }
+.controls__toggle[disabled] {
+  opacity: 0.5;
+}
 .controls__full-screen {
   float: right;
   border: none;

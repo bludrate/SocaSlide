@@ -5,6 +5,7 @@ angular.module('ss.tooltip', [])
         var scope;
         var offsetX = 0;
         var offsetY = -20;
+        var instance;
 
         function onMove(event) {
             element.css({
@@ -13,29 +14,36 @@ angular.module('ss.tooltip', [])
             });
         }
 
-        return {
+        function show(data) {
+            instance.data = data;
+            instance.showed = true;
+            $body.on('mousemove', onMove);
+            scope.$digest();
+            offsetX = -element[0].offsetWidth / 2;
+            offsetY = -element[0].offsetHeight - 10;
+        }
+
+        function hide() {
+            instance.showed = false;
+            $body.off('mousemove', onMove);
+            scope.$digest();
+        }
+
+        function initialze(_element_, _scope_) {
+            element = _element_;
+            scope = _scope_;
+        }
+
+        instance = {
             showed: false,
-            show: function(data) {
-                this.data = data;
-                this.showed = true;
-                $body.on('mousemove', onMove);
-                scope.$digest();
-                offsetX = -element[0].offsetWidth / 2;
-                offsetY = -element[0].offsetHeight - 10;
-            },
-
-            hide: function() {
-                this.showed = false;
-                $body.off('mousemove', onMove);
-                scope.$digest();
-            },
-
-            initialize: function(_element_, _scope_) {
-                element = _element_;
-                scope = _scope_;
-            }
+            show: show,
+            hide: hide,
+            initialize: initialze
         };
+
+        return instance;
     })
+
     .directive('tooltipPopup', function(tooltipService) {
         return {
             restrict: 'E',
@@ -48,6 +56,7 @@ angular.module('ss.tooltip', [])
             }
         };
     })
+
     .directive('tooltip', function(tooltipService) {
         return {
             restrict: 'A',

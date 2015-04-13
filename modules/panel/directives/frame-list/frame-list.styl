@@ -1,0 +1,140 @@
+@import '../../stylus/variables';
+
+.frame-list {
+    margin: 0
+    padding: 0 22px 0 23px
+    list-style: none
+    font-size: 0
+    z-index: 4
+    position: relative
+    height: 90px
+    float: left
+
+    &__wrap {
+        overflow: auto
+        white-space: nowrap
+        position: relative
+    }
+
+    &__prev,
+    &__next {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 25px;
+        border: none;
+        background: none;
+        margin: 0;
+        padding: 0;
+        outline: none;
+        z-index: 5;
+        cursor: pointer;
+        background: $primaryColor;
+        box-shadow: 1px 0 1px rgba(0,0,0,0.6);
+        opacity: 1;
+
+        &[disabled] {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        &:before {
+            display: block;
+            content: "\f236"
+            font-size: 26px;
+            font-family: 'icon-font';
+            color: $textPrimaryColor;
+        }
+    }
+
+    &__next {
+        right: 0;
+        left: auto;
+        box-shadow: -1px 0 1px rgba(0,0,0,0.6)
+        &:before {
+            content: "\f237"
+        }
+    }
+
+    &__holder {
+        overflow: hidden;
+        height: 90px;
+        position: relative;
+    }
+
+    &__item {
+        display: inline-block;
+        vertical-align: top;
+        width: 130px;
+        height: 80px;
+        overflow: hidden;
+        margin: 5px;
+        position: relative;
+        animation: create 0.1s;
+        cursor: pointer;
+
+        &:after {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            font-size: 50px;
+            text-align: center;
+            font-family: 'icon-font';
+            opacity: 0;
+            transition: opacity 0.1s;
+            content: "\f102"
+            color: $redColor;
+            line-height: 80px;
+        }
+
+        &:hover:after {
+            opacity: 1;
+        }
+
+        img {
+            width: 100%;
+            vertical-align: top;
+        }
+    }
+}
+
+.frame-placeholder {
+    display: inline-block;
+    vertical-align: top;
+    width: 130px;
+    height: 80px;
+    margin: 5px;
+    position: relative;
+    animation: create 0.1s;
+    background: rgba(0,0,0,0.5);
+
+    &:after {
+        content: "\f23e";
+        font-family: "icon-font";
+        font-size: 55px;
+        line-height: 80px;
+        text-align: center;
+        display: block;
+        color: rgba($textPrimaryColor, 0.35);
+    }
+}
+
+.frame-placeholders {
+    position: absolute;
+    top: 0;
+    left: 23px;
+    z-index: 1;
+}
+
+@keyframes create {
+    0% {
+        transform: scale(0);
+    }
+    100% {
+        transform: scale(1);
+    }
+}

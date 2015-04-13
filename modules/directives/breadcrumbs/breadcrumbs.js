@@ -11,7 +11,7 @@ angular.module('ss')
             }
         ]
     })
-    .directive('breadcrumbs', function($route, breadcrumbsConfig, $location) {
+    .directive('breadcrumbs', function($route, breadcrumbsConfig) {
         return {
             templateUrl: 'modules/directives/breadcrumbs/breadcrumbs.html',
             controller: function($scope, $rootScope) {

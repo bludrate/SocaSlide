@@ -1,5 +1,13 @@
 angular.module('ss.player')
     .factory('defaultAnimationType', function() {
+        /**
+         * calculate image width and height to fit canvas size
+         * @param image {Image}
+         * @param cWidth {Number}
+         * @param cHeight {Number}
+         * @param scale {Number}
+         * @returns {{width: number, height: number}}
+         */
         function drawImageSize(image, cWidth, cHeight, scale) {
             var factor = 1;
             var width;
@@ -25,9 +33,19 @@ angular.module('ss.player')
             };
         }
 
-        function animFunc(currentSlide, currentSlideTime, slideDuration, images, cWidth, cHeight) {
+        /**
+         * calculate images draw properties depends on time
+         * @param currentSlide {Number}
+         * @param currentSlideTime {Number}
+         * @param slideDuration {Number}
+         * @param images {Array}
+         * @param cWidth {Number}
+         * @param cHeight {Number}
+         * @returns {Object}
+         */
+        function animateFunction(currentSlide, currentSlideTime, slideDuration, images, cWidth, cHeight) {
             var result = {};
-            var scaleSize;
+            var scaledSize;
             var scale;
 
             result[currentSlide] = {
@@ -46,18 +64,18 @@ angular.module('ss.player')
                         1,
                         this.scale
                     );
-                    scaleSize = drawImageSize(images[prevIndex], cWidth, cHeight, scale);
+                    scaledSize = drawImageSize(images[prevIndex], cWidth, cHeight, scale);
 
                     result[prevIndex] = {
                         opacity: this.timingValue(currentSlideTime, this.hideDuration, 1, 0),
                         sx: 0,
                         sy: 0,
-                        x: (cWidth - scaleSize.width) / 2,
-                        y: (cHeight - scaleSize.height) / 2,
+                        x: (cWidth - scaledSize.width) / 2,
+                        y: (cHeight - scaledSize.height) / 2,
                         width: images[prevIndex].width,
                         height: images[prevIndex].height,
-                        scaleWidth: scaleSize.width,
-                        scaleHeight: scaleSize.height
+                        scaleWidth: scaledSize.width,
+                        scaleHeight: scaledSize.height
                     };
                 }
 
@@ -65,14 +83,14 @@ angular.module('ss.player')
             }
 
             scale = this.timingValue(currentSlideTime, slideDuration + this.hideDuration, 1, this.scale);
-            scaleSize = drawImageSize(images[currentSlide], cWidth, cHeight, scale);
+            scaledSize = drawImageSize(images[currentSlide], cWidth, cHeight, scale);
 
-            result[currentSlide].x = (cWidth - scaleSize.width) / 2;
-            result[currentSlide].y = (cHeight - scaleSize.height) / 2;
+            result[currentSlide].x = (cWidth - scaledSize.width) / 2;
+            result[currentSlide].y = (cHeight - scaledSize.height) / 2;
             result[currentSlide].width = images[currentSlide].width;
             result[currentSlide].height = images[currentSlide].height;
-            result[currentSlide].scaleWidth = scaleSize.width;
-            result[currentSlide].scaleHeight = scaleSize.height;
+            result[currentSlide].scaleWidth = scaledSize.width;
+            result[currentSlide].scaleHeight = scaledSize.height;
 
             return result;
         }
@@ -88,14 +106,14 @@ angular.module('ss.player')
         return {
             scale: 1.2,
 
-            func: animFunc,
+            func: animateFunction,
             timingValue: timingValue,
             init: init
         };
     })
     .factory('canvasPlayService', function($rootScope, defaultAnimationType) {
         var requestAnimationFrameId;
-        var ctx;
+        var ctx; //canvas context
         var images;
         var startTime;
         var pausedAt = 0;

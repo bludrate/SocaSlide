@@ -1,33 +1,38 @@
 angular.module('ss.audioSelector')
+    //play audio after clicking element
     .directive('playAudio', function(audioService) {
-        var currentElement;
+        var currentPlayedElement;
 
         audioService.audio.addEventListener('pause', function() {
-            if (currentElement) {
-                currentElement.removeClass('played');
-                currentElement = undefined;
+            if (currentPlayedElement) {
+                currentPlayedElement.removeClass('played');
+                currentPlayedElement = undefined;
             }
         });
+
+        function play(url) {
+            if (currentPlayedElement) {
+                currentPlayedElement.removeClass('played');
+            }
+
+            if (audioService.audio.src === url && !audioService.audio.paused) {
+                audioService.pause();
+            } else {
+                audioService.play(url);
+                element.addClass('played');
+                currentPlayedElement = element;
+            }
+        }
 
         return {
             restrict: 'A',
             link: function(scope, element, attrs) {
-                element.on('click', function(event) {
+                element.on('click', function() {
+                    //for prevent toggle audio on clicking play control
                     event.playAudio = true;
 
-                    if (currentElement) {
-                        currentElement.removeClass('played');
-                    }
-
-                    if (audioService.audio.src === attrs.playAudio && !audioService.audio.paused) {
-                        audioService.pause();
-                    } else {
-                        audioService.play(attrs.playAudio);
-                        element.addClass('played');
-                        currentElement = element;
-                    }
+                    play(attrs.playAudio);
                 });
-
             }
-        }
+        };
     });

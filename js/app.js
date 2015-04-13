@@ -13,36 +13,43 @@ angular.module('ss', [
     'ss.slideshow',
     'ss.previewModal',
     'ss.slideshowList'
-])
-    .config(function($routeSegmentProvider, $routeProvider) {
-        VK.addCallback('onScrollTop', function(scrollTop, windowHeight, offsetTop) {
-            VK.callMethod('scrollWindow', offsetTop);
-            VK.callMethod('resizeWindow', 1000, windowHeight > 500 ? windowHeight : 500);
-        });
+]);
 
-        VK.callMethod('scrollTop');
+(function() {
+    if (!VK || !window.name) {
+        return;
+    }
 
-        $routeSegmentProvider
-            .when('/home', 'home')
-            .when('/create', 'create')
-            .when('/create/albums', 'create.albums')
-            .when('/create/albums/:id', 'create.album')
-            .when('/slideshow/:id', 'slideshow')
+    angular.module('ss')
+        .config(function($routeSegmentProvider, $routeProvider) {
+            VK.addCallback('onScrollTop', function(scrollTop, windowHeight, offsetTop) {
+                VK.callMethod('scrollWindow', offsetTop);
+                VK.callMethod('resizeWindow', 1000, windowHeight > 500 ? windowHeight : 500);
+            });
 
-            .segment('home', {
-                default: true,
-                templateUrl: 'pages/home-page/home-page.html'
-            })
-            .segment('slideshow', {
-                templateUrl: 'pages/slideshow-page/slideshow-page.html',
-                controller: 'SlideshowController',
-                dependencies: ['id']
-            })
+            VK.callMethod('scrollTop');
 
-            .segment('create', {
-                templateUrl: 'pages/create-page/create-page.html'
-            })
-            .within()
+            $routeSegmentProvider
+                .when('/home', 'home')
+                .when('/create', 'create')
+                .when('/create/albums', 'create.albums')
+                .when('/create/albums/:id', 'create.album')
+                .when('/slideshow/:id', 'slideshow')
+
+                .segment('home', {
+                    default: true,
+                    templateUrl: 'pages/home-page/home-page.html'
+                })
+                .segment('slideshow', {
+                    templateUrl: 'pages/slideshow-page/slideshow-page.html',
+                    controller: 'SlideshowController',
+                    dependencies: ['id']
+                })
+
+                .segment('create', {
+                    templateUrl: 'pages/create-page/create-page.html'
+                })
+                .within()
 
                 .segment('albums', {
                     default: true,
@@ -56,23 +63,24 @@ angular.module('ss', [
                     dependencies: ['id']
                 });
 
-        $routeProvider.otherwise({redirectTo: '/home'});
-    })
-    .run(function($location, $rootScope, currentUser, URLS) {
-        $location.path(VK.params.hash);
+            $routeProvider.otherwise({redirectTo: '/home'});
+        })
+        .run(function($location, $rootScope, currentUser, URLS) {
+            $location.path(VK.params.hash);
 
-        VK.addCallback('onLocationChanged', function(location) {
-            if (location !== $location.url()) {
-                $rootScope.$apply(function() {
-                    $location.path(location);
-                });
-            }
+            VK.addCallback('onLocationChanged', function(location) {
+                if (location !== $location.url()) {
+                    $rootScope.$apply(function() {
+                        $location.path(location);
+                    });
+                }
+            });
+
+            $rootScope.$on('$locationChangeSuccess', function() {
+                VK.callMethod('setLocation', $location.url());
+            });
+
+            $rootScope.currentUser = currentUser;
+            $rootScope.URLS = URLS;
         });
-
-        $rootScope.$on('$locationChangeSuccess', function() {
-            VK.callMethod('setLocation', $location.url());
-        });
-
-        $rootScope.currentUser = currentUser;
-        $rootScope.URLS = URLS;
-    });
+})();

@@ -12,20 +12,14 @@ angular.module('ss.slideshowList', ['parseServices', 'ss.dialog', 'vkontakteServ
     });
 
 function SlideshowListController($scope, slideshowService, dialogService, VKWall) {
-    slideshowService.getUserSlideshows($scope.userId)
-        .then(function(data) {
-            $scope.slideshows = data;
-            $scope.$digest();
-        });
-
-    $scope.show = function(id) {
+    function show(id) {
         dialogService.open({
             template: 'modules/player-modal/player-modal.html',
             src: id
         });
-    };
+    }
 
-    $scope.remove = function(slideshow) {
+    function remove(slideshow) {
         if (!confirm('Вы верены, что хотите удалить слайдшоу "' + slideshow.get('title') + '"')) {
             return ;
         }
@@ -39,7 +33,15 @@ function SlideshowListController($scope, slideshowService, dialogService, VKWall
                 console.log(response);
                 alert('error while deleting slideshow')
             });
-    };
+    }
+
+    slideshowService.getUserSlideshows($scope.userId)
+        .then(function(data) {
+            $scope.slideshows = data;
+            $scope.$digest();
+        });
 
     $scope.share = VKWall.postSlideshow;
+    $scope.show = show;
+    $scope.remove = remove;
 }

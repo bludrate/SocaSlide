@@ -22,3 +22,16 @@
 .player_no-activity {
   cursor: none;
 }
+.player__load-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  background: #4b50ff;
+  height: 3px;
+  opacity: 1;
+  transition: width 0.2s ease-out, opacity 0.2s ease-out;
+}
+.player_loaded .player__load-progress {
+  opacity: 0;
+}

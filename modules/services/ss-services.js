@@ -6,6 +6,7 @@ angular.module('ss.services', [])
             }
         };
     })
+
     .factory('slideshowSettingsService', function() {
         var data = {
             slideDuration: 5
@@ -24,6 +25,7 @@ angular.module('ss.services', [])
             }
         };
     })
+
     .factory('selectedPhotos', function() {
         var photos = [];
 

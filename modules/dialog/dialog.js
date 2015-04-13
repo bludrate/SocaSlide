@@ -7,11 +7,11 @@ angular.module('ss.dialog', [])
                 this.scope = scope;
             },
 
-            open: function(data, digest) {
+            open: function(data, forcePaint) {
                 this.data = data;
                 this.showed = true;
 
-                if (digest) {
+                if (forcePaint) {
                     this.scope.$digest();
                 }
             },

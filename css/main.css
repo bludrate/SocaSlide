@@ -1,61 +1,3 @@
-.dialog {
-  position: absolute;
-  left: 50%;
-  margin-left: -320px;
-  width: 640px;
-  background: #fff;
-  top: 50px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.5);
-}
-.dialog-holder {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 100;
-  background: rgba(0,0,0,0.7);
-  width: 100%;
-  height: 100%;
-}
-.dialog__header {
-  border-bottom: 1px solid #b6b6b6;
-  padding: 7px 50px 7px 25px;
-  margin-bottom: 20px;
-}
-.dialog__content {
-  padding: 0 25px 20px;
-}
-.dialog__title {
-  margin: 0;
-  font-size: 20px;
-  line-height: 26px;
-  font-weight: normal;
-}
-.dialog__close {
-  position: absolute;
-  right: 0;
-  top: 0;
-  border: none;
-  background: none;
-  margin: 0;
-  padding: 5px;
-}
-.dialog__close:before {
-  display: block;
-  color: #d32f2f;
-  content: "\f29a";
-  font-size: 30px;
-  font-family: 'icon-font';
-}
-.dialog__close_video {
-  right: -35px;
-  top: 5px;
-  padding: 0;
-}
-.dialog__close_video:before {
-  color: #fff;
-  text-shadow: 0 1px 2px #000;
-}
-
 .audio-selector {
   float: right;
   margin-left: 20px;
@@ -216,6 +158,64 @@
 }
 .audio-list__play.played:before {
   content: "\f0b6";
+}
+
+.dialog {
+  position: absolute;
+  left: 50%;
+  margin-left: -320px;
+  width: 640px;
+  background: #fff;
+  top: 50px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+.dialog-holder {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  background: rgba(0,0,0,0.7);
+  width: 100%;
+  height: 100%;
+}
+.dialog__header {
+  border-bottom: 1px solid #b6b6b6;
+  padding: 7px 50px 7px 25px;
+  margin-bottom: 20px;
+}
+.dialog__content {
+  padding: 0 25px 20px;
+}
+.dialog__title {
+  margin: 0;
+  font-size: 20px;
+  line-height: 26px;
+  font-weight: normal;
+}
+.dialog__close {
+  position: absolute;
+  right: 0;
+  top: 0;
+  border: none;
+  background: none;
+  margin: 0;
+  padding: 5px;
+}
+.dialog__close:before {
+  display: block;
+  color: #d32f2f;
+  content: "\f29a";
+  font-size: 30px;
+  font-family: 'icon-font';
+}
+.dialog__close_video {
+  right: -35px;
+  top: 5px;
+  padding: 0;
+}
+.dialog__close_video:before {
+  color: #fff;
+  text-shadow: 0 1px 2px #000;
 }
 
 .header {
@@ -620,6 +620,19 @@
 .player_no-activity {
   cursor: none;
 }
+.player__load-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  background: #4b50ff;
+  height: 3px;
+  opacity: 1;
+  transition: width 0.2s ease-out, opacity 0.2s ease-out;
+}
+.player_loaded .player__load-progress {
+  opacity: 0;
+}
 
 .preview-modal__content {
   padding: 20px 25px;
@@ -743,35 +756,6 @@
   border-radius: 5px;
 }
 
-.grid-size-block {
-  float: right;
-  padding-left: 20px;
-}
-.grid-size {
-  display: inline-block;
-  border: none;
-  color: #fff;
-  background: #c8e6c9;
-  transition: background 0.1s ease, box-shadow 0.05s ease;
-  font-size: 14px;
-  text-align: center;
-  width: 30px;
-  height: 25px;
-  line-height: 25px;
-  outline: none;
-  margin: 0 2px;
-  padding: 0;
-  cursor: pointer;
-  border-radius: 2px;
-}
-.grid-size:active {
-  box-shadow: 0 1px 2px #000 inset;
-}
-.grid-size.active,
-.grid-size:hover {
-  background: #4caf50;
-}
-
 .breadcrumbs {
   margin: 0;
   padding: 7px 0 0;
@@ -799,6 +783,35 @@
 }
 .breadcrumbs__item:first-child .breadcrumbs__link:before {
   display: none;
+}
+
+.grid-size-block {
+  float: right;
+  padding-left: 20px;
+}
+.grid-size {
+  display: inline-block;
+  border: none;
+  color: #fff;
+  background: #c8e6c9;
+  transition: background 0.1s ease, box-shadow 0.05s ease;
+  font-size: 14px;
+  text-align: center;
+  width: 30px;
+  height: 25px;
+  line-height: 25px;
+  outline: none;
+  margin: 0 2px;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 2px;
+}
+.grid-size:active {
+  box-shadow: 0 1px 2px #000 inset;
+}
+.grid-size.active,
+.grid-size:hover {
+  background: #4caf50;
 }
 
 .album-list {
@@ -1137,6 +1150,9 @@
 .controls__toggle_pause:before {
   content: "\f0b6";
 }
+.controls__toggle[disabled] {
+  opacity: 0.5;
+}
 .controls__full-screen {
   float: right;
   border: none;
@@ -1157,18 +1173,18 @@
   content: "\f2a0";
 }
 
+.location-loading {
+  padding: 100px 0 0;
+  text-align: center;
+  font-size: 30px;
+}
+
 .create-section {
   padding: 0 0 90px;
   position: relative;
   height: 100%;
   box-sizing: border-box;
   overflow: hidden;
-}
-
-.location-loading {
-  padding: 100px 0 0;
-  text-align: center;
-  font-size: 30px;
 }
 
 @font-face {

@@ -291,36 +291,43 @@ angular.module('ss', [
     'ss.slideshow',
     'ss.previewModal',
     'ss.slideshowList'
-])
-    .config(function ($routeSegmentProvider, $routeProvider) {
-        VK.addCallback('onScrollTop', function(scrollTop, windowHeight, offsetTop) {
-            VK.callMethod('scrollWindow', offsetTop);
-            VK.callMethod('resizeWindow', 1000, windowHeight > 500 ? windowHeight : 500);
-        });
+]);
 
-        VK.callMethod('scrollTop');
+(function() {
+    if (!VK || !window.name) {
+        return;
+    }
 
-        $routeSegmentProvider
-            .when('/home', 'home')
-            .when('/create', 'create')
-            .when('/create/albums', 'create.albums')
-            .when('/create/albums/:id', 'create.album')
-            .when('/slideshow/:id', 'slideshow')
+    angular.module('ss')
+        .config(function($routeSegmentProvider, $routeProvider) {
+            VK.addCallback('onScrollTop', function(scrollTop, windowHeight, offsetTop) {
+                VK.callMethod('scrollWindow', offsetTop);
+                VK.callMethod('resizeWindow', 1000, windowHeight > 500 ? windowHeight : 500);
+            });
 
-            .segment('home', {
-                default: true,
-                templateUrl: 'pages/home-page/home-page.html'
-            })
-            .segment('slideshow', {
-                templateUrl: 'pages/slideshow-page/slideshow-page.html',
-                controller: 'SlideshowController',
-                dependencies: ['id']
-            })
+            VK.callMethod('scrollTop');
 
-            .segment('create', {
-                templateUrl: 'pages/create-page/create-page.html'
-            })
-            .within()
+            $routeSegmentProvider
+                .when('/home', 'home')
+                .when('/create', 'create')
+                .when('/create/albums', 'create.albums')
+                .when('/create/albums/:id', 'create.album')
+                .when('/slideshow/:id', 'slideshow')
+
+                .segment('home', {
+                    default: true,
+                    templateUrl: 'pages/home-page/home-page.html'
+                })
+                .segment('slideshow', {
+                    templateUrl: 'pages/slideshow-page/slideshow-page.html',
+                    controller: 'SlideshowController',
+                    dependencies: ['id']
+                })
+
+                .segment('create', {
+                    templateUrl: 'pages/create-page/create-page.html'
+                })
+                .within()
 
                 .segment('albums', {
                     default: true,
@@ -334,26 +341,28 @@ angular.module('ss', [
                     dependencies: ['id']
                 });
 
-        $routeProvider.otherwise({redirectTo: '/home'});
-    })
-    .run(function($location, $rootScope, currentUser, URLS) {
-        $location.path(VK.params.hash);
+            $routeProvider.otherwise({redirectTo: '/home'});
+        })
+        .run(function($location, $rootScope, currentUser, URLS) {
+            $location.path(VK.params.hash);
 
-        VK.addCallback('onLocationChanged', function(location) {
-            if (location !== $location.url()) {
-                $rootScope.$apply(function() {
-                    $location.path(location);
-                });
-            }
+            VK.addCallback('onLocationChanged', function(location) {
+                if (location !== $location.url()) {
+                    $rootScope.$apply(function() {
+                        $location.path(location);
+                    });
+                }
+            });
+
+            $rootScope.$on('$locationChangeSuccess', function() {
+                VK.callMethod('setLocation', $location.url());
+            });
+
+            $rootScope.currentUser = currentUser;
+            $rootScope.URLS = URLS;
         });
+})();
 
-        $rootScope.$on('$locationChangeSuccess', function() {
-            VK.callMethod('setLocation', $location.url());
-        });
-
-        $rootScope.currentUser = currentUser;
-        $rootScope.URLS = URLS;
-    });
 'use strict';
 
 angular.module('ss.templates', []).run(['$templateCache', function($templateCache) {
@@ -362,17 +371,13 @@ angular.module('ss.templates', []).run(['$templateCache', function($templateCach
 
   $templateCache.put('modules/dialog/dialog.html', '<div class="dialog-holder" ng-show="dialogService.showed" ng-include="dialogService.data.template" ng-click="closeOnBgClick($event)"></div>');
 
-  $templateCache.put('modules/header/header.html', '<header class="header" ng-controller="HeaderController"><a href="#/home" active-link="home" class="logo">SocaSlide</a><breadcrumbs></breadcrumbs><div class="header__user">{{firstName}} {{lastName}}</div><a href="#/slideshow/{{slideshow.id}}" ng-repeat="slideshow in slideshows" style="margin-right: 10px;">{{slideshow.get(\'title\') || \'hi\'}}</a></header>');
+  $templateCache.put('modules/header/header.html', '<header class="header" ng-controller="HeaderController"><a href="#/home" active-link="home" class="logo">SocaSlide</a><breadcrumbs></breadcrumbs><div class="header__user">{{firstName}} {{lastName}}</div></header>');
 
   $templateCache.put('modules/panel/panel.html', '<div class="panel"><frame-list></frame-list><div class="panel__info"><div class="panel__photo-count panel__info-row">{{selectedPhotos.size()}}</div><div class="panel__duration panel__info-row">{{ duration() | timeFormatter:\'ms\' }}</div><audio-list class="panel__info-row"></audio-list></div><div class="panel__btns"><button class="create-slideshow" ng-click="preview()"></button> <button class="open-settings" ng-click="openSettings()"></button></div></div>');
 
-  $templateCache.put('modules/photo-selector/albums.html', '<header class="section__header"><grid-size size="gridSize"></grid-size><h2 class="section__title">Альбомы</h2></header><div class="section__content"><ul class="album-list album-list_size_{{gridSize}}"><li class="album-list__item" data-ng-repeat="album in albums track by album.id"><img ng-src="{{album.sizes | photoSrc: gridSize }}"> <span class="album-list__item-title" title="{{album.title}}">{{album.title}}</span><div class="album-list__buttons"><a href="#/create/albums/{{album.id}}" class="album-list__button album-list__button_open" title="Открыть"></a> <button class="album-list__button album-list__button_add" ng-click="add(album)" title="Добавить весь альбом"></button></div></li></ul></div>');
+  $templateCache.put('modules/player/player.html', '<div class="player" ng-mousemove="resetActivity()" ng-class="{\'player_no-activity\': noActivity, \'player_rewind-started\': rewindStarted, \'player_loaded\': loaded}"><player-canvas></player-canvas><player-controls can-play="canPlay" autoplay="{{autoplay}}" toggle-full-screen="toggleFullScreen()" duration="{{duration}}" no-activity="noActivity" rewind-started="rewindStarted"></player-controls><span class="player__load-progress" ng-style="{width: loadProgress + \'%\'}">{{loadProgress}}</span></div>');
 
-  $templateCache.put('modules/photo-selector/photos.html', '<header class="section__header"><grid-size size="gridSize"></grid-size><h2 class="section__title">{{album.title}}</h2></header><div class="section__content"><ul class="photo-list photo-list_size_{{gridSize}}"><li class="photo-list__item" ng-class="{selected: photo.selected}" ng-repeat="photo in photos track by photo.id" title="{{photo.title}}" ng-click="togglePhoto(photo)"><img ng-src="{{photo.sizes | photoSrc: gridSize }}"></li></ul></div>');
-
-  $templateCache.put('modules/player/player.html', '<div class="player" ng-mousemove="resetActivity()" ng-class="{\'player_no-activity\': noActivity, \'player_rewind-started\': rewindStarted}"><player-canvas></player-canvas><player-controls autoplay="{{autoplay}}" toggle-full-screen="toggleFullScreen()" duration="{{duration}}" no-activity="noActivity" rewind-started="rewindStarted"></player-controls></div>');
-
-  $templateCache.put('modules/player-modal/player-modal.html', '<section class="dialog"><button class="dialog__close dialog__close_video" ng-click="dialogService.close()"></button><player autoplay="" src="{{dialogService.data.src}}"></player></section>');
+  $templateCache.put('modules/player-modal/player-modal.html', '<section class="dialog"><button class="dialog__close dialog__close_video" ng-click="dialogService.close()"></button><player src="{{dialogService.data.src}}"></player></section>');
 
   $templateCache.put('modules/preview-modal/preview-modal.html', '<section class="dialog"><button class="dialog__close dialog__close_video" ng-click="dialogService.close()"></button><player src="local"></player><form class="preview-modal__content" ng-submit="saveSlideshow()" ng-controller="PreviewModalController"><div class="form-row"><label class="label" for="slideshowTitle">Заголовок</label><div class="input-holder"><input class="input" id="slideshowTitle" type="text" ng-model="title"></div></div><div class="form-btns"><button class="button button_cancel" type="button" ng-click="dialogService.close()">Отмена</button> <button class="button" type="submit">Сохранить</button></div></form></section>');
 
@@ -396,15 +401,40 @@ angular.module('ss.templates', []).run(['$templateCache', function($templateCach
 
   $templateCache.put('modules/directives/grid-size/grid-size.html', '<div class="grid-size-block"><button ng-repeat="size in sizes" class="grid-size grid-size_{{size}}" ng-class="{active: size === gridSize}" ng-click="$parent.changeSize(size)">{{$parent.names[size]}}</button></div>');
 
-  $templateCache.put('modules/panel/directives/audio-list/audio-list.html', '<ul class="panel-audios"><li class="panel-audios__item" ng-repeat="audio in audios track by audio.id" title="{{audio.artist + \' - \' + audio.title}}"><span class="panel-audios__info">{{audio.artist + \' - \' + audio.title}}&nbsp;&nbsp;&nbsp;{{audio.duration | timeFormatter}}</span></li></ul>');
+  $templateCache.put('modules/photo-selector/albums/albums.html', '<header class="section__header"><grid-size size="gridSize"></grid-size><h2 class="section__title">Альбомы</h2></header><div class="section__content"><ul class="album-list album-list_size_{{gridSize}}"><li class="album-list__item" data-ng-repeat="album in albums track by album.id"><img ng-src="{{album.sizes | photoSrc: gridSize }}"> <span class="album-list__item-title" title="{{album.title}}">{{album.title}}</span><div class="album-list__buttons"><a href="#/create/albums/{{album.id}}" class="album-list__button album-list__button_open" title="Открыть"></a> <button class="album-list__button album-list__button_add" ng-click="add(album)" title="Добавить весь альбом"></button></div></li></ul></div>');
 
-  $templateCache.put('modules/panel/directives/timeline/timeline.html', '');
+  $templateCache.put('modules/photo-selector/photos/photos.html', '<header class="section__header"><grid-size size="gridSize"></grid-size><h2 class="section__title">{{album.title}}</h2></header><div class="section__content"><ul class="photo-list photo-list_size_{{gridSize}}"><li class="photo-list__item" ng-class="{selected: photo.selected}" ng-repeat="photo in photos track by photo.id" title="{{photo.title}}" ng-click="togglePhoto(photo)"><img ng-src="{{photo.sizes | photoSrc: gridSize }}"></li></ul></div>');
+
+  $templateCache.put('modules/panel/directives/audio-list/audio-list.html', '<ul class="panel-audios"><li class="panel-audios__item" ng-repeat="audio in audios track by audio.id" title="{{audio.artist + \' - \' + audio.title}}"><span class="panel-audios__info">{{audio.artist + \' - \' + audio.title}}&nbsp;&nbsp;&nbsp;{{audio.duration | timeFormatter}}</span></li></ul>');
 
   $templateCache.put('modules/panel/directives/frame-list/frame-list.html', '<div class="frame-list__holder"><button class="frame-list__prev" ng-click="prev()" ng-disabled="disabled || prevDisabled"></button><div class="frame-list__wrap"><ul class="frame-list"><li class="frame-list__item" ng-repeat="frame in frames track by frame.id" title="{{frame.title}}" ng-click="removeFrame(frame)"><img ng-src="{{frame.sizes | photoSrc: \'o\' }}"></li></ul><span class="frame-placeholders"><span class="frame-placeholder" ng-repeat="placeholder in placeholders track by $index"></span></span></div><button class="frame-list__next" ng-click="next()" ng-disabled="disabled || nextDisabled"></button></div>');
 
-  $templateCache.put('modules/player/directives/player-controls/player-controls.html', '<div class="controls" ng-class="{controls_paused: !played}"><button ng-click="toggle()" class="controls__toggle" ng-class="{controls__toggle_pause: played}"></button> <button ng-click="toggleFullScreen()" class="controls__full-screen" ng-class="{active: fullScreenActive()}"></button> <input class="controls__volume" type="range" ng-model="volume" min="0" max="100" ng-change="setVolume()"><div class="controls__progress-holder"><input type="range" class="controls__progress" min="0" max="{{duration}}" ng-model="currentTime" ng-change="rewind()" ng-mousedown="rewindStart()" ng-mouseup="rewindEnd()"></div></div>');
+  $templateCache.put('modules/panel/directives/timeline/timeline.html', '');
+
+  $templateCache.put('modules/player/directives/player-controls/player-controls.html', '<div class="controls" ng-class="{controls_paused: !played}"><button ng-click="toggle()" ng-disabled="!canPlay" class="controls__toggle" ng-class="{controls__toggle_pause: played}"></button> <button ng-click="toggleFullScreen()" class="controls__full-screen" ng-class="{active: isFullScreenActive()}"></button> <input class="controls__volume" type="range" ng-model="volume" min="0" max="100" ng-change="setVolume()"><div class="controls__progress-holder"><input type="range" class="controls__progress" min="0" max="{{duration}}" ng-model="currentTime" ng-change="rewind()" ng-mousedown="rewindStart()" ng-mouseup="rewindEnd()"></div></div>');
 
 }]);
+angular.module('ss.audioSelector', ['vkontakteServices', 'ss.services', 'ss.filters', 'ss.audioService'])
+    .controller('AudiosController', AudiosController);
+
+function AudiosController($scope, VKAudios, selectedAudios) {
+    VKAudios.getAudios().then(function(audios) {
+        $scope.audios = audios;
+    });
+
+    $scope.toggleAudio = function(event, audio) {
+        if (event.playAudio) {
+            return false;
+        }
+
+        if (audio.selected) {
+            selectedAudios.remove(audio);
+        } else {
+            selectedAudios.add(audio);
+        }
+    }
+}
+
 angular.module('ss.dialog', [])
     .factory('dialogService', function($rootScope) {
         var instance = {
@@ -414,11 +444,11 @@ angular.module('ss.dialog', [])
                 this.scope = scope;
             },
 
-            open: function(data, digest) {
+            open: function(data, forcePaint) {
                 this.data = data;
                 this.showed = true;
 
-                if (digest) {
+                if (forcePaint) {
                     this.scope.$digest();
                 }
             },
@@ -453,31 +483,12 @@ angular.module('ss.dialog', [])
             }
         };
     });
-angular.module('ss.audioSelector', ['vkontakteServices', 'ss.services', 'ss.filters', 'ss.audioService'])
-    .controller('AudiosController', AudiosController);
 
-function AudiosController($scope, VKAudios, selectedAudios) {
-    VKAudios.getAudios().then(function(audios){
-        $scope.audios = audios;
-    });
-
-    $scope.toggleAudio = function(event, audio) {
-        if (event.playAudio) {
-            return false;
-        }
-
-        if (audio.selected) {
-            selectedAudios.remove(audio);
-        } else {
-            selectedAudios.add(audio);
-        }
-    }
-}
 angular.module('ss')
     .directive('addSpace', function() {
         return {
             restrict: 'A',
-            link: function (scope, element) {
+            link: function(scope, element) {
                 element.after('&nbsp;');
             }
         }
@@ -488,7 +499,13 @@ angular.module('ss.filters', ['ss.gridSizes'])
     .filter('photoSrc', function(gridSizes) {
         var retina = window.devicePixelRatio > 1;
 
-        function searchSize(sizes, type) {
+        /**
+         * get closest available image size
+         * @param sizes {Array}
+         * @param type {String}
+         * @returns {Object}
+         */
+        function closestSize(sizes, type) {
             for (var i = 0; i < sizes.length; i++) {
                 if (sizes[i].type === type) {
                     return sizes[i];
@@ -496,8 +513,13 @@ angular.module('ss.filters', ['ss.gridSizes'])
             }
         }
 
+        /**
+         * Return 2x size type of image
+         * @param type {String}
+         * @returns {String}
+         */
         function retinaType(type) {
-            switch(type) {
+            switch (type) {
                 case 's': return 'm';
                 case 'm': return 'p';
                 case 'o': return 'p';
@@ -512,7 +534,7 @@ angular.module('ss.filters', ['ss.gridSizes'])
 
         return function(sizes, type) {
             if (!sizes || !type) {
-                return ;
+                return '';
             }
 
             if (retina) {
@@ -522,23 +544,25 @@ angular.module('ss.filters', ['ss.gridSizes'])
             var i = gridSizes.types.indexOf(type);
 
             if (i === -1) {
-                return ;
+                return '';
             }
 
             var size;
-            for(; i >= 0; i-- ) {
-                size = searchSize(sizes, gridSizes.types[i]);
+            for (; i >= 0; i--) {
+                size = closestSize(sizes, gridSizes.types[i]);
                 if (size) {
                     return size.src;
                 }
             }
         };
     })
+
     .filter('timeFormatter', function() {
         function addZero(number) {
             number = number.toString();
             return number.length > 1 ? number : '0' + number;
         }
+
         return function(time, type) {
             if (type === 'ms') {
                 time /= 1000;
@@ -548,15 +572,19 @@ angular.module('ss.filters', ['ss.gridSizes'])
             var seconds = addZero(time % 60);
 
             return minutes + ':' + seconds;
-        }
+        };
     });
+
 angular.module('ss.header', ['vkontakteServices'])
     .controller('HeaderController', function($scope, VKUser) {
         VKUser.getInfo().then(function(data) {
+            //jscs: disable
             $scope.firstName = data.first_name;
             $scope.lastName = data.last_name;
+            //jscs: enable
         });
     });
+
 angular.module('ss.panel', ['ss.services', 'parseServices', 'ss.filters', 'ss.settings', 'ss.dialog'])
     .directive('panel', function() {
         return {
@@ -582,65 +610,17 @@ function panelController($scope, selectedPhotos, durationService, dialogService)
         });
     };
 }
-angular.module('ss.photoSelector', ['vkontakteServices', 'ss.directives', 'ss.services', 'ngRoute'])
-    .controller('AlbumsController', AlbumsController)
-    .controller('PhotosController', PhotosController)
-    .factory('albumData', function(VKPhotos) {
-        var systemAlbums = [-6, -7, -15];
 
-        function getData(id) {
-            if (systemAlbums.indexOf(id)) {
-                VKPhotos.getAlbums();
-            } else {
-                VKPhotos
-            }
-        }
+angular.module('ss.photoSelector', ['vkontakteServices', 'ss.directives', 'ss.services', 'ngRoute']);
 
-        return {};
-    });
-
-function AlbumsController($scope, VKPhotos, selectedPhotos) {
-    function add(album) {
-        VKPhotos.getAlbumPhotos(album.id).then(function(photos) {
-            selectedPhotos.addAll(photos);
-        });
-    }
-
-    $scope.albums = [];
-    $scope.sizes = ['o','p','q'];
-    $scope.gridSize = 'p';
-
-    $scope.add = add;
-
-    VKPhotos.getAlbums().then(function(albums) {
-        $scope.albums = albums;
-    });
-}
-
-function PhotosController($scope, VKPhotos, selectedPhotos, $routeParams) {
-    function togglePhoto(photo) {
-        if (photo.selected) {
-            selectedPhotos.remove(photo);
-        } else {
-            selectedPhotos.add(photo);
-        }
-    }
-
-    $scope.gridSize = 'o';
-    $scope.photos = [];
-
-    $scope.togglePhoto = togglePhoto;
-
-    VKPhotos.getAlbumPhotos($routeParams.id).then(function(photos) {
-        selectedPhotos.checkAll(photos);
-        $scope.photos = photos;
-    });
-
-    VKPhotos.getAlbum($routeParams.id).then(function(album) {
-        $scope.album = album;
-    });
-}
-angular.module('ss.player', ['parseServices', 'ss.templates', 'ss.filters', 'vkontakteServices', 'ss.services', 'ss.audioService'])
+angular.module('ss.player', [
+    'parseServices',
+    'ss.templates',
+    'ss.filters',
+    'vkontakteServices',
+    'ss.services',
+    'ss.audioService'
+])
     .directive('player', function() {
         return {
             replace: true,
@@ -664,9 +644,25 @@ angular.module('ss.player', ['parseServices', 'ss.templates', 'ss.filters', 'vko
         };
     });
 
-function playerController($scope, slideshowService, $filter, canvasPlayService, audioPlayService, VKAudios, selectedPhotos, selectedAudios, durationService, slideshowSettingsService, playerImgLoader) {
+function playerController(
+    $scope,
+    slideshowService,
+    canvasPlayService,
+    audioPlayService,
+    VKAudios,
+    selectedPhotos,
+    selectedAudios,
+    durationService,
+    slideshowSettingsService,
+    playerImgLoader
+) {
     if ($scope.src === 'local') {
-        initialize(selectedPhotos.get(), selectedAudios.getIds(), durationService.value(), slideshowSettingsService.get());
+        initialize(
+            selectedPhotos.get(),
+            selectedAudios.getIds(),
+            durationService.value(),
+            slideshowSettingsService.get()
+        );
     } else {
         slideshowService.getSlideshow($scope.src).then(function(data) {
             initialize(data.get('frames'), data.get('audios'), data.get('duration'), data.get('settings'));
@@ -674,28 +670,28 @@ function playerController($scope, slideshowService, $filter, canvasPlayService, 
     }
 
     function initialize(frames, audioIds, duration, settings) {
-        var images = [],
-            image;
-
-        for (var i = 0; i < frames.length; i++) {
-            image = new Image();
-            images.push(image);
-            image.src = $filter('photoSrc')(frames[i].sizes, 'z');
-        }
+        playerImgLoader.load(frames, 'w', function(images) {
+            canvasPlayService.initialize(images, $scope, settings);
+        }).then(function() {
+            $scope.loaded = true;
+        }, function() {
+            alert('Error while loading images')
+        }, function(progress) {
+            $scope.loadProgress = progress;
+            $scope.canPlay = duration * progress / 100 > 15;
+        });
 
         if (audioIds.length) {
             VKAudios.getAudios(audioIds.join(',')).then(audioPlayService.initialize);
         }
 
-        canvasPlayService.initialize(images, $scope, settings);
-
         $scope.duration = duration;
     }
-
 
     $scope.$on('$destroy', function() {
         canvasPlayService.destroy();
         audioPlayService.destroy();
+        playerImgLoader.destroy();
     });
 
     var activityTimer;
@@ -739,27 +735,42 @@ function playerController($scope, slideshowService, $filter, canvasPlayService, 
     $scope.rewindStarted = false;
     $scope.resetActivity = resetActivity;
 }
-angular.module('ss.previewModal', ['ss.player', 'parseServices', 'ss.services', 'ss.constants', 'ss.dialog'])
-    .controller('PreviewModalController', function($scope, currentUser, slideshowService, selectedPhotos, selectedAudios, slideshowSettingsService, URLS, dialogService, durationService) {
-        $scope.title = '';
 
-        $scope.saveSlideshow = function() {
-            slideshowService.saveNew({
-                frames: selectedPhotos.get(),
-                audios: selectedAudios.getIds(),
-                settings: slideshowSettingsService.get(),
-                author: currentUser,
-                title: $scope.title,
-                duration: durationService.value(),
-                cover: selectedPhotos.get()[0]
-            }).then(function(slideshow) {
-                dialogService.open({
-                    template: 'modules/slideshow-saved-modal/slideshow-saved-modal.html',
-                    slideshow: slideshow
-                }, true);
-            });
-        };
-    });
+angular.module('ss.previewModal', ['ss.player', 'parseServices', 'ss.services', 'ss.constants', 'ss.dialog'])
+    .controller('PreviewModalController', PreviewModalController);
+
+function PreviewModalController(
+    $scope,
+    currentUser,
+    slideshowService,
+    selectedPhotos,
+    selectedAudios,
+    slideshowSettingsService,
+    dialogService,
+    durationService
+) {
+    function saveSlideshow() {
+        slideshowService.saveNew({
+            frames: selectedPhotos.get(),
+            audios: selectedAudios.getIds(),
+            settings: slideshowSettingsService.get(),
+            author: currentUser,
+            title: $scope.title,
+            duration: durationService.value(),
+            cover: selectedPhotos.get()[0]
+        }).then(function(slideshow) {
+            dialogService.open({
+                template: 'modules/slideshow-saved-modal/slideshow-saved-modal.html',
+                slideshow: slideshow
+            }, true);
+        });
+    }
+
+    $scope.title = '';
+
+    $scope.saveSlideshow = saveSlideshow;
+}
+
 angular.module('ss.audioService', [])
     .factory('audioService', function() {
         var audio = new Audio();
@@ -789,10 +800,11 @@ angular.module('ss.audioService', [])
             }
         };
     });
+
 angular.module('parseServices', [])
     .constant('config', {
-        appId: "d95PTnwnQvQCj49xf9AUMgXpbSEIl78rVDUg55X0",
-        JSKey: "MzTSKQkIJFB1qA33Hg2Qzk7UKikiIN75nj9f3PR4"
+        appId: 'd95PTnwnQvQCj49xf9AUMgXpbSEIl78rVDUg55X0',
+        JSKey: 'MzTSKQkIJFB1qA33Hg2Qzk7UKikiIN75nj9f3PR4'
     })
     .run(function(config) {
         Parse.initialize(config.appId, config.JSKey);
@@ -834,6 +846,7 @@ angular.module('parseServices', [])
             getUserSlideshows: getUserSlideshows
         };
     });
+
 angular.module('ss.services', [])
     .factory('durationService', function(selectedPhotos, slideshowSettingsService) {
         return {
@@ -842,6 +855,7 @@ angular.module('ss.services', [])
             }
         };
     })
+
     .factory('slideshowSettingsService', function() {
         var data = {
             slideDuration: 5
@@ -860,6 +874,7 @@ angular.module('ss.services', [])
             }
         };
     })
+
     .factory('selectedPhotos', function() {
         var photos = [];
 
@@ -893,7 +908,7 @@ angular.module('ss.services', [])
             },
 
             addAll: function(photoArray) {
-                for(var i = 0; i < photoArray.length; i++) {
+                for (var i = 0; i < photoArray.length; i++) {
                     this.add(photoArray[i]);
                 }
             },
@@ -1004,6 +1019,7 @@ angular.module('ss.services', [])
             }
         };
     });
+
 angular.module('vkontakteServices', ['ss.constants', 'ss.filters'])
     .run(function(VKReady) {
         VK.init(function() {
@@ -1014,7 +1030,7 @@ angular.module('vkontakteServices', ['ss.constants', 'ss.filters'])
     })
 
     .factory('methodWrapper', function(VKReady, $q) {
-        return function (method) {
+        return function(method) {
             var deferred = $q.defer();
 
             VKReady.then(function() {
@@ -1059,11 +1075,15 @@ angular.module('vkontakteServices', ['ss.constants', 'ss.filters'])
             var cover = slideshow.get('cover');
 
             return methodWrapper(function(deferred) {
+                //jscs: disable requireCamelCaseOrUpperCaseIdentifiers
+                var attachments = 'photo' + cover.owner_id + '_' + cover.id + ',' +
+                    URLS.app + '#/slideshow/' + slideshow.id;
+                //jscs: enable requireCamelCaseOrUpperCaseIdentifiers
+
                 VK.api('wall.post', {
                     message: 'Слайдшоу ' + slideshow.get('title'),
-                    attachments: 'photo' + cover.owner_id + '_' + cover.id + ',' + URLS.app + '#/slideshow/' + slideshow.id
-                }, function(response) {
-                    console.log(response);
+                    attachments: attachments
+                }, function() {
                     deferred.resolve();
                 });
             });
@@ -1076,13 +1096,15 @@ angular.module('vkontakteServices', ['ss.constants', 'ss.filters'])
 
     .factory('VKPhotos', function(methodWrapper) {
         function getAlbums() {
+            //jscs: disable requireCamelCaseOrUpperCaseIdentifiers
             var parameters = {
                 need_system: 1,
                 need_covers: 1,
                 photo_sizes: 1
             };
+            //jscs: enable requireCamelCaseOrUpperCaseIdentifiers
 
-            return methodWrapper(function(deferred){
+            return methodWrapper(function(deferred) {
                 VK.api('photos.getAlbums', parameters, function(data) {
                     if (data.response) {
                         deferred.resolve(data.response.items);
@@ -1095,6 +1117,7 @@ angular.module('vkontakteServices', ['ss.constants', 'ss.filters'])
 
         function getAlbumPhotos(id) {
             return methodWrapper(function(deferred) {
+                //jscs: disable requireCamelCaseOrUpperCaseIdentifiers
                 VK.api('photos.get', {
                     album_id: id,
                     photo_sizes: 1
@@ -1105,22 +1128,27 @@ angular.module('vkontakteServices', ['ss.constants', 'ss.filters'])
                         deferred.reject('error in getting data');
                     }
                 });
+                //jscs: enable requireCamelCaseOrUpperCaseIdentifiers
             });
         }
 
-        function getAlbum(id) {
-            var parameters = {},
-                system;
+        function getAlbumInfo(id) {
+            var parameters = {};
+            var system;
 
             if (id < 0) {
                 system = true;
+                //jscs: disable requireCamelCaseOrUpperCaseIdentifiers
                 parameters.need_system = 1;
+                //jscs: enable requireCamelCaseOrUpperCaseIdentifiers
             } else {
                 system = false;
+                //jscs: disable requireCamelCaseOrUpperCaseIdentifiers
                 parameters.album_ids = id;
+                //jscs: enable requireCamelCaseOrUpperCaseIdentifiers
             }
 
-            return methodWrapper(function(deferred){
+            return methodWrapper(function(deferred) {
                 VK.api('photos.getAlbums', parameters, function(data) {
                     if (data.response) {
                         if (system) {
@@ -1143,13 +1171,14 @@ angular.module('vkontakteServices', ['ss.constants', 'ss.filters'])
         return {
             getAlbums: getAlbums,
             getAlbumPhotos: getAlbumPhotos,
-            getAlbum: getAlbum
+            getAlbumInfo: getAlbumInfo
         };
     })
 
     .factory('VKAudios', function(methodWrapper) {
+        //jscs: disable requireCamelCaseOrUpperCaseIdentifiers
         function getAudios(audio_ids) {
-            return methodWrapper(function(deferred){
+            return methodWrapper(function(deferred) {
                 VK.api('audio.get', {
                     audio_ids: audio_ids
                 }, function(data) {
@@ -1161,15 +1190,18 @@ angular.module('vkontakteServices', ['ss.constants', 'ss.filters'])
                 });
             });
         }
+        //jscs: enable requireCamelCaseOrUpperCaseIdentifiers
 
         return {
             getAudios: getAudios
         };
     });
+
 angular.module('ss.slideshow', [])
     .controller('SlideshowController', function($scope, $route) {
         $scope.src = $route.current.params.id;
     });
+
 angular.module('ss.slideshowList', ['parseServices', 'ss.dialog', 'vkontakteServices'])
     .directive('slideshowList', function() {
         return {
@@ -1184,21 +1216,17 @@ angular.module('ss.slideshowList', ['parseServices', 'ss.dialog', 'vkontakteServ
     });
 
 function SlideshowListController($scope, slideshowService, dialogService, VKWall) {
-    slideshowService.getUserSlideshows($scope.userId)
-        .then(function(data) {
-            $scope.slideshows = data;
-            $scope.$digest();
-        });
-
-    $scope.show = function(id) {
+    function show(id) {
         dialogService.open({
             template: 'modules/player-modal/player-modal.html',
             src: id
         });
-    };
+    }
 
-    $scope.remove = function(slideshow) {
-        if (!confirm("Вы верены, что хотите удалить слайдшоу \"" + slideshow.get('title') + '"')) return ;
+    function remove(slideshow) {
+        if (!confirm('Вы верены, что хотите удалить слайдшоу "' + slideshow.get('title') + '"')) {
+            return ;
+        }
 
         slideshowService
             .remove(slideshow)
@@ -1209,14 +1237,24 @@ function SlideshowListController($scope, slideshowService, dialogService, VKWall
                 console.log(response);
                 alert('error while deleting slideshow')
             });
-    };
+    }
+
+    slideshowService.getUserSlideshows($scope.userId)
+        .then(function(data) {
+            $scope.slideshows = data;
+            $scope.$digest();
+        });
 
     $scope.share = VKWall.postSlideshow;
+    $scope.show = show;
+    $scope.remove = remove;
 }
+
 angular.module('ss')
     .controller('SlideshowSavedController', function($scope, VKWall) {
         $scope.share = VKWall.postSlideshow;
     });
+
 angular.module('ss.settings', ['ss.services'])
     .controller('SlideshowSettingsController', function($scope, slideshowSettingsService) {
         $scope.data = angular.copy(slideshowSettingsService.get());
@@ -1225,6 +1263,7 @@ angular.module('ss.settings', ['ss.services'])
             slideshowSettingsService.save($scope.data);
         };
     });
+
 angular.module('ss.tooltip', [])
     .factory('tooltipService', function() {
         var $body = angular.element(document.body);
@@ -1232,6 +1271,7 @@ angular.module('ss.tooltip', [])
         var scope;
         var offsetX = 0;
         var offsetY = -20;
+        var instance;
 
         function onMove(event) {
             element.css({
@@ -1240,29 +1280,36 @@ angular.module('ss.tooltip', [])
             });
         }
 
-        return {
+        function show(data) {
+            instance.data = data;
+            instance.showed = true;
+            $body.on('mousemove', onMove);
+            scope.$digest();
+            offsetX = -element[0].offsetWidth / 2;
+            offsetY = -element[0].offsetHeight - 10;
+        }
+
+        function hide() {
+            instance.showed = false;
+            $body.off('mousemove', onMove);
+            scope.$digest();
+        }
+
+        function initialze(_element_, _scope_) {
+            element = _element_;
+            scope = _scope_;
+        }
+
+        instance = {
             showed: false,
-            show: function(data) {
-                this.data = data;
-                this.showed = true;
-                $body.on('mousemove', onMove);
-                scope.$digest();
-                offsetX = -element[0].offsetWidth / 2;
-                offsetY = -element[0].offsetHeight - 10;
-            },
-
-            hide: function() {
-                this.showed = false;
-                $body.off('mousemove', onMove);
-                scope.$digest();
-            },
-
-            initialize: function(_element_, _scope_) {
-                element = _element_;
-                scope = _scope_;
-            }
+            show: show,
+            hide: hide,
+            initialize: initialze
         };
+
+        return instance;
     })
+
     .directive('tooltipPopup', function(tooltipService) {
         return {
             restrict: 'E',
@@ -1275,6 +1322,7 @@ angular.module('ss.tooltip', [])
             }
         };
     })
+
     .directive('tooltip', function(tooltipService) {
         return {
             restrict: 'A',
@@ -1290,13 +1338,17 @@ angular.module('ss.tooltip', [])
             }
         };
     });
+
 VK.loadParams(window.location.href);
 
 angular.module('ss.constants', [])
     .constant('URLS', {
         app: 'http://vk.com/app4750775_238478875'
     })
+    //jscs: disable
     .constant('currentUser', VK.params.viewer_id);
+    //jscs: enable
+
 angular.module('ss.gridSizes', [])
     .value('gridSizes', {
         types: ['s', 'm', 'o', 'p', 'q', 'x', 'r', 'y', 'z', 'w'],
@@ -1307,28 +1359,45 @@ angular.module('ss.gridSizes', [])
             'q': 'XL'
         }
     });
-angular.module('ss.directives', ['ss.gridSizes', 'ss.templates'])
-    .directive('gridSize', function() {
-        return {
-            restrict: 'E',
-            replace: true,
-            scope: {
-                gridSize: '=size'
-            },
-            templateUrl: "modules/directives/grid-size/grid-size.html",
-            controller: function($scope, gridSizes) {
-                function changeSize(size) {
-                    $scope.gridSize = size;
-                }
 
-                $scope.sizes = ['o', 'p', 'q'];
-                $scope.names = gridSizes.names;
+angular.module('ss.audioSelector')
+    //play audio after clicking element
+    .directive('playAudio', function(audioService) {
+        var currentPlayedElement;
 
-                $scope.changeSize = changeSize;
+        audioService.audio.addEventListener('pause', function() {
+            if (currentPlayedElement) {
+                currentPlayedElement.removeClass('played');
+                currentPlayedElement = undefined;
+            }
+        });
+
+        function play(url) {
+            if (currentPlayedElement) {
+                currentPlayedElement.removeClass('played');
+            }
+
+            if (audioService.audio.src === url && !audioService.audio.paused) {
+                audioService.pause();
+            } else {
+                audioService.play(url);
+                element.addClass('played');
+                currentPlayedElement = element;
             }
         }
-    });
 
+        return {
+            restrict: 'A',
+            link: function(scope, element, attrs) {
+                element.on('click', function() {
+                    //for prevent toggle audio on clicking play control
+                    event.playAudio = true;
+
+                    play(attrs.playAudio);
+                });
+            }
+        };
+    });
 angular.module('ss')
     .value('breadcrumbsConfig', {
         'create.album': [
@@ -1342,7 +1411,7 @@ angular.module('ss')
             }
         ]
     })
-    .directive('breadcrumbs', function($route, breadcrumbsConfig, $location) {
+    .directive('breadcrumbs', function($route, breadcrumbsConfig) {
         return {
             templateUrl: 'modules/directives/breadcrumbs/breadcrumbs.html',
             controller: function($scope, $rootScope) {
@@ -1356,45 +1425,82 @@ angular.module('ss')
             }
         };
     });
-angular.module('ss.audioSelector')
-    .directive('playAudio', function(audioService) {
-        var currentElement;
 
-        audioService.audio.addEventListener('pause', function() {
-            if (currentElement) {
-                currentElement.removeClass('played');
-                currentElement = undefined;
-            }
-        });
-
+angular.module('ss.directives', ['ss.gridSizes', 'ss.templates'])
+    .directive('gridSize', function() {
         return {
-            restrict: 'A',
-            link: function(scope, element, attrs) {
-                element.on('click', function(event) {
-                    event.playAudio = true;
+            restrict: 'E',
+            replace: true,
+            scope: {
+                gridSize: '=size'
+            },
+            templateUrl: 'modules/directives/grid-size/grid-size.html',
+            controller: function($scope, gridSizes) {
+                function changeSize(size) {
+                    $scope.gridSize = size;
+                }
 
-                    if (currentElement) {
-                        currentElement.removeClass('played');
-                    }
+                $scope.sizes = ['o', 'p', 'q'];
+                $scope.names = gridSizes.names;
 
-                    if (audioService.audio.src === attrs.playAudio && !audioService.audio.paused) {
-                        audioService.pause();
-                    } else {
-                        audioService.play(attrs.playAudio);
-                        element.addClass('played');
-                        currentElement = element;
-                    }
-                });
-
+                $scope.changeSize = changeSize;
             }
         }
     });
+
+angular.module('ss.photoSelector')
+    .controller('AlbumsController', AlbumsController);
+
+function AlbumsController($scope, VKPhotos, selectedPhotos) {
+    function add(album) {
+        VKPhotos.getAlbumPhotos(album.id).then(function(photos) {
+            selectedPhotos.addAll(photos);
+        });
+    }
+
+    $scope.albums = [];
+    $scope.sizes = ['o', 'p', 'q'];
+    $scope.gridSize = 'p';
+
+    $scope.add = add;
+
+    VKPhotos.getAlbums().then(function(albums) {
+        $scope.albums = albums;
+    });
+}
+angular.module('ss.photoSelector')
+    .controller('PhotosController', PhotosController);
+
+function PhotosController($scope, VKPhotos, selectedPhotos, $routeParams) {
+    function togglePhoto(photo) {
+        if (photo.selected) {
+            selectedPhotos.remove(photo);
+        } else {
+            selectedPhotos.add(photo);
+        }
+    }
+
+    $scope.gridSize = 'o';
+    $scope.photos = [];
+
+    $scope.togglePhoto = togglePhoto;
+
+    VKPhotos.getAlbumPhotos($routeParams.id).then(function(photos) {
+        selectedPhotos.checkAll(photos);
+        $scope.photos = photos;
+    });
+
+    VKPhotos.getAlbumInfo($routeParams.id).then(function(album) {
+        $scope.album = album;
+    });
+}
+
 angular.module('ss.player')
     .factory('audioPlayService', function(audioService) {
-        var audios = [],
-            currentAudio = 0,
-            instance,
-            audio = audioService.audio;
+        var audios = [];
+        var currentAudio = 0;
+        var instance;
+        var audio = audioService.audio;
 
         function initialize(_audios_) {
             audios = _audios_;
@@ -1405,8 +1511,9 @@ angular.module('ss.player')
         }
 
         function play() {
-            if (!audios.length)
+            if (!audios.length) {
                 return false;
+            }
 
             audioService.play();
         }
@@ -1464,12 +1571,21 @@ angular.module('ss.player')
 
         return instance;
     });
+
 angular.module('ss.player')
     .factory('defaultAnimationType', function() {
+        /**
+         * calculate image width and height to fit canvas size
+         * @param image {Image}
+         * @param cWidth {Number}
+         * @param cHeight {Number}
+         * @param scale {Number}
+         * @returns {{width: number, height: number}}
+         */
         function drawImageSize(image, cWidth, cHeight, scale) {
-            var factor = 1,
-                width,
-                height;
+            var factor = 1;
+            var width;
+            var height;
 
             if (image.width > cWidth) {
                 width = cWidth;
@@ -1491,9 +1607,20 @@ angular.module('ss.player')
             };
         }
 
-        function animFunc(currentSlide, currentSlideTime, slideDuration, images, cWidth, cHeight) {
+        /**
+         * calculate images draw properties depends on time
+         * @param currentSlide {Number}
+         * @param currentSlideTime {Number}
+         * @param slideDuration {Number}
+         * @param images {Array}
+         * @param cWidth {Number}
+         * @param cHeight {Number}
+         * @returns {Object}
+         */
+        function animateFunction(currentSlide, currentSlideTime, slideDuration, images, cWidth, cHeight) {
             var result = {};
-            var scaleSize, scale;
+            var scaledSize;
+            var scale;
 
             result[currentSlide] = {
                 sx: 0,
@@ -1503,21 +1630,26 @@ angular.module('ss.player')
             if (currentSlideTime < this.hideDuration) {
 
                 if (currentSlide > 0) {
-                    scale = this.timingValue(currentSlideTime + slideDuration, slideDuration + this.hideDuration, 1, this.scale);
                     var prevIndex = currentSlide - 1;
 
-                    scaleSize = drawImageSize(images[prevIndex], cWidth, cHeight, scale);
+                    scale = this.timingValue(
+                        currentSlideTime + slideDuration,
+                        slideDuration + this.hideDuration,
+                        1,
+                        this.scale
+                    );
+                    scaledSize = drawImageSize(images[prevIndex], cWidth, cHeight, scale);
 
                     result[prevIndex] = {
                         opacity: this.timingValue(currentSlideTime, this.hideDuration, 1, 0),
                         sx: 0,
                         sy: 0,
-                        x: (cWidth - scaleSize.width) / 2,
-                        y: (cHeight - scaleSize.height) / 2,
+                        x: (cWidth - scaledSize.width) / 2,
+                        y: (cHeight - scaledSize.height) / 2,
                         width: images[prevIndex].width,
                         height: images[prevIndex].height,
-                        scaleWidth: scaleSize.width,
-                        scaleHeight: scaleSize.height
+                        scaleWidth: scaledSize.width,
+                        scaleHeight: scaledSize.height
                     };
                 }
 
@@ -1525,20 +1657,20 @@ angular.module('ss.player')
             }
 
             scale = this.timingValue(currentSlideTime, slideDuration + this.hideDuration, 1, this.scale);
-            scaleSize = drawImageSize(images[currentSlide], cWidth, cHeight, scale);
+            scaledSize = drawImageSize(images[currentSlide], cWidth, cHeight, scale);
 
-            result[currentSlide].x = (cWidth - scaleSize.width) / 2;
-            result[currentSlide].y = (cHeight - scaleSize.height) / 2;
+            result[currentSlide].x = (cWidth - scaledSize.width) / 2;
+            result[currentSlide].y = (cHeight - scaledSize.height) / 2;
             result[currentSlide].width = images[currentSlide].width;
             result[currentSlide].height = images[currentSlide].height;
-            result[currentSlide].scaleWidth = scaleSize.width;
-            result[currentSlide].scaleHeight = scaleSize.height;
+            result[currentSlide].scaleWidth = scaledSize.width;
+            result[currentSlide].scaleHeight = scaledSize.height;
 
             return result;
         }
 
         function timingValue(currentSlideTime, endTime, startValue, endValue) {
-            return startValue + currentSlideTime/endTime * (endValue - startValue);
+            return startValue + currentSlideTime / endTime * (endValue - startValue);
         }
 
         function init(slideDuration) {
@@ -1548,20 +1680,20 @@ angular.module('ss.player')
         return {
             scale: 1.2,
 
-            func: animFunc,
+            func: animateFunction,
             timingValue: timingValue,
             init: init
         };
     })
     .factory('canvasPlayService', function($rootScope, defaultAnimationType) {
-        var requestAnimationFrameId,
-            ctx,
-            images,
-            startTime,
-            pausedAt = 0,
-            slideDuration = 5000,
-            instance,
-            scope;
+        var requestAnimationFrameId;
+        var ctx; //canvas context
+        var images;
+        var startTime;
+        var pausedAt = 0;
+        var slideDuration = 5000;
+        var instance;
+        var scope;
 
         defaultAnimationType.init(slideDuration);
 
@@ -1580,7 +1712,7 @@ angular.module('ss.player')
                 instance.currentTime = 0;
             }
 
-            var currentSlide = parseInt(instance.currentTime/slideDuration, 10);
+            var currentSlide = parseInt(instance.currentTime / slideDuration, 10);
             var currentSlideTime = instance.currentTime % slideDuration;
 
             if (currentSlide >= images.length) {
@@ -1617,8 +1749,9 @@ angular.module('ss.player')
         }
 
         function pause() {
-            if (instance.paused)
+            if (instance.paused) {
                 return false;
+            }
 
             window.cancelAnimationFrame(requestAnimationFrameId);
             pausedAt = performance.now() - startTime;
@@ -1633,8 +1766,9 @@ angular.module('ss.player')
         }
 
         function play() {
-            if (!instance.paused)
+            if (!instance.paused) {
                 return false;
+            }
 
             startTime = performance.now() - pausedAt;
             window.requestAnimationFrame(step);
@@ -1652,7 +1786,7 @@ angular.module('ss.player')
             render();
         }
 
-        function draw(image, object){
+        function draw(image, object) {
             ctx.save();
             for (var key in object) {
                 switch (key) {
@@ -1665,7 +1799,18 @@ angular.module('ss.player')
                 }
             }
 
-            ctx.drawImage(image, object.sx, object.sy, object.width, object.height, object.x, object.y, object.scaleWidth, object.scaleHeight);
+            ctx.drawImage(
+                image,
+                object.sx,
+                object.sy,
+                object.width,
+                object.height,
+                object.x,
+                object.y,
+                object.scaleWidth,
+                object.scaleHeight
+            );
+
             ctx.restore();
         }
 
@@ -1685,15 +1830,17 @@ angular.module('ss.player')
 
         return instance;
     });
+
 angular.module('ss.player')
     .factory('loadWrapper', function($q) {
         return function(callback) {
             return callback($q.defer());
         }
     })
-    .factory('playerAudioLoader', function() {
-        function load(audios, progressCallback, finishCallback) {
-            audios[0].addEventListener('progress', function(a,b) {
+
+    /*.factory('playerAudioLoader', function() {
+        function load(audios) {
+            audios[0].addEventListener('progress', function(a, b) {
                 console.log(a, b);
             })
         }
@@ -1701,64 +1848,97 @@ angular.module('ss.player')
             progress: 0,
             load: load
         };
-    })
+    })*/
+
     .factory('playerImgLoader', function(loadWrapper, $filter) {
-        function load(frames, quality) {
+        function _onFinishLoad(event) {
+            instance.loaded++;
+
+            if (instance.current < instance.images.length) {
+                loadImage(instance.current);
+                instance.current++;
+            }
+
+            instance.deferred.notify(instance.loaded / instance.images.length * 100);
+
+            if (instance.loaded === instance.images.length) {
+                instance.loading = false;
+                instance.deferred.resolve(instance.images);
+            }
+
+            if (event.type === 'error') {
+                instance.errors.push(this);
+            }
+        }
+
+        function _loadImage(index) {
+            instance.images[index].src = $filter('photoSrc')(instance.frames[index].sizes, instance.quality);
+        }
+
+        function _createImage() {
+            var image = new Image();
+
+            image.addEventListener('load', _onFinishLoad);
+            image.addEventListener('error', _onFinishLoad);
+
+            return image;
+        }
+
+        function load(frames, quality, imagesReadyCallback) {
             return loadWrapper(function(deferred) {
-                function onFinishLoad(event) {
-                    loaded++;
+                instance.frames = frames;
+                instance.quality = quality;
+                instance.deferred = deferred;
 
-                    if (current < imageSources.length) {
-                        loadImage();
-                        current++;
-                    } else {
-                        instance.loading = false;
-                    }
-
-                    instance.progress = loaded / frames.length * 100;
-
-                    if (event.type === 'error') {
-                        errors.push(this);
-                    }
-                }
-                function loadImage() {
-                    var image = new Image();
-
-                    image.addEventListener('load', onFinishLoad);
-
-                    image.addEventListener('error', onFinishLoad);
-
-                    image.src = $filter('photoSrc')(frames[current].sizes, quality);
-
-                    images.push(image);
-                }
-
-                var images = [];
-
-                if (!imageSources.length) {
-                    deferred.resolve(images);
+                if (!instance.frames.length) {
+                    deferred.resolve(instance.images);
                     return deferred;
                 }
 
-                var current = 0;
-                var loaded = 0;
-                var errors = [];
-                var startLoad = imageSources.length > 5 ? 5 : imageSources.length;
+                for (var i = 0; i < instance.frames.length; i++) {
+                    instance.images.push(_createImage());
+                }
 
-                for (; current < startLoad; current++) {
-                    loadImage();
+                var startLoad = instance.frames.length > 5 ? 5 : instance.frames.length;
+
+                for (; instance.current < startLoad; instance.current++) {
+                    _loadImage(instance.current);
                 }
 
                 instance.loading = true;
+
+                imagesReadyCallback(instance.images);
+
+                return deferred.promise;
             });
+        }
+
+        function destroy() {
+            for (var i = 0; i < instance.images.length; i++) {
+                instance.images[i].removeEventListener('error', _onFinishLoad);
+                instance.images[i].removeEventListener('load', _onFinishLoad);
+            }
+
+            instance.images.length = 0;
+            instance.errors.length = 0;
+            instance.loading = false;
+            instance.loaded = 0;
+            instance.current = 0;
         }
 
         var instance = {
             load: load,
-            progress: 0,
-            loading: false
+            loading: false,
+            destroy: destroy,
+            loaded: 0,
+            current: 0,
+            images: [],
+            errors: []
         };
+
+        return instance;
     });
+
 angular.module('ss.panel')
     .directive('audioList', function() {
         return {
@@ -1776,6 +1956,7 @@ function audioListController($scope, selectedAudios) {
         selectedAudios.remove(audio);
     };
 }
+
 angular.module('ss.panel')
     .directive('frameList', function() {
         return {
@@ -1783,63 +1964,71 @@ angular.module('ss.panel')
             replace: true,
             controller: frameListController,
             templateUrl: 'modules/panel/directives/frame-list/frame-list.html',
-            link: function(scope, element) {
-                var wrap = element[0].querySelector('.frame-list__wrap');
-
-                scope.disabled = wrap.scrollWidth === wrap.offsetWidth;
-
-
-                scope.$watch('frames.length', function(currentLength, prevLength) {
-                    if (prevLength < currentLength) {
-                        wrap.scrollLeft = 99999;
-                    }
-
-                    scope.disabled = wrap.scrollWidth === wrap.offsetWidth;
-
-                    checkButtons();
-                });
-
-                scope.prev = function() {
-                    wrap.scrollLeft -= 200;
-
-                    checkButtons();
-                };
-
-                scope.next = function() {
-                    wrap.scrollLeft += 200;
-
-                    checkButtons();
-                };
-
-                wrap.addEventListener('scroll', function() {
-                    checkButtons();
-
-                    scope.$digest();
-                });
-
-                wrap.addEventListener('wheel', function(event) {
-                    var deltaX = event.wheelDeltaX ? event.wheelDeltaX : event.wheelDeltaY;
-                    var oldValue = wrap.scrollLeft;
-
-                    if (isNaN(deltaX)) {
-                        deltaX = 0;
-                    }
-
-                    wrap.scrollLeft -= deltaX;
-
-                    if (wrap.scrollLeft !== oldValue) {
-                        event.preventDefault();
-                    }
-                });
-
-                function checkButtons() {
-                    scope.prevDisabled = wrap.scrollLeft === 0;
-
-                    scope.nextDisabled = wrap.scrollLeft >= wrap.scrollWidth - wrap.offsetWidth
-                }
-            }
+            link: initPanelScrollGallery
         };
     });
+
+function initPanelScrollGallery(scope, element) {
+    var wrap = element[0].querySelector('.frame-list__wrap');
+
+    scope.disabled = wrap.scrollWidth === wrap.offsetWidth;
+
+    scope.$watch('frames.length', update);
+    scope.prev = prev;
+    scope.next = next;
+
+    wrap.addEventListener('scroll', onScroll);
+    wrap.addEventListener('wheel', onMouseWheel);
+
+    function update(currentLength, prevLength) {
+        if (prevLength < currentLength) {
+            wrap.scrollLeft = 99999;
+        }
+
+        scope.disabled = wrap.scrollWidth === wrap.offsetWidth;
+
+        checkButtons();
+    }
+
+    function onScroll() {
+        checkButtons();
+
+        scope.$digest();
+    }
+
+    function onMouseWheel(event) {
+        var deltaX = event.wheelDeltaX ? event.wheelDeltaX : event.wheelDeltaY;
+        var oldValue = wrap.scrollLeft;
+
+        if (isNaN(deltaX)) {
+            deltaX = 0;
+        }
+
+        wrap.scrollLeft -= deltaX;
+
+        if (wrap.scrollLeft !== oldValue) {
+            event.preventDefault();
+        }
+    }
+
+    function next() {
+        wrap.scrollLeft += 200;
+
+        checkButtons();
+    }
+
+    function prev() {
+        wrap.scrollLeft -= 200;
+
+        checkButtons();
+    }
+
+    function checkButtons() {
+        scope.prevDisabled = wrap.scrollLeft === 0;
+
+        scope.nextDisabled = wrap.scrollLeft >= wrap.scrollWidth - wrap.offsetWidth
+    }
+}
 
 function frameListController($scope, selectedPhotos) {
     $scope.frames = selectedPhotos.get();
@@ -1850,6 +2039,7 @@ function frameListController($scope, selectedPhotos) {
         selectedPhotos.remove(frame);
     };
 }
+
 
 angular.module('ss.player')
     .directive('playerCanvas', function(canvasPlayService) {
@@ -1871,21 +2061,24 @@ angular.module('ss.player')
             }
         };
     });
+
 angular.module('ss.player')
     .directive('playerControls', function() {
-        return  {
+        return {
             restrict:'E',
             replace: true,
             scope: {
                 toggleFullScreen: '&',
                 duration: '@',
                 rewindStarted: '=',
-                noActivity: '='
+                noActivity: '=',
+                canPlay: '='
             },
             templateUrl: 'modules/player/directives/player-controls/player-controls.html',
             controller: PlayerControlsController,
             link: function(scope, element, attrs) {
-                if (attrs.autoplay) {
+                if (attrs.autoplay === 'true') {
+                    //TODO: need wait for loading
                     setTimeout(function() {
                         scope.play();
                     }, 1000);
@@ -1938,6 +2131,10 @@ function PlayerControlsController($scope, audioPlayService, canvasPlayService) {
         canvasPlayService.rewind(Number($scope.currentTime));
     }
 
+    function isFullScreenActive() {
+        return Boolean(document.webkitFullscreenElement);
+    }
+
     $scope.$on('playProgress', function(event, progress) {
         $scope.currentTime = progress;
 
@@ -1954,9 +2151,7 @@ function PlayerControlsController($scope, audioPlayService, canvasPlayService) {
     $scope.volume = audioPlayService.volume * 100;
     $scope.currentTime = 0;
     $scope.played = false;
-    $scope.fullScreenActive = function() {
-        return Boolean(document.webkitFullscreenElement);
-    };
+    $scope.isFullScreenActive = isFullScreenActive;
     $scope.toggle = toggle;
     $scope.play = play;
     $scope.pause = pause;

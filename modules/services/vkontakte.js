@@ -53,16 +53,15 @@ angular.module('vkontakteServices', ['ss.constants', 'ss.filters'])
             var cover = slideshow.get('cover');
 
             return methodWrapper(function(deferred) {
-                //jscs: disable
+                //jscs: disable requireCamelCaseOrUpperCaseIdentifiers
                 var attachments = 'photo' + cover.owner_id + '_' + cover.id + ',' +
                     URLS.app + '#/slideshow/' + slideshow.id;
-                //jscs: enable
+                //jscs: enable requireCamelCaseOrUpperCaseIdentifiers
 
                 VK.api('wall.post', {
                     message: 'Слайдшоу ' + slideshow.get('title'),
                     attachments: attachments
-                }, function(response) {
-                    console.log(response);
+                }, function() {
                     deferred.resolve();
                 });
             });
@@ -111,7 +110,7 @@ angular.module('vkontakteServices', ['ss.constants', 'ss.filters'])
             });
         }
 
-        function getAlbum(id) {
+        function getAlbumInfo(id) {
             var parameters = {};
             var system;
 
@@ -150,7 +149,7 @@ angular.module('vkontakteServices', ['ss.constants', 'ss.filters'])
         return {
             getAlbums: getAlbums,
             getAlbumPhotos: getAlbumPhotos,
-            getAlbum: getAlbum
+            getAlbumInfo: getAlbumInfo
         };
     })
 
