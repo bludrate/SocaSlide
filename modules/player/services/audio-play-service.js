@@ -60,7 +60,7 @@ angular.module('ss.player')
         }
 
         function rewind(value) {
-            audio.currentTime = value;
+            audio.currentTime = value % audio.duration;
         }
 
         audio.addEventListener('ended', audioEnded);
