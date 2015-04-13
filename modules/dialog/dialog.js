@@ -16,9 +16,13 @@ angular.module('ss.dialog', [])
                 }
             },
 
-            close: function() {
+            close: function(forcePaint) {
                 this.data = undefined;
                 this.showed = false;
+
+                if (forcePaint) {
+                    this.scope.$digest();
+                }
             }
         };
 
@@ -43,6 +47,12 @@ angular.module('ss.dialog', [])
                         dialogService.close();
                     }
                 };
+
+                window.addEventListener('keydown', function(event) {
+                    if (event.keyCode === 27) {
+                        dialogService.close(true);
+                    }
+                })
             }
         };
     });
