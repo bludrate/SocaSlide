@@ -53,12 +53,12 @@ angular.module('ss', [
 
                 .segment('albums', {
                     default: true,
-                    templateUrl: 'modules/photo-selector/albums.html',
+                    templateUrl: 'modules/photo-selector/albums/albums.html',
                     controller: 'AlbumsController'
                 })
 
                 .segment('album', {
-                    templateUrl: 'modules/photo-selector/photos.html',
+                    templateUrl: 'modules/photo-selector/photos/photos.html',
                     controller: 'PhotosController',
                     dependencies: ['id']
                 });

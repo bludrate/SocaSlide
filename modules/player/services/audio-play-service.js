@@ -6,6 +6,11 @@ angular.module('ss.player')
         var audio = audioService.audio;
 
         function initialize(_audios_) {
+            if (!_audios_.length) {
+                console.error('Audios not found!');
+                return;
+            }
+
             audios = _audios_;
 
             currentAudio = 0;
