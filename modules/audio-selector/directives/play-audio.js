@@ -10,7 +10,7 @@ angular.module('ss.audioSelector')
             }
         });
 
-        function play(url) {
+        function play(url, element) {
             if (currentPlayedElement) {
                 currentPlayedElement.removeClass('played');
             }
@@ -31,7 +31,7 @@ angular.module('ss.audioSelector')
                     //for prevent toggle audio on clicking play control
                     event.playAudio = true;
 
-                    play(attrs.playAudio);
+                    play(attrs.playAudio, element);
                 });
             }
         };

@@ -22,7 +22,7 @@ angular.module('ss.player')
             instance.loaded++;
 
             if (instance.current < instance.images.length) {
-                loadImage(instance.current);
+                _loadImage(instance.current);
                 instance.current++;
             }
 

@@ -1,5 +1,7 @@
 <div class="player" ng-mousemove="resetActivity()" ng-class="{'player_no-activity': noActivity, 'player_rewind-started': rewindStarted, 'player_loaded': loaded}">
     <player-canvas></player-canvas>
     <player-controls can-play="canPlay" autoplay="{{autoplay}}" toggle-full-screen="toggleFullScreen()" duration="{{duration}}" no-activity="noActivity" rewind-started="rewindStarted"></player-controls>
-    <span class="player__load-progress" ng-style="{width: loadProgress + '%'}">{{loadProgress}}</span>
+    <span class="player__load-progress-wrap">
+        <span class="player__load-progress" ng-style="{width: loadProgress + '%'}">{{loadProgress}}</span>
+    </span>
 </div>

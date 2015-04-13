@@ -10,7 +10,7 @@ angular.module('ss.templates', []).run(['$templateCache', function($templateCach
 
   $templateCache.put('modules/panel/panel.html', '<div class="panel"><frame-list></frame-list><div class="panel__info"><div class="panel__photo-count panel__info-row">{{selectedPhotos.size()}}</div><div class="panel__duration panel__info-row">{{ duration() | timeFormatter:\'ms\' }}</div><audio-list class="panel__info-row"></audio-list></div><div class="panel__btns"><button class="create-slideshow" ng-click="preview()"></button> <button class="open-settings" ng-click="openSettings()"></button></div></div>');
 
-  $templateCache.put('modules/player/player.html', '<div class="player" ng-mousemove="resetActivity()" ng-class="{\'player_no-activity\': noActivity, \'player_rewind-started\': rewindStarted, \'player_loaded\': loaded}"><player-canvas></player-canvas><player-controls can-play="canPlay" autoplay="{{autoplay}}" toggle-full-screen="toggleFullScreen()" duration="{{duration}}" no-activity="noActivity" rewind-started="rewindStarted"></player-controls><span class="player__load-progress" ng-style="{width: loadProgress + \'%\'}">{{loadProgress}}</span></div>');
+  $templateCache.put('modules/player/player.html', '<div class="player" ng-mousemove="resetActivity()" ng-class="{\'player_no-activity\': noActivity, \'player_rewind-started\': rewindStarted, \'player_loaded\': loaded}"><player-canvas></player-canvas><player-controls can-play="canPlay" autoplay="{{autoplay}}" toggle-full-screen="toggleFullScreen()" duration="{{duration}}" no-activity="noActivity" rewind-started="rewindStarted"></player-controls><span class="player__load-progress-wrap"><span class="player__load-progress" ng-style="{width: loadProgress + \'%\'}">{{loadProgress}}</span></span></div>');
 
   $templateCache.put('modules/player-modal/player-modal.html', '<section class="dialog"><button class="dialog__close dialog__close_video" ng-click="dialogService.close()"></button><player src="{{dialogService.data.src}}"></player></section>');
 
@@ -40,9 +40,9 @@ angular.module('ss.templates', []).run(['$templateCache', function($templateCach
 
   $templateCache.put('modules/photo-selector/photos/photos.html', '<header class="section__header"><grid-size size="gridSize"></grid-size><h2 class="section__title">{{album.title}}</h2></header><div class="section__content"><ul class="photo-list photo-list_size_{{gridSize}}"><li class="photo-list__item" ng-class="{selected: photo.selected}" ng-repeat="photo in photos track by photo.id" title="{{photo.title}}" ng-click="togglePhoto(photo)"><img ng-src="{{photo.sizes | photoSrc: gridSize }}"></li></ul></div>');
 
-  $templateCache.put('modules/panel/directives/audio-list/audio-list.html', '<ul class="panel-audios"><li class="panel-audios__item" ng-repeat="audio in audios track by audio.id" title="{{audio.artist + \' - \' + audio.title}}"><span class="panel-audios__info">{{audio.artist + \' - \' + audio.title}}&nbsp;&nbsp;&nbsp;{{audio.duration | timeFormatter}}</span></li></ul>');
-
   $templateCache.put('modules/panel/directives/frame-list/frame-list.html', '<div class="frame-list__holder"><button class="frame-list__prev" ng-click="prev()" ng-disabled="disabled || prevDisabled"></button><div class="frame-list__wrap"><ul class="frame-list"><li class="frame-list__item" ng-repeat="frame in frames track by frame.id" title="{{frame.title}}" ng-click="removeFrame(frame)"><img ng-src="{{frame.sizes | photoSrc: \'o\' }}"></li></ul><span class="frame-placeholders"><span class="frame-placeholder" ng-repeat="placeholder in placeholders track by $index"></span></span></div><button class="frame-list__next" ng-click="next()" ng-disabled="disabled || nextDisabled"></button></div>');
+
+  $templateCache.put('modules/panel/directives/audio-list/audio-list.html', '<ul class="panel-audios"><li class="panel-audios__item" ng-repeat="audio in audios track by audio.id" title="{{audio.artist + \' - \' + audio.title}}"><span class="panel-audios__info">{{audio.artist + \' - \' + audio.title}}&nbsp;&nbsp;&nbsp;{{audio.duration | timeFormatter}}</span></li></ul>');
 
   $templateCache.put('modules/panel/directives/timeline/timeline.html', '');
 
