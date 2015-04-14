@@ -14,10 +14,9 @@ angular.module('ss.player')
             controller: PlayerControlsController,
             link: function(scope, element, attrs) {
                 if (attrs.autoplay === 'true') {
-                    //TODO: need wait for loading
-                    setTimeout(function() {
+                    scope.$watch('canPlay', function() {
                         scope.play();
-                    }, 1000);
+                    });
                 }
             }
         }

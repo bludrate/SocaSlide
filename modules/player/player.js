@@ -41,6 +41,8 @@ function playerController(
     slideshowSettingsService,
     playerImgLoader
 ) {
+    var activityTimer;
+
     if ($scope.src === 'local') {
         initialize(
             selectedPhotos.get(),
@@ -53,6 +55,27 @@ function playerController(
             initialize(data.get('frames'), data.get('audios'), data.get('duration'), data.get('settings'));
         });
     }
+
+    $scope.$on('$destroy', function() {
+        canvasPlayService.destroy();
+        audioPlayService.destroy();
+        playerImgLoader.destroy();
+    });
+
+    $scope.$watch('rewindStarted', function(started) {
+        if (started) {
+            clearActivity();
+        } else {
+            setActivity();
+        }
+    });
+
+    $scope.$on('playEnd', function() {
+        audioPlayService.stop();
+    });
+
+    $scope.rewindStarted = false;
+    $scope.resetActivity = resetActivity;
 
     function initialize(frames, audioIds, duration, settings) {
         playerImgLoader.load(frames, 'w', function(images) {
@@ -72,14 +95,6 @@ function playerController(
 
         $scope.duration = duration;
     }
-
-    $scope.$on('$destroy', function() {
-        canvasPlayService.destroy();
-        audioPlayService.destroy();
-        playerImgLoader.destroy();
-    });
-
-    var activityTimer;
 
     function resetActivity() {
         if ($scope.rewindStarted) {
@@ -104,19 +119,4 @@ function playerController(
             $scope.$digest();
         }, 3000);
     }
-
-    $scope.$watch('rewindStarted', function(started) {
-        if (started) {
-            clearActivity();
-        } else {
-            setActivity();
-        }
-    });
-
-    $scope.$on('playEnd', function() {
-        audioPlayService.stop();
-    });
-
-    $scope.rewindStarted = false;
-    $scope.resetActivity = resetActivity;
 }
