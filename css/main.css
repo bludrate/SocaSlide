@@ -1,61 +1,3 @@
-.dialog {
-  position: absolute;
-  left: 50%;
-  margin-left: -320px;
-  width: 640px;
-  background: #fff;
-  top: 50px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.5);
-}
-.dialog-holder {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 100;
-  background: rgba(0,0,0,0.7);
-  width: 100%;
-  height: 100%;
-}
-.dialog__header {
-  border-bottom: 1px solid #b6b6b6;
-  padding: 7px 50px 7px 25px;
-  margin-bottom: 20px;
-}
-.dialog__content {
-  padding: 0 25px 20px;
-}
-.dialog__title {
-  margin: 0;
-  font-size: 20px;
-  line-height: 26px;
-  font-weight: normal;
-}
-.dialog__close {
-  position: absolute;
-  right: 0;
-  top: 0;
-  border: none;
-  background: none;
-  margin: 0;
-  padding: 5px;
-}
-.dialog__close:before {
-  display: block;
-  color: #d32f2f;
-  content: "\f29a";
-  font-size: 30px;
-  font-family: 'icon-font';
-}
-.dialog__close_video {
-  right: -35px;
-  top: 5px;
-  padding: 0;
-}
-.dialog__close_video:before {
-  color: #fff;
-  text-shadow: 0 1px 2px #000;
-}
-
 .audio-selector {
   float: right;
   margin-left: 20px;
@@ -216,6 +158,64 @@
 }
 .audio-list__play.played:before {
   content: "\f0b6";
+}
+
+.dialog {
+  position: absolute;
+  left: 50%;
+  margin-left: -320px;
+  width: 640px;
+  background: #fff;
+  top: 50px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+.dialog-holder {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  background: rgba(0,0,0,0.7);
+  width: 100%;
+  height: 100%;
+}
+.dialog__header {
+  border-bottom: 1px solid #b6b6b6;
+  padding: 7px 50px 7px 25px;
+  margin-bottom: 20px;
+}
+.dialog__content {
+  padding: 0 25px 20px;
+}
+.dialog__title {
+  margin: 0;
+  font-size: 20px;
+  line-height: 26px;
+  font-weight: normal;
+}
+.dialog__close {
+  position: absolute;
+  right: 0;
+  top: 0;
+  border: none;
+  background: none;
+  margin: 0;
+  padding: 5px;
+}
+.dialog__close:before {
+  display: block;
+  color: #d32f2f;
+  content: "\f29a";
+  font-size: 30px;
+  font-family: 'icon-font';
+}
+.dialog__close_video {
+  right: -35px;
+  top: 5px;
+  padding: 0;
+}
+.dialog__close_video:before {
+  color: #fff;
+  text-shadow: 0 1px 2px #000;
 }
 
 .header {
@@ -863,7 +863,6 @@
   }
 }
 
-
 .panel-audios {
   margin: 0;
   padding: 0;
@@ -1100,11 +1099,13 @@
   }
 }
 
+
 .player:-webkit-full-screen canvas {
   width: 100%;
   max-height: 100%;
   vertical-align: top;
 }
+
 
 .player:-moz-full-screen canvas {
   width: 100%;
@@ -1112,11 +1113,13 @@
   vertical-align: top;
 }
 
+
 .player:-ms-fullscreen canvas {
   width: 100%;
   max-height: 100%;
   vertical-align: top;
 }
+
 
 .player:fullscreen canvas {
   width: 100%;

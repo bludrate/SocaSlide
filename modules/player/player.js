@@ -94,7 +94,7 @@ function playerController(
             $scope.loadProgress = progress;
 
             //if we can play 15 seconds of slideshow
-            if (duration * progress / 100 > 15000 && !imgReadyDfdResolved) {
+            if (!imgReadyDfdResolved && duration * progress / 100 > 15000) {
                 imgReadyDfd.resolve();
                 imgReadyDfdResolved = true;
             }
