@@ -14,8 +14,11 @@ angular.module('ss.player')
             controller: PlayerControlsController,
             link: function(scope, element, attrs) {
                 if (attrs.autoplay === 'true') {
-                    scope.$watch('canPlay', function() {
-                        scope.play();
+                    var watcher = scope.$watch('canPlay', function(newValue) {
+                        if (newValue) {
+                            scope.play();
+                            watcher(); //stop watching
+                        }
                     });
                 }
             }

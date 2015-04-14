@@ -39,7 +39,8 @@ function playerController(
     selectedAudios,
     durationService,
     slideshowSettingsService,
-    playerImgLoader
+    playerImgLoader,
+    $q
 ) {
     var activityTimer;
 
@@ -75,9 +76,13 @@ function playerController(
     });
 
     $scope.rewindStarted = false;
+    $scope.canPlay = false;
     $scope.resetActivity = resetActivity;
 
     function initialize(frames, audioIds, duration, settings) {
+        var imgReadyDfd = $q.defer();
+        var audioReadyDfd;
+
         playerImgLoader.load(frames, 'w', function(images) {
             canvasPlayService.initialize(images, $scope, settings);
         }).then(function() {
@@ -86,12 +91,18 @@ function playerController(
             alert('Error while loading images')
         }, function(progress) {
             $scope.loadProgress = progress;
-            $scope.canPlay = duration * progress / 100 > 15;
+            if (duration * progress / 100 > 15) {
+                imgReadyDfd.resolve();
+            }
         });
 
         if (audioIds.length) {
-            VKAudios.getAudios(audioIds.join(',')).then(audioPlayService.initialize);
+            audioReadyDfd = VKAudios.getAudios(audioIds.join(',')).then(audioPlayService.initialize);
         }
+
+        $q.all([imgReadyDfd, audioReadyDfd]).then(function() {
+            $scope.canPlay = true;
+        });
 
         $scope.duration = duration;
     }
