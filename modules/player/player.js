@@ -81,6 +81,7 @@ function playerController(
 
     function initialize(frames, audioIds, duration, settings) {
         var imgReadyDfd = $q.defer();
+        var imgReadyDfdResolved = false;
         var audioReadyDfd;
 
         playerImgLoader.load(frames, 'w', function(images) {
@@ -91,8 +92,11 @@ function playerController(
             alert('Error while loading images')
         }, function(progress) {
             $scope.loadProgress = progress;
-            if (duration * progress / 100 > 15) {
+
+            //if we can play 15 seconds of slideshow
+            if (duration * progress / 100 > 15000 && !imgReadyDfdResolved) {
                 imgReadyDfd.resolve();
+                imgReadyDfdResolved = true;
             }
         });
 

@@ -367,9 +367,9 @@ angular.module('ss', [
 
 angular.module('ss.templates', []).run(['$templateCache', function($templateCache) {
 
-  $templateCache.put('modules/dialog/dialog.html', '<div class="dialog-holder" ng-show="dialogService.showed" ng-include="dialogService.data.template" ng-click="closeOnBgClick($event)"></div>');
-
   $templateCache.put('modules/audio-selector/audio-selector.html', '<section class="audio-selector section" ng-controller="AudiosController"><header class="section__header"><input type="text" ng-model="search" class="audio-selector__filter" placeholder="Поиск"><h2 class="section__title">Выберите музыку</h2></header><ul class="audio-list"><li class="audio-list__item" ng-repeat="audio in audios | filter:search track by audio.id" ng-class="{selected: audio.selected}" ng-click="toggleAudio($event, audio)"><button class="audio-list__play" play-audio="{{audio.url}}"></button> <span class="audio-list__duration">{{audio.duration | timeFormatter}}</span> <span class="audio-list__name">{{audio.artist + \' - \' + audio.title}}</span> <button class="audio-list__toggle"></button></li></ul></section>');
+
+  $templateCache.put('modules/dialog/dialog.html', '<div class="dialog-holder" ng-show="dialogService.showed" ng-include="dialogService.data.template" ng-click="closeOnBgClick($event)"></div>');
 
   $templateCache.put('modules/header/header.html', '<header class="header" ng-controller="HeaderController"><a href="#/home" active-link="home" class="logo">SocaSlide</a><breadcrumbs></breadcrumbs><div class="header__user">{{firstName}} {{lastName}}</div></header>');
 
@@ -405,11 +405,11 @@ angular.module('ss.templates', []).run(['$templateCache', function($templateCach
 
   $templateCache.put('modules/photo-selector/photos/photos.html', '<header class="section__header"><grid-size size="gridSize"></grid-size><h2 class="section__title">{{album.title}}</h2></header><div class="section__content"><ul class="photo-list photo-list_size_{{gridSize}}"><li class="photo-list__item" ng-class="{selected: photo.selected}" ng-repeat="photo in photos track by photo.id" title="{{photo.title}}" ng-click="togglePhoto(photo)"><img ng-src="{{photo.sizes | photoSrc: gridSize }}"></li></ul></div>');
 
+  $templateCache.put('modules/panel/directives/audio-list/audio-list.html', '<ul class="panel-audios"><li class="panel-audios__item" ng-repeat="audio in audios track by audio.id" title="{{audio.artist + \' - \' + audio.title}}"><span class="panel-audios__info">{{audio.artist + \' - \' + audio.title}}&nbsp;&nbsp;&nbsp;{{audio.duration | timeFormatter}}</span></li></ul>');
+
   $templateCache.put('modules/panel/directives/frame-list/frame-list.html', '<div class="frame-list__holder"><button class="frame-list__prev" ng-click="prev()" ng-disabled="disabled || prevDisabled"></button><div class="frame-list__wrap"><ul class="frame-list"><li class="frame-list__item" ng-repeat="frame in frames track by frame.id" title="{{frame.title}}" ng-click="removeFrame(frame)"><img ng-src="{{frame.sizes | photoSrc: \'o\' }}"></li></ul><span class="frame-placeholders"><span class="frame-placeholder" ng-repeat="placeholder in placeholders track by $index"></span></span></div><button class="frame-list__next" ng-click="next()" ng-disabled="disabled || nextDisabled"></button></div>');
 
   $templateCache.put('modules/panel/directives/timeline/timeline.html', '');
-
-  $templateCache.put('modules/panel/directives/audio-list/audio-list.html', '<ul class="panel-audios"><li class="panel-audios__item" ng-repeat="audio in audios track by audio.id" title="{{audio.artist + \' - \' + audio.title}}"><span class="panel-audios__info">{{audio.artist + \' - \' + audio.title}}&nbsp;&nbsp;&nbsp;{{audio.duration | timeFormatter}}</span></li></ul>');
 
   $templateCache.put('modules/player/directives/player-controls/player-controls.html', '<div class="controls" ng-class="{controls_paused: !played}"><button ng-click="toggle()" ng-disabled="!canPlay" class="controls__toggle" ng-class="{controls__toggle_pause: played}"></button> <button ng-click="toggleFullScreen()" class="controls__full-screen" ng-class="{active: isFullScreenActive()}"></button> <input class="controls__volume" type="range" ng-model="volume" min="0" max="100" ng-change="setVolume()"><div class="controls__progress-holder"><input type="range" class="controls__progress" min="0" max="{{duration}}" ng-model="currentTime" ng-change="rewind()" ng-mousedown="rewindStart()" ng-mouseup="rewindEnd()"></div></div>');
 
@@ -435,17 +435,6 @@ function AudiosController($scope, VKAudios, selectedAudios) {
     }
 }
 
-angular.module('ss')
-    .directive('addSpace', function() {
-        return {
-            restrict: 'A',
-            link: function(scope, element) {
-                element.after('&nbsp;');
-            }
-        }
-    });
-
-/*bad bad angular (( need space for justify list*/
 angular.module('ss.dialog', [])
     .factory('dialogService', function($rootScope) {
         var instance = {
@@ -505,6 +494,17 @@ angular.module('ss.dialog', [])
         };
     });
 
+angular.module('ss')
+    .directive('addSpace', function() {
+        return {
+            restrict: 'A',
+            link: function(scope, element) {
+                element.after('&nbsp;');
+            }
+        }
+    });
+
+/*bad bad angular (( need space for justify list*/
 angular.module('ss.filters', ['ss.gridSizes'])
     .filter('photoSrc', function(gridSizes) {
         var retina = window.devicePixelRatio > 1;
@@ -706,6 +706,7 @@ function playerController(
 
     function initialize(frames, audioIds, duration, settings) {
         var imgReadyDfd = $q.defer();
+        var imgReadyDfdResolved = false;
         var audioReadyDfd;
 
         playerImgLoader.load(frames, 'w', function(images) {
@@ -716,8 +717,11 @@ function playerController(
             alert('Error while loading images')
         }, function(progress) {
             $scope.loadProgress = progress;
-            if (duration * progress / 100 > 15) {
+
+            //if we can play 15 seconds of slideshow
+            if (duration * progress / 100 > 15000 && !imgReadyDfdResolved) {
                 imgReadyDfd.resolve();
+                imgReadyDfdResolved = true;
             }
         });
 
@@ -1381,56 +1385,6 @@ angular.module('ss.gridSizes', [])
         }
     });
 
-angular.module('ss.directives', ['ss.gridSizes', 'ss.templates'])
-    .directive('gridSize', function() {
-        return {
-            restrict: 'E',
-            replace: true,
-            scope: {
-                gridSize: '=size'
-            },
-            templateUrl: 'modules/directives/grid-size/grid-size.html',
-            controller: function($scope, gridSizes) {
-                function changeSize(size) {
-                    $scope.gridSize = size;
-                }
-
-                $scope.sizes = ['o', 'p', 'q'];
-                $scope.names = gridSizes.names;
-
-                $scope.changeSize = changeSize;
-            }
-        }
-    });
-
-angular.module('ss')
-    .value('breadcrumbsConfig', {
-        'create.album': [
-            {
-                'name': 'Альбомы',
-                'link': 'create/albums'
-            },
-
-            {
-                'name': 'Фотогорафии'
-            }
-        ]
-    })
-    .directive('breadcrumbs', function($route, breadcrumbsConfig) {
-        return {
-            templateUrl: 'modules/directives/breadcrumbs/breadcrumbs.html',
-            controller: function($scope, $rootScope) {
-                if ($route.current) {
-                    $scope.breadcrumbs = breadcrumbsConfig[$route.current.segment];
-                }
-
-                $rootScope.$on('$routeChangeSuccess', function() {
-                    $scope.breadcrumbs = breadcrumbsConfig[$route.current.segment];
-                });
-            }
-        };
-    });
-
 angular.module('ss.audioSelector')
     //play audio after clicking element
     .directive('playAudio', function(audioService) {
@@ -1469,6 +1423,56 @@ angular.module('ss.audioSelector')
             }
         };
     });
+angular.module('ss')
+    .value('breadcrumbsConfig', {
+        'create.album': [
+            {
+                'name': 'Альбомы',
+                'link': 'create/albums'
+            },
+
+            {
+                'name': 'Фотогорафии'
+            }
+        ]
+    })
+    .directive('breadcrumbs', function($route, breadcrumbsConfig) {
+        return {
+            templateUrl: 'modules/directives/breadcrumbs/breadcrumbs.html',
+            controller: function($scope, $rootScope) {
+                if ($route.current) {
+                    $scope.breadcrumbs = breadcrumbsConfig[$route.current.segment];
+                }
+
+                $rootScope.$on('$routeChangeSuccess', function() {
+                    $scope.breadcrumbs = breadcrumbsConfig[$route.current.segment];
+                });
+            }
+        };
+    });
+
+angular.module('ss.directives', ['ss.gridSizes', 'ss.templates'])
+    .directive('gridSize', function() {
+        return {
+            restrict: 'E',
+            replace: true,
+            scope: {
+                gridSize: '=size'
+            },
+            templateUrl: 'modules/directives/grid-size/grid-size.html',
+            controller: function($scope, gridSizes) {
+                function changeSize(size) {
+                    $scope.gridSize = size;
+                }
+
+                $scope.sizes = ['o', 'p', 'q'];
+                $scope.names = gridSizes.names;
+
+                $scope.changeSize = changeSize;
+            }
+        }
+    });
+
 angular.module('ss.photoSelector')
     .controller('AlbumsController', AlbumsController);
 
