@@ -82,7 +82,7 @@ function playerController(
     function initialize(frames, audioIds, duration, settings) {
         var imgReadyDfd = $q.defer();
         var imgReadyDfdResolved = false;
-        var audioReadyDfd;
+        var audioReadyPromise;
 
         playerImgLoader.load(frames, 'w', function(images) {
             canvasPlayService.initialize(images, $scope, settings);
@@ -92,7 +92,6 @@ function playerController(
             alert('Error while loading images')
         }, function(progress) {
             $scope.loadProgress = progress;
-
             //if we can play 15 seconds of slideshow
             if (!imgReadyDfdResolved && duration * progress / 100 > 15000) {
                 imgReadyDfd.resolve();
@@ -101,10 +100,10 @@ function playerController(
         });
 
         if (audioIds.length) {
-            audioReadyDfd = VKAudios.getAudios(audioIds.join(',')).then(audioPlayService.initialize);
+            audioReadyPromise = VKAudios.getAudios(audioIds.join(',')).then(audioPlayService.initialize);
         }
 
-        $q.all([imgReadyDfd, audioReadyDfd]).then(function() {
+        $q.all([imgReadyDfd.promise, audioReadyPromise]).then(function() {
             $scope.canPlay = true;
         });
 
