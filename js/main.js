@@ -405,9 +405,9 @@ angular.module('ss.templates', []).run(['$templateCache', function($templateCach
 
   $templateCache.put('modules/photo-selector/photos/photos.html', '<header class="section__header"><grid-size size="gridSize"></grid-size><h2 class="section__title">{{album.title}}</h2></header><div class="section__content"><ul class="photo-list photo-list_size_{{gridSize}}"><li class="photo-list__item" ng-class="{selected: photo.selected}" ng-repeat="photo in photos track by photo.id" title="{{photo.title}}" ng-click="togglePhoto(photo)"><img ng-src="{{photo.sizes | photoSrc: gridSize }}"></li></ul></div>');
 
-  $templateCache.put('modules/panel/directives/frame-list/frame-list.html', '<div class="frame-list__holder"><button class="frame-list__prev" ng-click="prev()" ng-disabled="disabled || prevDisabled"></button><div class="frame-list__wrap"><ul class="frame-list"><li class="frame-list__item" ng-repeat="frame in frames track by frame.id" title="{{frame.title}}" ng-click="removeFrame(frame)"><img ng-src="{{frame.sizes | photoSrc: \'o\' }}"></li></ul><span class="frame-placeholders"><span class="frame-placeholder" ng-repeat="placeholder in placeholders track by $index"></span></span></div><button class="frame-list__next" ng-click="next()" ng-disabled="disabled || nextDisabled"></button></div>');
-
   $templateCache.put('modules/panel/directives/audio-list/audio-list.html', '<ul class="panel-audios"><li class="panel-audios__item" ng-repeat="audio in audios track by audio.id" title="{{audio.artist + \' - \' + audio.title}}"><span class="panel-audios__info">{{audio.artist + \' - \' + audio.title}}&nbsp;&nbsp;&nbsp;{{audio.duration | timeFormatter}}</span></li></ul>');
+
+  $templateCache.put('modules/panel/directives/frame-list/frame-list.html', '<div class="frame-list__holder"><button class="frame-list__prev" ng-click="prev()" ng-disabled="disabled || prevDisabled"></button><div class="frame-list__wrap"><ul class="frame-list"><li class="frame-list__item" ng-repeat="frame in frames track by frame.id" title="{{frame.title}}" ng-click="removeFrame(frame)"><img ng-src="{{frame.sizes | photoSrc: \'o\' }}"></li></ul><span class="frame-placeholders"><span class="frame-placeholder" ng-repeat="placeholder in placeholders track by $index"></span></span></div><button class="frame-list__next" ng-click="next()" ng-disabled="disabled || nextDisabled"></button></div>');
 
   $templateCache.put('modules/panel/directives/timeline/timeline.html', '');
 
@@ -434,65 +434,6 @@ function AudiosController($scope, VKAudios, selectedAudios) {
         }
     }
 }
-
-angular.module('ss.dialog', [])
-    .factory('dialogService', function($rootScope) {
-        var instance = {
-            showed: false,
-
-            initialize: function(scope) {
-                this.scope = scope;
-            },
-
-            open: function(data, forcePaint) {
-                this.data = data;
-                this.showed = true;
-
-                if (forcePaint) {
-                    this.scope.$digest();
-                }
-            },
-
-            close: function(forcePaint) {
-                this.data = undefined;
-                this.showed = false;
-
-                if (forcePaint) {
-                    this.scope.$digest();
-                }
-            }
-        };
-
-        $rootScope.$on('$locationChangeSuccess', function() {
-            instance.close();
-        });
-
-        return instance;
-    })
-    .directive('dialog', function() {
-        return {
-            restrict: 'E',
-            scope: true,
-            replace: true,
-            templateUrl: 'modules/dialog/dialog.html',
-            controller: function($scope, dialogService) {
-                dialogService.initialize($scope);
-                $scope.dialogService = dialogService;
-
-                $scope.closeOnBgClick = function(event) {
-                    if (event.target === event.currentTarget) {
-                        dialogService.close();
-                    }
-                };
-
-                window.addEventListener('keydown', function(event) {
-                    if (event.keyCode === 27) {
-                        dialogService.close(true);
-                    }
-                })
-            }
-        };
-    });
 
 angular.module('ss')
     .directive('addSpace', function() {
@@ -621,8 +562,6 @@ function panelController($scope, selectedPhotos, durationService, dialogService)
     };
 }
 
-angular.module('ss.photoSelector', ['vkontakteServices', 'ss.directives', 'ss.services', 'ngRoute']);
-
 angular.module('ss.player', [
     'parseServices',
     'ss.templates',
@@ -745,6 +684,65 @@ function playerController(
         }, 3000);
     }
 }
+
+angular.module('ss.dialog', [])
+    .factory('dialogService', function($rootScope) {
+        var instance = {
+            showed: false,
+
+            initialize: function(scope) {
+                this.scope = scope;
+            },
+
+            open: function(data, forcePaint) {
+                this.data = data;
+                this.showed = true;
+
+                if (forcePaint) {
+                    this.scope.$digest();
+                }
+            },
+
+            close: function(forcePaint) {
+                this.data = undefined;
+                this.showed = false;
+
+                if (forcePaint) {
+                    this.scope.$digest();
+                }
+            }
+        };
+
+        $rootScope.$on('$locationChangeSuccess', function() {
+            instance.close();
+        });
+
+        return instance;
+    })
+    .directive('dialog', function() {
+        return {
+            restrict: 'E',
+            scope: true,
+            replace: true,
+            templateUrl: 'modules/dialog/dialog.html',
+            controller: function($scope, dialogService) {
+                dialogService.initialize($scope);
+                $scope.dialogService = dialogService;
+
+                $scope.closeOnBgClick = function(event) {
+                    if (event.target === event.currentTarget) {
+                        dialogService.close();
+                    }
+                };
+
+                window.addEventListener('keydown', function(event) {
+                    if (event.keyCode === 27) {
+                        dialogService.close(true);
+                    }
+                })
+            }
+        };
+    });
 
 angular.module('ss.previewModal', ['ss.player', 'parseServices', 'ss.services', 'ss.constants', 'ss.dialog'])
     .controller('PreviewModalController', PreviewModalController);
@@ -1369,6 +1367,8 @@ angular.module('ss.gridSizes', [])
             'q': 'XL'
         }
     });
+
+angular.module('ss.photoSelector', ['vkontakteServices', 'ss.directives', 'ss.services', 'ngRoute']);
 
 angular.module('ss.audioSelector')
     //play audio after clicking element
